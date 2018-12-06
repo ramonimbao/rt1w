@@ -2,7 +2,7 @@
 
 A Rust implementation of the book [Ray Tracing in a Weekend by Peter Shirley](https://github.com/petershirley/raytracinginoneweekend).
 
-[](output.png)
+![](output.png)
 
 # License
 
