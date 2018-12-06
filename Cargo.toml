@@ -1,0 +1,9 @@
+[package]
+name = "rt1w"
+version = "0.1.0"
+authors = ["Ramon Imbao <ramonimbao@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6.1"
+image = "0.20.1"
