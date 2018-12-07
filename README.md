@@ -1,6 +1,8 @@
 # Ray Tracing in a Weekend
 
-A Rust implementation of the book [Ray Tracing in a Weekend by Peter Shirley](https://github.com/petershirley/raytracinginoneweekend).
+A Rust implementation of the book [*Ray Tracing in a Weekend* by Peter Shirley](https://in1weekend.blogspot.com/).
+
+Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
 ![](output.png)
 

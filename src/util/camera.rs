@@ -2,15 +2,6 @@ use crate::util::{math, ray::Ray, vector3::Vec3};
 use rand::Rng;
 use std::f64::consts::PI;
 
-fn random_unit_in_disk() -> Vec3 {
-    let mut rng = rand::thread_rng();
-    let mut p = 2.0 * Vec3::new(rng.gen::<f64>(), rng.gen::<f64>(), 0.0) - Vec3::new(1.0, 1.0, 0.0);
-    while math::dot(&p, &p) >= 1.0 {
-        p = 2.0 * Vec3::new(rng.gen::<f64>(), rng.gen::<f64>(), 0.0) - Vec3::new(1.0, 1.0, 0.0);
-    }
-    p
-}
-
 pub struct Camera {
     lower_left_corner: Vec3,
     horizontal: Vec3,
@@ -20,6 +11,8 @@ pub struct Camera {
     w: Vec3,
     u: Vec3,
     v: Vec3,
+    t0: f64,
+    t1: f64,
 }
 
 impl Camera {
@@ -31,6 +24,8 @@ impl Camera {
         aspect: f64,
         aperture: f64,
         focus_dist: f64,
+        t0: f64,
+        t1: f64,
     ) -> Camera {
         let w = math::unit_vector(&(look_from - look_at));
         let u = math::unit_vector(&math::cross(&vup, &w));
@@ -50,15 +45,20 @@ impl Camera {
             w,
             u,
             v,
+            t0,
+            t1,
         }
     }
 
     pub fn get_ray(&self, s: f64, t: f64) -> Ray {
-        let rd = random_unit_in_disk() * self.lens_radius;
+        let rd = math::random_unit_in_disk() * self.lens_radius;
         let offset = self.u * rd.x + self.v * rd.y;
+        let mut rng = rand::thread_rng();
+        let time = self.t0 + rng.gen::<f64>() * (self.t1 - self.t0);
         Ray::new(
             self.origin + offset,
             self.lower_left_corner + s * self.horizontal + t * self.vertical - self.origin - offset,
+            time,
         )
     }
 }

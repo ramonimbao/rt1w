@@ -14,13 +14,13 @@ impl Lambertian {
 impl Material for Lambertian {
     fn scatter(
         &self,
-        _r_in: &Ray,
+        r_in: &Ray,
         rec: &mut HitRecord,
         attenuation: &mut Vec3,
         scattered: &mut Ray,
     ) -> bool {
         let target = rec.p + rec.normal + math::random_in_unit_sphere();
-        *scattered = Ray::new(rec.p, target - rec.p);
+        *scattered = Ray::new(rec.p, target - rec.p, r_in.time);
         *attenuation = self.albedo;
         true
     }

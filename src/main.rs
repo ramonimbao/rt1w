@@ -7,15 +7,15 @@ mod util;
 use crate::util::{camera::Camera, vector3::Vec3, world};
 
 fn main() -> std::io::Result<()> {
-    let nx = 800; // original: 200
-    let ny = 600; // original: 100
+    let nx = 400; // original: 200
+    let ny = 200; // original: 100
     let ns = 100; // original: 100
 
     let look_from = Vec3::new(13.0, 2.0, 5.0);
     let look_at = Vec3::new(0.0, 0.5, 0.0);
     let dist_to_focus = (look_from - look_at).length();
     //let dist_to_focus = 10.0;
-    let aperture = 0.2;
+    let aperture = 0.0;
 
     let cam = Camera::new(
         look_from,
@@ -25,6 +25,8 @@ fn main() -> std::io::Result<()> {
         nx as f64 / ny as f64,
         aperture,
         dist_to_focus,
+        0.0,
+        1.0,
     );
 
     let mut img = ImageBuffer::new(nx, ny);
@@ -50,7 +52,6 @@ fn main() -> std::io::Result<()> {
                 let u = (i as f64 + rng.gen::<f64>()) / nx as f64;
                 let v = (j as f64 + rng.gen::<f64>()) / ny as f64;
                 let r = cam.get_ray(u, v);
-                let _p = r.point_at_parameter(2.0);
                 col += world::color(&r, &mut world, 0);
             }
             col /= ns as f64;
@@ -62,10 +63,12 @@ fn main() -> std::io::Result<()> {
             img.put_pixel(i, j, pixel);
             current_progress += 1.0;
 
+            /*
             print!(
                 "Render progress: {:3.1}/100.0%\r",
                 current_progress / total_progress * 100.0
             );
+            */
         }
     }
 

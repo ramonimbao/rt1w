@@ -41,15 +41,15 @@ impl Material for Dielectric {
         if math::refract(&r_in.direction, &outward_normal, ni_over_nt, &mut refracted) {
             reflection_probability = math::schlik(cosine, self.refractive_index);
         } else {
-            *scattered = Ray::new(rec.p, reflected);
+            *scattered = Ray::new(rec.p, reflected, r_in.time);
             reflection_probability = 1.0;
         }
 
         let mut rng = rand::thread_rng();
         if rng.gen::<f64>() < reflection_probability {
-            *scattered = Ray::new(rec.p, reflected);
+            *scattered = Ray::new(rec.p, reflected, r_in.time);
         } else {
-            *scattered = Ray::new(rec.p, refracted);
+            *scattered = Ray::new(rec.p, refracted, r_in.time);
         }
         true
     }
