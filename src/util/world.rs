@@ -1,10 +1,13 @@
+use std::fs;
 use std::rc::Rc;
 
 use rand::Rng;
+use serde_json::Value;
 
 use crate::materials::{dielectric::Dielectric, lambertian::Lambertian, metal::Metal};
 use crate::shapes::{moving_sphere::MovingSphere, plane::Plane, sphere::Sphere};
 use crate::util::{
+    camera::Camera,
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
     math,
@@ -207,4 +210,16 @@ pub fn random_scene() -> HitableList {
 
     let list = HitableList::new(list);
     list
+}
+
+pub fn load_from_json(filename: String) -> HitableList {
+    println!("Loading scene data from {}", filename);
+
+    let data = fs::read_to_string(filename).expect("Something went wrong with reading the file.");
+    let values: Value =
+        serde_json::from_str(&data).expect("Something went wrong with reading the JSON data.");
+
+    // TODO: Implement loading objects from JSON file
+
+    random_scene()
 }
