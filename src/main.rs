@@ -7,8 +7,8 @@ mod util;
 use crate::util::{camera::Camera, vector3::Vec3, world};
 
 fn main() -> std::io::Result<()> {
-    let nx = 400; // original: 200
-    let ny = 200; // original: 100
+    let nx = 800; // original: 200
+    let ny = 400; // original: 100
     let ns = 100; // original: 100
 
     let look_from = Vec3::new(13.0, 2.0, 5.0);
