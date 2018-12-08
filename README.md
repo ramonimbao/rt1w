@@ -11,7 +11,7 @@ Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 Run the program with `cargo run --release`. You can also give it a JSON configuration file as an argument to change the render settings without having to recompile the program using `--config [config.json]`. Scene loading is also now supported using `--scene [scene.json]`.
 
 Example:  
-`$ rt1w --scene json\scenes\two-balls.json --config json\config\github_sample.json`
+`$ rt1w --scene json/scenes/two-balls.json --config json/config/github_sample.json`
 
 # To Do
 
