@@ -2,20 +2,21 @@
 	"config": {
 		"width": 800,
 		"height": 600,
-		"samples": 10,
+		"samples": 100,
 		"output": "github_sample.png"
 	},
 	"camera": {
 		"from":	{
-			"x": 0.0,
-			"y": 2.0,
-			"z": 10.0
-		},
-		"to": {
-			"x": 0.0,
+			"x": 10.0,
 			"y": 0.5,
 			"z": 0.0
 		},
-		"fov": 50
+		"to": {
+			"x": 0.0,
+			"y": 2,
+			"z": 0.0
+		},
+		"fov": 30,
+		"aperture": 0
 	}
 }

@@ -1,3 +1,7 @@
+use std::rc::Rc;
+
+use serde_json::Value;
+
 use crate::materials::Material;
 use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
 
@@ -24,4 +28,16 @@ impl Material for Lambertian {
         *attenuation = self.albedo;
         true
     }
+}
+
+pub fn load_from_json(values: &Value) -> Rc<Material> {
+    let r = values["material"]["color"]["r"].as_f64();
+    let g = values["material"]["color"]["g"].as_f64();
+    let b = values["material"]["color"]["b"].as_f64();
+    let (r, g, b) = match (r, g, b) {
+        (Some(r), Some(g), Some(b)) => (r, g, b),
+        (_, _, _) => (1.0, 0.0, 0.0),
+    };
+
+    Rc::new(Lambertian::new(Vec3::new(r, g, b)))
 }

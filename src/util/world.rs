@@ -5,9 +5,12 @@ use rand::Rng;
 use serde_json::Value;
 
 use crate::materials::{dielectric::Dielectric, lambertian::Lambertian, metal::Metal};
-use crate::shapes::{moving_sphere::MovingSphere, plane::Plane, sphere::Sphere};
+use crate::shapes::{
+    moving_sphere::{self, MovingSphere},
+    plane::{self, Plane},
+    sphere::{self, Sphere},
+};
 use crate::util::{
-    camera::Camera,
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
     math,
@@ -215,11 +218,32 @@ pub fn random_scene() -> HitableList {
 pub fn load_from_json(filename: String) -> HitableList {
     println!("Loading scene data from {}", filename);
 
-    let data = fs::read_to_string(filename).expect("Something went wrong with reading the file.");
-    let values: Value =
-        serde_json::from_str(&data).expect("Something went wrong with reading the JSON data.");
+    let data = match fs::read_to_string(filename) {
+        Ok(d) => d,
+        Err(e) => {
+            eprintln!("ERROR: {}", e);
+            println!("Generating random scene...");
+            return random_scene();
+        }
+    };
 
-    // TODO: Implement loading objects from JSON file
+    let values: Value = match serde_json::from_str(&data) {
+        Ok(v) => v,
+        Err(e) => {
+            eprintln!("ERROR: {}", e);
+            println!("Generating random scene...");
+            return random_scene();
+        }
+    };
 
-    random_scene()
+    println!("Loaded scene data.");
+
+    println!("Load all objects to scene...");
+    let mut list: Vec<Box<Hitable>> = Vec::new();
+    list.append(&mut sphere::load_from_json(&values));
+    list.append(&mut plane::load_from_json(&values));
+    println!("Done loading.");
+
+    let list = HitableList::new(list);
+    list
 }

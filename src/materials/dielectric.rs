@@ -1,4 +1,7 @@
+use std::rc::Rc;
+
 use rand::Rng;
+use serde_json::Value;
 
 use crate::materials::Material;
 use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
@@ -53,4 +56,14 @@ impl Material for Dielectric {
         }
         true
     }
+}
+
+pub fn load_from_json(values: &Value) -> Rc<Material> {
+    let ri = values["material"]["refractive_index"].as_f64();
+    let ri = match ri {
+        Some(f) => f,
+        _ => 0.0,
+    };
+
+    Rc::new(Dielectric::new(ri))
 }

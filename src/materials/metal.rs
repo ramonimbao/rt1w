@@ -1,3 +1,7 @@
+use std::rc::Rc;
+
+use serde_json::Value;
+
 use crate::materials::Material;
 use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
 
@@ -35,4 +39,22 @@ impl Material for Metal {
         *attenuation = self.albedo;
         math::dot(&scattered.direction, &rec.normal) > 0.0
     }
+}
+
+pub fn load_from_json(values: &Value) -> Rc<Material> {
+    let r = values["material"]["albedo"]["r"].as_f64();
+    let g = values["material"]["albedo"]["g"].as_f64();
+    let b = values["material"]["albedo"]["b"].as_f64();
+    let (r, g, b) = match (r, g, b) {
+        (Some(r), Some(g), Some(b)) => (r, g, b),
+        (_, _, _) => (1.0, 1.0, 1.0),
+    };
+
+    let fuzz = values["material"]["fuzz"].as_f64();
+    let fuzz = match fuzz {
+        Some(f) => f,
+        _ => 0.0,
+    };
+
+    Rc::new(Metal::new(Vec3::new(r, g, b), fuzz))
 }

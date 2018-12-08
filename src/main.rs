@@ -2,6 +2,7 @@ use image::{ImageBuffer, Pixel, Rgb};
 use rand::Rng;
 
 use std::env;
+use std::process;
 
 mod defaults;
 mod materials;
@@ -10,9 +11,24 @@ mod util;
 use crate::util::{
     camera::Camera,
     config::{self, Config},
+    hitable_list::HitableList,
     vector3::Vec3,
     world,
 };
+
+fn get_default() -> ((Config, Camera), HitableList) {
+    (
+        (Config::default(), Camera::default()),
+        world::random_scene(),
+    )
+}
+
+fn help() {
+    println!("rt1w -- A Rust implementation of the book Ray Tracing in One Weekend.");
+    println!("Arguments:");
+    println!("   --config [config.json]     Input a configuration JSON file.");
+    println!("   --scene [scene.json]       Input a scene JSON file.");
+}
 
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -22,26 +38,57 @@ fn main() -> std::io::Result<()> {
     let mut current_progress = 0.0;
     */
 
-    /*
-    let config = if args.len() == 2 {
-        config::load_from_json(args[1].clone())
-    } else {
-        Config::default()
-    };*/
-
-    let ((config, cam), mut world) = match (args.get(1), args.get(2)) {
-        (Some(config_file), Some(scene_file)) => (
-            config::load_from_json(config_file.to_string()),
-            world::load_from_json(scene_file.to_string()),
-        ),
-        (Some(config_file), _) => (
-            config::load_from_json(config_file.to_string()),
-            world::random_scene(),
-        ),
-        (_, _) => (
-            (Config::default(), Camera::default()),
-            world::random_scene(),
-        ),
+    // TODO: Refactor the code so camera data is part of scene rather than config files
+    // It kinda made sense when I first started making this...
+    let ((config, cam), mut world) = match args.len() {
+        1 | 2 | 4 => {
+            help();
+            println!("Rendering with default settings.");
+            get_default()
+        }
+        3 => {
+            let cmd = &args[1];
+            let file = &args[2];
+            match &cmd[..] {
+                "--config" => (
+                    config::load_from_json(file.to_string()),
+                    world::random_scene(),
+                ),
+                "--scene" => (
+                    (Config::default(), Camera::default()),
+                    world::load_from_json(file.to_string()),
+                ),
+                _ => {
+                    eprintln!("Can't load the file. Reverting to defaults...");
+                    get_default()
+                }
+            }
+        }
+        5 => {
+            let cmd1 = &args[1];
+            let cmd2 = &args[3];
+            let file1 = &args[2];
+            let file2 = &args[4];
+            match (&cmd1[..], &cmd2[..]) {
+                ("--config", "--scene") => (
+                    config::load_from_json(file1.to_string()),
+                    world::load_from_json(file2.to_string()),
+                ),
+                ("--scene", "--config") => (
+                    config::load_from_json(file2.to_string()),
+                    world::load_from_json(file1.to_string()),
+                ),
+                (_, _) => {
+                    eprintln!("Can't load the files. Reverting to defaults...");
+                    get_default()
+                }
+            }
+        }
+        _ => {
+            help();
+            println!("Rendering with default settings.");
+            get_default()
+        }
     };
 
     let mut img = ImageBuffer::new(config.width, config.height);

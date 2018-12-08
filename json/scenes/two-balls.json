@@ -1,3 +1,36 @@
 {
-	
+	"spheres": [
+		{
+			"radius": 5,
+			"position": {
+				"x": 0,
+				"y": 5,
+				"z": 0
+			},
+			"material": {
+				"type": "lambertian",
+				"color": {
+					"r": 1,
+					"g": 0,
+					"b": 0
+				}
+			}
+		},
+		{
+			"radius": 5,
+			"position": {
+				"x": 0,
+				"y": -5,
+				"z": 0
+			},
+			"material": {
+				"type": "lambertian",
+				"color": {
+					"r": 0,
+					"g": 0,
+					"b": 1
+				}
+			}
+		}
+	]	
 }

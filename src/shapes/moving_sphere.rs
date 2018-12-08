@@ -69,3 +69,6 @@ impl Hitable for MovingSphere {
         false
     }
 }
+
+// TODO: Support loading of moving spheres from JSON
+pub fn load_from_json() {}

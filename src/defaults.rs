@@ -9,5 +9,5 @@ pub const FOV: f64 = 20.0;
 pub const APERTURE: f64 = 0.15;
 pub const FOCUS_DISTANCE: f64 = 10.0;
 pub const T0: f64 = 0.0;
-pub const T1: f64 = 0.0;
+pub const T1: f64 = 1.0;
 pub const OUTPUT_FILENAME: &'static str = "output.png";

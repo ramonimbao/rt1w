@@ -33,6 +33,7 @@ impl Config {
 }
 
 pub fn load_from_json(filename: String) -> (Config, Camera) {
+    println!("Loading config JSON file...");
     let data = match fs::read_to_string(filename) {
         Ok(d) => d,
         Err(e) => {
@@ -141,7 +142,7 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
         (_, _) => (defaults::T0, defaults::T1),
     };
 
-    println!("Loaded JSON file.");
+    println!("Loaded config JSON file.");
     println!(
         "Rendering a {}x{} image at {} samples...",
         width, height, samples
