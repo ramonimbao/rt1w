@@ -2,11 +2,11 @@ use image::{ImageBuffer, Pixel, Rgb};
 use rand::Rng;
 
 use std::env;
-use std::process;
 
 mod defaults;
 mod materials;
 mod shapes;
+mod textures;
 mod util;
 use crate::util::{
     camera::Camera,
@@ -111,7 +111,7 @@ fn main() -> std::io::Result<()> {
             let g = (255.99 * col[1]) as u8;
             let b = (255.99 * col[2]) as u8;
             let pixel = Rgb::from_channels(r, g, b, 0);
-            img.put_pixel(i, j, pixel);
+            img.put_pixel(i, config.height - 1 - j, pixel);
 
             /*
             current_progress += 1.0;

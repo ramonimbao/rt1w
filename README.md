@@ -4,7 +4,7 @@ A Rust implementation of the book [*Ray Tracing in a Weekend* by Peter Shirley](
 
 Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
-![](github_sample2.png)
+![](output.png)
 
 # Usage
 
@@ -15,7 +15,8 @@ Example:
 
 # To Do
 
-- Implement moving sphere loading into scene
+- Implement moving sphere loading into scene via JSON
+- Implement loading checkerboard pattern into scene via JSON
 
 # License
 

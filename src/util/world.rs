@@ -10,6 +10,7 @@ use crate::shapes::{
     plane::{self, Plane},
     sphere::{self, Sphere},
 };
+use crate::textures::{checkered_texture::CheckeredTexture, constant_texture::ConstantTexture};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
@@ -38,36 +39,6 @@ pub fn color(r: &Ray, world: &mut HitableList, depth: usize) -> Vec3 {
         let t = 0.5 * (unit_direction.y + 1.0);
         Vec3::unit() * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
     }
-}
-
-pub fn five_spheres() -> HitableList {
-    HitableList::new(vec![
-        Box::new(Sphere::new(
-            Vec3::new(0.0, 0.0, -1.0),
-            0.5,
-            Rc::new(Lambertian::new(Vec3::new(0.1, 0.2, 0.5))),
-        )),
-        Box::new(Sphere::new(
-            Vec3::new(0.0, -100.5, -1.0),
-            100.0,
-            Rc::new(Lambertian::new(Vec3::new(0.8, 0.8, 0.0))),
-        )),
-        Box::new(Sphere::new(
-            Vec3::new(1.0, 0.0, -1.0),
-            0.5,
-            Rc::new(Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)),
-        )),
-        Box::new(Sphere::new(
-            Vec3::new(-1.0, 0.0, -1.0),
-            0.5,
-            Rc::new(Dielectric::new(1.5)),
-        )),
-        Box::new(Sphere::new(
-            Vec3::new(-1.0, 0.0, -1.0),
-            -0.45,
-            Rc::new(Dielectric::new(1.5)),
-        )),
-    ])
 }
 
 fn skybox() -> Vec<Box<Hitable>> {
@@ -128,12 +99,15 @@ pub fn random_scene() -> HitableList {
     list.push(Box::new(Plane::new(
         Vec3::zero(),
         Vec3::new(0.0, 1.0, 0.0),
-        Rc::new(Lambertian::new(Vec3::new(0.8, 0.8, 0.8))),
+        Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
+            0.8, 0.8, 0.8,
+        ))))),
         //Rc::new(Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05)),
         //Rc::new(Dielectric::new(1.5)),
     )));
 
     let mut rng = rand::thread_rng();
+    /*
     for a in -11..11 {
         for b in -11..11 {
             let choose_mat: f64 = rng.gen();
@@ -151,11 +125,11 @@ pub fn random_scene() -> HitableList {
                         0.0,
                         1.0,
                         0.2,
-                        Rc::new(Lambertian::new(Vec3::new(
+                        Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
                             rng.gen::<f64>() * rng.gen::<f64>(),
                             rng.gen::<f64>() * rng.gen::<f64>(),
                             rng.gen::<f64>() * rng.gen::<f64>(),
-                        ))),
+                        ))))),
                     )));
                 } else if choose_mat < 0.8 {
                     // Diffuse
@@ -163,11 +137,11 @@ pub fn random_scene() -> HitableList {
                     list.push(Box::new(Sphere::new(
                         center,
                         0.2,
-                        Rc::new(Lambertian::new(Vec3::new(
+                        Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
                             rng.gen::<f64>() * rng.gen::<f64>(),
                             rng.gen::<f64>() * rng.gen::<f64>(),
                             rng.gen::<f64>() * rng.gen::<f64>(),
-                        ))),
+                        ))))),
                     )));
                 } else if choose_mat < 0.95 {
                     // Metal
@@ -194,6 +168,7 @@ pub fn random_scene() -> HitableList {
             }
         }
     }
+    */
 
     list.push(Box::new(Sphere::new(
         Vec3::new(0.0, 1.0, 0.0),
@@ -203,7 +178,10 @@ pub fn random_scene() -> HitableList {
     list.push(Box::new(Sphere::new(
         Vec3::new(-4.0, 1.0, 0.0),
         1.0,
-        Rc::new(Lambertian::new(Vec3::new(0.4, 0.2, 0.1))),
+        Rc::new(Lambertian::new(Rc::new(CheckeredTexture::new(
+            Rc::new(ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05))),
+            Rc::new(ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95))),
+        )))),
     )));
     list.push(Box::new(Sphere::new(
         Vec3::new(4.0, 1.0, 0.0),

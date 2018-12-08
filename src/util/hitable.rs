@@ -1,6 +1,7 @@
 use std::rc::Rc;
 
 use crate::materials::{lambertian::Lambertian, Material};
+use crate::textures::constant_texture::ConstantTexture;
 use crate::util::{ray::Ray, vector3::Vec3};
 
 #[derive(Clone)]
@@ -17,7 +18,7 @@ impl HitRecord {
             t: 0.0,
             p: Vec3::zero(),
             normal: Vec3::zero(),
-            material: Rc::new(Lambertian::new(Vec3::zero())),
+            material: Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::zero())))),
         }
     }
 }
