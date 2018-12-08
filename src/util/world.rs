@@ -45,47 +45,47 @@ fn skybox() -> Vec<Box<Hitable>> {
     let min = std::f64::MIN;
     let max = std::f64::MAX;
     //let mat = Rc::new(Lambertian::new(Vec3::unit()));
-    let mat = Rc::new(Dielectric::new(1.0));
+    let mat = Dielectric::new(1.0);
     let list: Vec<Box<Hitable>> = vec![
         // Y planes
-        Box::new(Plane::new(
+        Plane::new(
             Vec3::new(0.0, min, 0.0),
             Vec3::new(0.0, 1.0, 0.0),
             //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
-        )),
-        Box::new(Plane::new(
+        ),
+        Plane::new(
             Vec3::new(0.0, max, 0.0),
             Vec3::new(0.0, -1.0, 0.0),
             //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
-        )),
+        ),
         // Z planes
-        Box::new(Plane::new(
+        Plane::new(
             Vec3::new(0.0, 0.0, max),
             Vec3::new(0.0, 0.0, -1.0),
             //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
-        )),
-        Box::new(Plane::new(
+        ),
+        Plane::new(
             Vec3::new(0.0, 0.0, min),
             Vec3::new(0.0, 0.0, 1.0),
             //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
-        )),
+        ),
         // X planes
-        Box::new(Plane::new(
+        Plane::new(
             Vec3::new(max, 0.0, 0.0),
             Vec3::new(-1.0, 0.0, 0.0),
             //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
-        )),
-        Box::new(Plane::new(
+        ),
+        Plane::new(
             Vec3::new(min, 0.0, 0.0),
             Vec3::new(1.0, 0.0, 0.0),
             //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
-        )),
+        ),
     ];
 
     list
@@ -96,18 +96,15 @@ pub fn random_scene() -> HitableList {
 
     //list.append(&mut skybox());
 
-    list.push(Box::new(Plane::new(
+    list.push(Plane::new(
         Vec3::zero(),
         Vec3::new(0.0, 1.0, 0.0),
-        Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
-            0.8, 0.8, 0.8,
-        ))))),
+        Lambertian::new(ConstantTexture::new(Vec3::new(0.8, 0.8, 0.8))),
         //Rc::new(Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05)),
         //Rc::new(Dielectric::new(1.5)),
-    )));
+    ));
 
     let mut rng = rand::thread_rng();
-    /*
     for a in -11..11 {
         for b in -11..11 {
             let choose_mat: f64 = rng.gen();
@@ -118,76 +115,105 @@ pub fn random_scene() -> HitableList {
             );
             if (center - Vec3::new(4.0, 2.0, 0.0)).length() > 0.9 {
                 if choose_mat < 0.4 {
+                    let choose_texture: f64 = rng.gen();
                     // Moving sphere
-                    list.push(Box::new(MovingSphere::new(
+                    list.push(MovingSphere::new(
                         center,
                         center + Vec3::new(0.0, 0.5 * rng.gen::<f64>(), 0.0),
                         0.0,
                         1.0,
                         0.2,
-                        Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
-                            rng.gen::<f64>() * rng.gen::<f64>(),
-                            rng.gen::<f64>() * rng.gen::<f64>(),
-                            rng.gen::<f64>() * rng.gen::<f64>(),
-                        ))))),
-                    )));
+                        if choose_texture > 0.5 {
+                            Lambertian::new(ConstantTexture::new(Vec3::new(
+                                rng.gen::<f64>() * rng.gen::<f64>(),
+                                rng.gen::<f64>() * rng.gen::<f64>(),
+                                rng.gen::<f64>() * rng.gen::<f64>(),
+                            )))
+                        } else {
+                            Lambertian::new(CheckeredTexture::new(
+                                ConstantTexture::new(Vec3::new(
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                )),
+                                ConstantTexture::new(Vec3::new(
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                )),
+                                rng.gen::<f64>() * 15.0 + 10.0,
+                            ))
+                        },
+                    ));
                 } else if choose_mat < 0.8 {
+                    let choose_texture: f64 = rng.gen();
                     // Diffuse
-
-                    list.push(Box::new(Sphere::new(
+                    list.push(Sphere::new(
                         center,
                         0.2,
-                        Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
-                            rng.gen::<f64>() * rng.gen::<f64>(),
-                            rng.gen::<f64>() * rng.gen::<f64>(),
-                            rng.gen::<f64>() * rng.gen::<f64>(),
-                        ))))),
-                    )));
+                        if choose_texture > 0.5 {
+                            Lambertian::new(ConstantTexture::new(Vec3::new(
+                                rng.gen::<f64>() * rng.gen::<f64>(),
+                                rng.gen::<f64>() * rng.gen::<f64>(),
+                                rng.gen::<f64>() * rng.gen::<f64>(),
+                            )))
+                        } else {
+                            Lambertian::new(CheckeredTexture::new(
+                                ConstantTexture::new(Vec3::new(
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                )),
+                                ConstantTexture::new(Vec3::new(
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                    rng.gen::<f64>() * rng.gen::<f64>(),
+                                )),
+                                rng.gen::<f64>() * 15.0 + 10.0,
+                            ))
+                        },
+                    ));
                 } else if choose_mat < 0.95 {
                     // Metal
-                    list.push(Box::new(Sphere::new(
+                    list.push(Sphere::new(
                         center,
                         0.2,
-                        Rc::new(Metal::new(
+                        Metal::new(
                             Vec3::new(
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                             ),
                             0.5 * rng.gen::<f64>(),
-                        )),
-                    )));
+                        ),
+                    ));
                 } else {
                     // Glass
-                    list.push(Box::new(Sphere::new(
-                        center,
-                        0.2,
-                        Rc::new(Dielectric::new(2.4)),
-                    )));
+                    list.push(Sphere::new(center, 0.2, Dielectric::new(2.4)));
                 }
             }
         }
     }
-    */
 
-    list.push(Box::new(Sphere::new(
+    list.push(Sphere::new(
         Vec3::new(0.0, 1.0, 0.0),
         1.0,
-        Rc::new(Dielectric::new(1.5)),
-    )));
-    list.push(Box::new(Sphere::new(
+        Dielectric::new(1.5),
+    ));
+    list.push(Sphere::new(
         Vec3::new(-4.0, 1.0, 0.0),
         1.0,
-        Rc::new(Lambertian::new(Rc::new(CheckeredTexture::new(
-            Rc::new(ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05))),
-            Rc::new(ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95))),
-        )))),
-    )));
-    list.push(Box::new(Sphere::new(
+        Lambertian::new(CheckeredTexture::new(
+            ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05)),
+            ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95)),
+            10.0,
+        )),
+    ));
+    list.push(Sphere::new(
         Vec3::new(4.0, 1.0, 0.0),
         1.0,
-        Rc::new(Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0)),
-    )));
+        Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
+    ));
 
     let list = HitableList::new(list);
     list

@@ -17,12 +17,12 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new(position: Vec3, normal: Vec3, material: Rc<Material>) -> Plane {
-        Plane {
+    pub fn new(position: Vec3, normal: Vec3, material: Rc<Material>) -> Box<Plane> {
+        Box::new(Plane {
             position,
             normal: normal,
             material,
-        }
+        })
     }
 }
 
@@ -81,11 +81,11 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             _ => continue,
         };
 
-        list.push(Box::new(Plane::new(
+        list.push(Plane::new(
             Vec3::new(px, py, pz),
             Vec3::new(nx, ny, nz),
             material,
-        )));
+        ));
     }
 
     list

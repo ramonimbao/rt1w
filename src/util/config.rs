@@ -144,7 +144,7 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
 
     println!("Loaded config JSON file.");
     println!(
-        "Rendering a {}x{} image at {} samples...",
+        "Rendering a {}x{} image at {} samples/pixel...",
         width, height, samples
     );
     println!("Ouput filename: {}", output_filename);

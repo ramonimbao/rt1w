@@ -11,8 +11,8 @@ pub struct Lambertian {
 }
 
 impl Lambertian {
-    pub fn new(albedo: Rc<Texture>) -> Lambertian {
-        Lambertian { albedo }
+    pub fn new(albedo: Rc<Texture>) -> Rc<Lambertian> {
+        Rc::new(Lambertian { albedo })
     }
 }
 
@@ -41,7 +41,5 @@ pub fn load_from_json(values: &Value) -> Rc<Material> {
         (_, _, _) => (1.0, 0.0, 0.0),
     };
 
-    Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::new(
-        r, g, b,
-    )))))
+    Lambertian::new(ConstantTexture::new(Vec3::new(r, g, b)))
 }

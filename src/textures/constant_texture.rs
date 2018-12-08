@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::textures::Texture;
 use crate::util::vector3::Vec3;
 
@@ -6,8 +8,8 @@ pub struct ConstantTexture {
 }
 
 impl ConstantTexture {
-    pub fn new(color: Vec3) -> ConstantTexture {
-        ConstantTexture { color }
+    pub fn new(color: Vec3) -> Rc<ConstantTexture> {
+        Rc::new(ConstantTexture { color })
     }
 }
 

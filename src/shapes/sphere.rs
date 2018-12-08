@@ -17,12 +17,12 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64, material: Rc<Material>) -> Sphere {
-        Sphere {
+    pub fn new(center: Vec3, radius: f64, material: Rc<Material>) -> Box<Sphere> {
+        Box::new(Sphere {
             center,
             radius,
             material,
-        }
+        })
     }
 }
 
@@ -91,11 +91,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             _ => continue,
         };
 
-        list.push(Box::new(Sphere::new(
-            Vec3::new(px, py, pz),
-            radius,
-            material,
-        )));
+        list.push(Sphere::new(Vec3::new(px, py, pz), radius, material));
     }
 
     list

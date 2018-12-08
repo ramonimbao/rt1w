@@ -6,18 +6,18 @@ use crate::util::vector3::Vec3;
 pub struct CheckeredTexture {
     odd: Rc<Texture>,
     even: Rc<Texture>,
+    scale: f64,
 }
 
 impl CheckeredTexture {
-    pub fn new(odd: Rc<Texture>, even: Rc<Texture>) -> CheckeredTexture {
-        CheckeredTexture { odd, even }
+    pub fn new(odd: Rc<Texture>, even: Rc<Texture>, scale: f64) -> Rc<CheckeredTexture> {
+        Rc::new(CheckeredTexture { odd, even, scale })
     }
 }
 
 impl Texture for CheckeredTexture {
     fn value(&self, u: f64, v: f64, p: Vec3) -> Vec3 {
-        let scale = 10.0;
-        let sines = (scale * p.x).sin() * (scale * p.y).sin() * (scale * p.z).sin();
+        let sines = (self.scale * p.x).sin() * (self.scale * p.y).sin() * (self.scale * p.z).sin();
         if sines < 0.0 {
             return self.odd.value(u, v, p);
         } else {

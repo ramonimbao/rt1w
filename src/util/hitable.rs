@@ -18,7 +18,7 @@ impl HitRecord {
             t: 0.0,
             p: Vec3::zero(),
             normal: Vec3::zero(),
-            material: Rc::new(Lambertian::new(Rc::new(ConstantTexture::new(Vec3::zero())))),
+            material: Lambertian::new(ConstantTexture::new(Vec3::zero())),
         }
     }
 }

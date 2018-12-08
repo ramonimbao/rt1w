@@ -11,11 +11,11 @@ pub struct Metal {
 }
 
 impl Metal {
-    pub fn new(albedo: Vec3, fuzz: f64) -> Metal {
-        Metal {
+    pub fn new(albedo: Vec3, fuzz: f64) -> Rc<Metal> {
+        Rc::new(Metal {
             albedo,
             fuzz: if fuzz < 1.0 { fuzz } else { 1.0 },
-        }
+        })
     }
 }
 
@@ -56,5 +56,5 @@ pub fn load_from_json(values: &Value) -> Rc<Material> {
         _ => 0.0,
     };
 
-    Rc::new(Metal::new(Vec3::new(r, g, b), fuzz))
+    Metal::new(Vec3::new(r, g, b), fuzz)
 }

@@ -11,8 +11,8 @@ pub struct Dielectric {
 }
 
 impl Dielectric {
-    pub fn new(refractive_index: f64) -> Dielectric {
-        Dielectric { refractive_index }
+    pub fn new(refractive_index: f64) -> Rc<Dielectric> {
+        Rc::new(Dielectric { refractive_index })
     }
 }
 
@@ -65,5 +65,5 @@ pub fn load_from_json(values: &Value) -> Rc<Material> {
         _ => 0.0,
     };
 
-    Rc::new(Dielectric::new(ri))
+    Dielectric::new(ri)
 }

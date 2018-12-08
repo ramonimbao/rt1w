@@ -25,15 +25,15 @@ impl MovingSphere {
         t1: f64,
         radius: f64,
         material: Rc<Material>,
-    ) -> MovingSphere {
-        MovingSphere {
+    ) -> Box<MovingSphere> {
+        Box::new(MovingSphere {
             radius,
             t0,
             t1,
             center0,
             center1,
             material,
-        }
+        })
     }
 
     pub fn get_center(&self, time: f64) -> Vec3 {
