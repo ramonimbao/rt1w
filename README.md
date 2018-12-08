@@ -4,7 +4,9 @@ A Rust implementation of the book [*Ray Tracing in a Weekend* by Peter Shirley](
 
 Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
-![](output.png)
+<p align="center">
+	<img src="output.png" alt="">	
+</p>
 
 # Usage
 
