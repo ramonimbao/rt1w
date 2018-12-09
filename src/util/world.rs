@@ -5,7 +5,10 @@ use image;
 use rand::Rng;
 use serde_json::Value;
 
-use crate::materials::{dielectric::Dielectric, lambertian::Lambertian, metal::Metal, Material};
+use crate::materials::{
+    dielectric::Dielectric, diffuse_light::DiffuseLight, lambertian::Lambertian, metal::Metal,
+    Material,
+};
 use crate::shapes::{
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
@@ -28,66 +31,69 @@ pub fn color(r: &Ray, world: &mut HitableList, depth: usize) -> Vec3 {
     if world.hit(r, 0.001, std::f64::MAX, &mut rec) {
         let mut scattered = Ray::new(Vec3::zero(), Vec3::zero(), r.time);
         let mut attenuation = Vec3::zero();
+        let rec_clone = rec.clone();
+        let emitted = rec_clone.material.emit(rec.u, rec.v, &rec.p);
         if depth < 50
-            && rec
-                .clone()
+            && rec_clone
                 .material
                 .scatter(&r, &mut rec, &mut attenuation, &mut scattered)
         {
-            return attenuation * color(&scattered, world, depth + 1);
+            return attenuation * color(&scattered, world, depth + 1)
+                + if crate::defaults::ENABLE_LIGHTS {
+                    emitted
+                } else {
+                    Vec3::zero()
+                };
         } else {
-            return Vec3::zero();
+            return emitted;
         }
     } else {
-        let unit_direction = math::unit_vector(&r.direction);
-        let t = 0.5 * (unit_direction.y + 1.0);
-        Vec3::unit() * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
+        if crate::defaults::ENABLE_LIGHTS {
+            Vec3::zero()
+        } else {
+            let unit_direction = math::unit_vector(&r.direction);
+            let t = 0.5 * (unit_direction.y + 1.0);
+            Vec3::unit() * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
+        }
     }
 }
 
 fn skybox() -> Vec<Box<Hitable>> {
     let min = std::f64::MIN;
     let max = std::f64::MAX;
-    //let mat = Rc::new(Lambertian::new(Vec3::unit()));
     let mat = Dielectric::new(1.0);
     let list: Vec<Box<Hitable>> = vec![
         // Y planes
         Plane::new(
             Vec3::new(0.0, min, 0.0),
             Vec3::new(0.0, 1.0, 0.0),
-            //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
         ),
         Plane::new(
             Vec3::new(0.0, max, 0.0),
             Vec3::new(0.0, -1.0, 0.0),
-            //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
         ),
         // Z planes
         Plane::new(
             Vec3::new(0.0, 0.0, max),
             Vec3::new(0.0, 0.0, -1.0),
-            //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
         ),
         Plane::new(
             Vec3::new(0.0, 0.0, min),
             Vec3::new(0.0, 0.0, 1.0),
-            //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
         ),
         // X planes
         Plane::new(
             Vec3::new(max, 0.0, 0.0),
             Vec3::new(-1.0, 0.0, 0.0),
-            //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
         ),
         Plane::new(
             Vec3::new(min, 0.0, 0.0),
             Vec3::new(1.0, 0.0, 0.0),
-            //Rc::new(Metal::new(Vec3::unit(), 0.0)),
             mat.clone(),
         ),
     ];
@@ -151,6 +157,7 @@ pub fn random_scene() -> HitableList {
         //Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05),
         //Dielectric::new(1.5),
         //Lambertian::new(NoiseTexture::new(10.0)),
+        //DiffuseLight::new(ConstantTexture::new(Vec3::unit())),
         Lambertian::new(ImageTexture::new(
             image::open(match choose_image {
                 0 => "res/images/Blood Stone CH16.png",
@@ -165,16 +172,22 @@ pub fn random_scene() -> HitableList {
         )),
     ));
 
+    list.push(Sphere::new(
+        Vec3::new(-1000.0, 3000.0, 0.0),
+        1000.0,
+        DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
+    ));
+
     for a in -11..11 {
         for b in -11..11 {
-            let choose_mat: f64 = rng.gen();
+            let choose_mat = rng.gen_range(0, 5);
             let center = Vec3::new(
                 a as f64 + 0.9 * rng.gen::<f64>(),
-                0.2,
+                3.0,
                 b as f64 + 0.9 * rng.gen::<f64>(),
             );
             if (center - Vec3::new(4.0, 2.0, 0.0)).length() > 0.9 {
-                if choose_mat < 0.4 {
+                if choose_mat == 0 {
                     // Moving sphere
                     list.push(MovingSphere::new(
                         center,
@@ -184,10 +197,10 @@ pub fn random_scene() -> HitableList {
                         0.2,
                         choose_random_texture(),
                     ));
-                } else if choose_mat < 0.8 {
+                } else if choose_mat == 1 {
                     // Diffuse
                     list.push(Sphere::new(center, 0.2, choose_random_texture()));
-                } else if choose_mat < 0.95 {
+                } else if choose_mat == 2 {
                     // Metal
                     list.push(Sphere::new(
                         center,
@@ -201,9 +214,20 @@ pub fn random_scene() -> HitableList {
                             0.5 * rng.gen::<f64>(),
                         ),
                     ));
-                } else {
+                } else if choose_mat == 3 {
                     // Glass
                     list.push(Sphere::new(center, 0.2, Dielectric::new(2.4)));
+                } else {
+                    // Light
+                    list.push(Sphere::new(
+                        center,
+                        0.2,
+                        DiffuseLight::new(ConstantTexture::new(Vec3::new(
+                            0.5 * rng.gen::<f64>() + 0.5,
+                            0.5 * rng.gen::<f64>() + 0.5,
+                            0.5 * rng.gen::<f64>() + 0.5,
+                        ))),
+                    ))
                 }
             }
         }
@@ -211,7 +235,7 @@ pub fn random_scene() -> HitableList {
 
     let choose_image = rng.gen_range(0, 6);
     list.push(Sphere::new(
-        Vec3::new(0.0, 1.0, 0.0),
+        Vec3::new(0.0, 1.1, 0.0),
         1.0,
         //Dielectric::new(1.5),
         //Lambertian::new(NoiseTexture::new(10.0)),
@@ -227,20 +251,21 @@ pub fn random_scene() -> HitableList {
             .expect("Failed to open file."),
             1.0,
         )),
+        //DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
     ));
     list.push(Sphere::new(
-        Vec3::new(-4.0, 1.0, 0.0),
+        Vec3::new(-4.0, 1.1, 0.0),
         1.0,
         Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
     ));
     list.push(Sphere::new(
-        Vec3::new(4.0, 1.0, 0.0),
+        Vec3::new(4.0, 1.1, 0.0),
         1.0,
         //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
         Dielectric::new(1.8),
     ));
     list.push(Sphere::new(
-        Vec3::new(-8.0, 1.0, 0.0),
+        Vec3::new(-8.0, 1.1, 0.0),
         1.0,
         Lambertian::new(CheckeredTexture::new(
             ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05)),
