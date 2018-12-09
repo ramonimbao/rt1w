@@ -1,5 +1,4 @@
 use std::fs;
-use std::rc::Rc;
 
 use rand::Rng;
 use serde_json::Value;
@@ -10,7 +9,10 @@ use crate::shapes::{
     plane::{self, Plane},
     sphere::{self, Sphere},
 };
-use crate::textures::{checkered_texture::CheckeredTexture, constant_texture::ConstantTexture};
+use crate::textures::{
+    checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
+    noise_texture::NoiseTexture,
+};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
@@ -99,9 +101,10 @@ pub fn random_scene() -> HitableList {
     list.push(Plane::new(
         Vec3::zero(),
         Vec3::new(0.0, 1.0, 0.0),
-        Lambertian::new(ConstantTexture::new(Vec3::new(0.8, 0.8, 0.8))),
+        //Lambertian::new(ConstantTexture::new(Vec3::new(0.8, 0.8, 0.8))),
         //Rc::new(Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05)),
         //Rc::new(Dielectric::new(1.5)),
+        Lambertian::new(NoiseTexture::new(10.0)),
     ));
 
     let mut rng = rand::thread_rng();
@@ -123,12 +126,14 @@ pub fn random_scene() -> HitableList {
                         0.0,
                         1.0,
                         0.2,
-                        if choose_texture > 0.5 {
+                        if choose_texture < 0.33 {
                             Lambertian::new(ConstantTexture::new(Vec3::new(
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                             )))
+                        } else if choose_texture < 0.66 {
+                            Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
                         } else {
                             Lambertian::new(CheckeredTexture::new(
                                 ConstantTexture::new(Vec3::new(
@@ -151,12 +156,14 @@ pub fn random_scene() -> HitableList {
                     list.push(Sphere::new(
                         center,
                         0.2,
-                        if choose_texture > 0.5 {
+                        if choose_texture < 0.33 {
                             Lambertian::new(ConstantTexture::new(Vec3::new(
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                             )))
+                        } else if choose_texture < 0.66 {
+                            Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
                         } else {
                             Lambertian::new(CheckeredTexture::new(
                                 ConstantTexture::new(Vec3::new(
@@ -198,7 +205,8 @@ pub fn random_scene() -> HitableList {
     list.push(Sphere::new(
         Vec3::new(0.0, 1.0, 0.0),
         1.0,
-        Dielectric::new(1.5),
+        //Dielectric::new(1.5),
+        Lambertian::new(NoiseTexture::new(10.0)),
     ));
     list.push(Sphere::new(
         Vec3::new(-4.0, 1.0, 0.0),
@@ -211,6 +219,12 @@ pub fn random_scene() -> HitableList {
     ));
     list.push(Sphere::new(
         Vec3::new(4.0, 1.0, 0.0),
+        1.0,
+        //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
+        Dielectric::new(1.8),
+    ));
+    list.push(Sphere::new(
+        Vec3::new(8.0, 1.0, 0.0),
         1.0,
         Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
     ));

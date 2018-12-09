@@ -6,3 +6,4 @@ pub trait Texture {
 
 pub mod checkered_texture;
 pub mod constant_texture;
+pub mod noise_texture;
