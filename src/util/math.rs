@@ -57,3 +57,11 @@ pub fn schlik(cosine: f64, refractive_index: f64) -> f64 {
     r0 = r0 * r0;
     r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
 }
+
+pub fn get_sphere_uv(p: &Vec3, u: &mut f64, v: &mut f64) {
+    let phi = p.z.atan2(p.x);
+    let theta = p.y.asin();
+    let pi = std::f64::consts::PI;
+    *u = 1.0 - (phi + pi) / (pi * 2.0);
+    *v = (theta + pi / 2.0) / pi;
+}

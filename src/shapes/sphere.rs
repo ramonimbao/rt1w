@@ -39,6 +39,7 @@ impl Hitable for Sphere {
                 rec.t = temp;
                 rec.p = r.point_at_parameter(rec.t);
                 rec.normal = (rec.p - self.center) / self.radius;
+                math::get_sphere_uv(&rec.normal, &mut rec.u, &mut rec.v);
                 rec.material = self.material.clone();
                 return true;
             }
@@ -47,6 +48,7 @@ impl Hitable for Sphere {
                 rec.t = temp;
                 rec.p = r.point_at_parameter(rec.t);
                 rec.normal = (rec.p - self.center) / self.radius;
+                math::get_sphere_uv(&rec.normal, &mut rec.u, &mut rec.v);
                 rec.material = self.material.clone();
                 return true;
             }

@@ -13,13 +13,19 @@ Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 Run the program with `cargo run --release`. You can also give it a JSON configuration file as an argument to change the render settings without having to recompile the program using `--config [config.json]`. Scene loading is also now supported using `--scene [scene.json]`.
 
 Example:  
-`$ rt1w --scene json/scenes/two-balls.json --config json/config/github_sample.json`
+`$ rt1w --scene res/scenes/two-balls.json --config res/config/good.json`
+
+Rendering the default scene with the `good.json` config (800×600 at 100 samples/pixel) takes almost 19 minutes.
 
 # To Do
 
-- Implement moving sphere loading into scene via JSON
-- Implement loading checkerboard pattern into scene via JSON
+- Implement loading moving spheres into scene via JSON
+- Implement loading textures into scene via JSON
+- Implement defaulting to black and pink checkered texture and warning the user if image file is not found rather then causing a panic.
 
 # License
 
 This project is licensed under the MIT license - see the [LICENSE.md](LICENSE.md) for details.
+
+Image textures obtained from [OpenGameArt "Seamless Space Rocks Textures Pack (512px)" by mafon2](https://opengameart.org/content/seamless-space-rocks-textures-pack-512px).  
+Licensed under: [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/legalcode)

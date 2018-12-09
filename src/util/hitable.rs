@@ -7,6 +7,8 @@ use crate::util::{ray::Ray, vector3::Vec3};
 #[derive(Clone)]
 pub struct HitRecord {
     pub t: f64,
+    pub u: f64,
+    pub v: f64,
     pub p: Vec3,
     pub normal: Vec3,
     pub material: Rc<Material>,
@@ -16,6 +18,8 @@ impl HitRecord {
     pub fn new() -> HitRecord {
         HitRecord {
             t: 0.0,
+            u: 0.0,
+            v: 0.0,
             p: Vec3::zero(),
             normal: Vec3::zero(),
             material: Lambertian::new(ConstantTexture::new(Vec3::zero())),

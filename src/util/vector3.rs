@@ -10,6 +10,12 @@ pub struct Vec3 {
     pub z: f64,
 }
 
+impl std::fmt::Debug for Vec3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "({},{},{})", self.x, self.y, self.z)
+    }
+}
+
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { x, y, z }

@@ -26,12 +26,12 @@ impl Material for Lambertian {
     ) -> bool {
         let target = rec.p + rec.normal + math::random_in_unit_sphere();
         *scattered = Ray::new(rec.p, target - rec.p, r_in.time);
-        *attenuation = self.albedo.value(0.0, 0.0, rec.p);
+        *attenuation = self.albedo.value(rec.u, rec.v, rec.p);
         true
     }
 }
 
-// TODO: Implement loading checkerboard pattern from JSON files
+// TODO: Implement loading textures from JSON files
 pub fn load_from_json(values: &Value) -> Rc<Material> {
     let r = values["material"]["color"]["r"].as_f64();
     let g = values["material"]["color"]["g"].as_f64();

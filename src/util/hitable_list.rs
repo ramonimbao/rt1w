@@ -24,6 +24,8 @@ impl Hitable for HitableList {
                 closest_so_far = temp_rec.t;
                 *rec = HitRecord {
                     t: temp_rec.t,
+                    u: temp_rec.u,
+                    v: temp_rec.v,
                     p: temp_rec.p,
                     normal: temp_rec.normal,
                     material: temp_rec.material.clone(),

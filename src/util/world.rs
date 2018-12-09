@@ -1,5 +1,6 @@
 use std::fs;
 
+use image;
 use rand::Rng;
 use serde_json::Value;
 
@@ -11,7 +12,7 @@ use crate::shapes::{
 };
 use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
-    noise_texture::NoiseTexture,
+    image_texture::ImageTexture, noise_texture::NoiseTexture,
 };
 use crate::util::{
     hitable::{HitRecord, Hitable},
@@ -126,14 +127,27 @@ pub fn random_scene() -> HitableList {
                         0.0,
                         1.0,
                         0.2,
-                        if choose_texture < 0.33 {
+                        if choose_texture < 0.25 {
                             Lambertian::new(ConstantTexture::new(Vec3::new(
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                                 rng.gen::<f64>() * rng.gen::<f64>(),
                             )))
-                        } else if choose_texture < 0.66 {
+                        } else if choose_texture < 0.5 {
                             Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
+                        } else if choose_texture < 0.75 {
+                            let choose_image = rng.gen_range(0, 6);
+                            Lambertian::new(ImageTexture::new(
+                                image::open(match choose_image {
+                                    0 => "res/images/Blood Stone CH16.png",
+                                    1 => "res/images/Lava Planet CH16.png",
+                                    2 => "res/images/Mars CH16.png",
+                                    3 => "res/images/Mine Rocks CH16.png",
+                                    4 => "res/images/Red rubble ch16.png",
+                                    _ => "res/images/Snow Planet CH16.png",
+                                })
+                                .expect("Failed to open file."),
+                            ))
                         } else {
                             Lambertian::new(CheckeredTexture::new(
                                 ConstantTexture::new(Vec3::new(
@@ -206,16 +220,15 @@ pub fn random_scene() -> HitableList {
         Vec3::new(0.0, 1.0, 0.0),
         1.0,
         //Dielectric::new(1.5),
-        Lambertian::new(NoiseTexture::new(10.0)),
+        //Lambertian::new(NoiseTexture::new(10.0)),
+        Lambertian::new(ImageTexture::new(
+            image::open("res/images/Red rubble ch16.png").expect("Failed to open image file."),
+        )),
     ));
     list.push(Sphere::new(
         Vec3::new(-4.0, 1.0, 0.0),
         1.0,
-        Lambertian::new(CheckeredTexture::new(
-            ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05)),
-            ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95)),
-            10.0,
-        )),
+        Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
     ));
     list.push(Sphere::new(
         Vec3::new(4.0, 1.0, 0.0),
@@ -224,9 +237,13 @@ pub fn random_scene() -> HitableList {
         Dielectric::new(1.8),
     ));
     list.push(Sphere::new(
-        Vec3::new(8.0, 1.0, 0.0),
+        Vec3::new(-8.0, 1.0, 0.0),
         1.0,
-        Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
+        Lambertian::new(CheckeredTexture::new(
+            ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05)),
+            ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95)),
+            10.0,
+        )),
     ));
 
     let list = HitableList::new(list);
