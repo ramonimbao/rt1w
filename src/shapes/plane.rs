@@ -35,6 +35,12 @@ impl Hitable for Plane {
                 rec.t = t;
                 rec.p = r.point_at_parameter(rec.t);
                 rec.normal = self.normal;
+                math::get_plane_uv(
+                    &math::cross(&(r.origin - self.position), &rec.p),
+                    &rec.normal,
+                    &mut rec.u,
+                    &mut rec.v,
+                );
                 rec.material = self.material.clone();
                 return true;
             }

@@ -9,10 +9,11 @@ pub struct ImageTexture {
     pixels: Vec<Vec3>,
     width: u32,
     height: u32,
+    scale: f64,
 }
 
 impl ImageTexture {
-    pub fn new(image: DynamicImage) -> Rc<ImageTexture> {
+    pub fn new(image: DynamicImage, scale: f64) -> Rc<ImageTexture> {
         let image = image.to_rgb();
         let (width, height) = image.dimensions();
         let pixels: Vec<Vec3> = image
@@ -30,29 +31,15 @@ impl ImageTexture {
             pixels,
             width,
             height,
+            scale,
         })
     }
 }
 
 impl Texture for ImageTexture {
     fn value(&self, u: f64, v: f64, p: Vec3) -> Vec3 {
-        let mut i = (u * self.width as f64) as i64;
-        let mut j = ((1.0 - v) * self.height as f64) as i64;
-
-        if i < 0 {
-            i = 0;
-        }
-        if j < 0 {
-            j = 0;
-        }
-        if i > self.width as i64 - 1 {
-            i = self.width as i64 - 1;
-        }
-        if j > self.height as i64 - 1 {
-            j = self.height as i64 - 1;
-        }
-        let i = i as usize;
-        let j = j as usize;
+        let i = ((u * self.width as f64 / self.scale) as u32 % self.width) as usize;
+        let j = (((1.0 - v) * self.height as f64 / self.scale) as u32 % self.height) as usize;
 
         let r = self.pixels[i + self.width as usize * j].x as f64;
         let g = self.pixels[i + self.width as usize * j].y as f64;

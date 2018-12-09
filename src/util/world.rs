@@ -1,10 +1,11 @@
 use std::fs;
+use std::rc::Rc;
 
 use image;
 use rand::Rng;
 use serde_json::Value;
 
-use crate::materials::{dielectric::Dielectric, lambertian::Lambertian, metal::Metal};
+use crate::materials::{dielectric::Dielectric, lambertian::Lambertian, metal::Metal, Material};
 use crate::shapes::{
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
@@ -94,21 +95,76 @@ fn skybox() -> Vec<Box<Hitable>> {
     list
 }
 
+fn choose_random_texture() -> Rc<Material> {
+    let mut rng = rand::thread_rng();
+    let choose_texture: f64 = rng.gen();
+    if choose_texture < 0.25 {
+        Lambertian::new(ConstantTexture::new(Vec3::new(
+            rng.gen::<f64>() * rng.gen::<f64>(),
+            rng.gen::<f64>() * rng.gen::<f64>(),
+            rng.gen::<f64>() * rng.gen::<f64>(),
+        )))
+    } else if choose_texture < 0.5 {
+        Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
+    } else if choose_texture < 0.75 {
+        let choose_image = rng.gen_range(0, 6);
+        Lambertian::new(ImageTexture::new(
+            image::open(match choose_image {
+                0 => "res/images/Blood Stone CH16.png",
+                1 => "res/images/Lava Planet CH16.png",
+                //2 => "res/images/Mars CH16.png", // This is too boring
+                3 => "res/images/Mine Rocks CH16.png",
+                4 => "res/images/Red rubble ch16.png",
+                _ => "res/images/Snow Planet CH16.png",
+            })
+            .expect("Failed to open file."),
+            1.0,
+        ))
+    } else {
+        Lambertian::new(CheckeredTexture::new(
+            ConstantTexture::new(Vec3::new(
+                rng.gen::<f64>() * rng.gen::<f64>(),
+                rng.gen::<f64>() * rng.gen::<f64>(),
+                rng.gen::<f64>() * rng.gen::<f64>(),
+            )),
+            ConstantTexture::new(Vec3::new(
+                rng.gen::<f64>() * rng.gen::<f64>(),
+                rng.gen::<f64>() * rng.gen::<f64>(),
+                rng.gen::<f64>() * rng.gen::<f64>(),
+            )),
+            rng.gen::<f64>() * 15.0 + 10.0,
+        ))
+    }
+}
+
 pub fn random_scene() -> HitableList {
     let mut list: Vec<Box<Hitable>> = Vec::new();
+    let mut rng = rand::thread_rng();
 
     //list.append(&mut skybox());
 
+    let choose_image = rng.gen_range(0, 6);
     list.push(Plane::new(
         Vec3::zero(),
         Vec3::new(0.0, 1.0, 0.0),
         //Lambertian::new(ConstantTexture::new(Vec3::new(0.8, 0.8, 0.8))),
-        //Rc::new(Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05)),
-        //Rc::new(Dielectric::new(1.5)),
-        Lambertian::new(NoiseTexture::new(10.0)),
+        //Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05),
+        //Dielectric::new(1.5),
+        //Lambertian::new(NoiseTexture::new(10.0)),
+        Lambertian::new(ImageTexture::new(
+            image::open(match choose_image {
+                0 => "res/images/Blood Stone CH16.png",
+                1 => "res/images/Lava Planet CH16.png",
+                //2 => "res/images/Mars CH16.png", // This is too boring
+                3 => "res/images/Mine Rocks CH16.png",
+                4 => "res/images/Red rubble ch16.png",
+                _ => "res/images/Snow Planet CH16.png",
+            })
+            .expect("Failed to open file."),
+            10.0,
+        )),
     ));
 
-    let mut rng = rand::thread_rng();
     for a in -11..11 {
         for b in -11..11 {
             let choose_mat: f64 = rng.gen();
@@ -119,7 +175,6 @@ pub fn random_scene() -> HitableList {
             );
             if (center - Vec3::new(4.0, 2.0, 0.0)).length() > 0.9 {
                 if choose_mat < 0.4 {
-                    let choose_texture: f64 = rng.gen();
                     // Moving sphere
                     list.push(MovingSphere::new(
                         center,
@@ -127,73 +182,11 @@ pub fn random_scene() -> HitableList {
                         0.0,
                         1.0,
                         0.2,
-                        if choose_texture < 0.25 {
-                            Lambertian::new(ConstantTexture::new(Vec3::new(
-                                rng.gen::<f64>() * rng.gen::<f64>(),
-                                rng.gen::<f64>() * rng.gen::<f64>(),
-                                rng.gen::<f64>() * rng.gen::<f64>(),
-                            )))
-                        } else if choose_texture < 0.5 {
-                            Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
-                        } else if choose_texture < 0.75 {
-                            let choose_image = rng.gen_range(0, 6);
-                            Lambertian::new(ImageTexture::new(
-                                image::open(match choose_image {
-                                    0 => "res/images/Blood Stone CH16.png",
-                                    1 => "res/images/Lava Planet CH16.png",
-                                    2 => "res/images/Mars CH16.png",
-                                    3 => "res/images/Mine Rocks CH16.png",
-                                    4 => "res/images/Red rubble ch16.png",
-                                    _ => "res/images/Snow Planet CH16.png",
-                                })
-                                .expect("Failed to open file."),
-                            ))
-                        } else {
-                            Lambertian::new(CheckeredTexture::new(
-                                ConstantTexture::new(Vec3::new(
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                )),
-                                ConstantTexture::new(Vec3::new(
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                )),
-                                rng.gen::<f64>() * 15.0 + 10.0,
-                            ))
-                        },
+                        choose_random_texture(),
                     ));
                 } else if choose_mat < 0.8 {
-                    let choose_texture: f64 = rng.gen();
                     // Diffuse
-                    list.push(Sphere::new(
-                        center,
-                        0.2,
-                        if choose_texture < 0.33 {
-                            Lambertian::new(ConstantTexture::new(Vec3::new(
-                                rng.gen::<f64>() * rng.gen::<f64>(),
-                                rng.gen::<f64>() * rng.gen::<f64>(),
-                                rng.gen::<f64>() * rng.gen::<f64>(),
-                            )))
-                        } else if choose_texture < 0.66 {
-                            Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
-                        } else {
-                            Lambertian::new(CheckeredTexture::new(
-                                ConstantTexture::new(Vec3::new(
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                )),
-                                ConstantTexture::new(Vec3::new(
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                    rng.gen::<f64>() * rng.gen::<f64>(),
-                                )),
-                                rng.gen::<f64>() * 15.0 + 10.0,
-                            ))
-                        },
-                    ));
+                    list.push(Sphere::new(center, 0.2, choose_random_texture()));
                 } else if choose_mat < 0.95 {
                     // Metal
                     list.push(Sphere::new(
@@ -216,13 +209,23 @@ pub fn random_scene() -> HitableList {
         }
     }
 
+    let choose_image = rng.gen_range(0, 6);
     list.push(Sphere::new(
         Vec3::new(0.0, 1.0, 0.0),
         1.0,
         //Dielectric::new(1.5),
         //Lambertian::new(NoiseTexture::new(10.0)),
         Lambertian::new(ImageTexture::new(
-            image::open("res/images/Red rubble ch16.png").expect("Failed to open image file."),
+            image::open(match choose_image {
+                0 => "res/images/Blood Stone CH16.png",
+                1 => "res/images/Lava Planet CH16.png",
+                2 => "res/images/Mars CH16.png",
+                3 => "res/images/Mine Rocks CH16.png",
+                4 => "res/images/Red rubble ch16.png",
+                _ => "res/images/Snow Planet CH16.png",
+            })
+            .expect("Failed to open file."),
+            1.0,
         )),
     ));
     list.push(Sphere::new(
