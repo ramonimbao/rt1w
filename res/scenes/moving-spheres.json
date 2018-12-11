@@ -12,7 +12,7 @@
                 "z": 0
             },
             "material": {
-                "type": "lambertian",
+                "type": "constant",
                 "color": {
                     "r": 0.0,
                     "g": 0.9,
@@ -39,7 +39,7 @@
             ],
             "radius": 1,
             "material": {
-                "type": "lambertian",
+                "type": "constant",
                 "color": {
                     "r": 1,
                     "g": 0,

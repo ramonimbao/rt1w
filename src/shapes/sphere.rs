@@ -3,6 +3,7 @@ use std::rc::Rc;
 use serde_json::Value;
 
 use crate::materials::{dielectric, lambertian, metal, Material};
+use crate::textures::TextureType;
 use crate::util::{
     hitable::{HitRecord, Hitable},
     math,
@@ -60,6 +61,8 @@ impl Hitable for Sphere {
 pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
     let mut list: Vec<Box<Hitable>> = Vec::new();
 
+    let id = "spheres";
+
     let length = match values["spheres"].as_array() {
         Some(n) => n.len(),
         _ => 0,
@@ -67,25 +70,28 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
     for i in 0..length {
         // Get the parameters
-        let px = values["spheres"][i]["position"]["x"].as_f64();
-        let py = values["spheres"][i]["position"]["y"].as_f64();
-        let pz = values["spheres"][i]["position"]["z"].as_f64();
+        let px = values[id][i]["position"]["x"].as_f64();
+        let py = values[id][i]["position"]["y"].as_f64();
+        let pz = values[id][i]["position"]["z"].as_f64();
         let (px, py, pz) = match (px, py, pz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
             (_, _, _) => continue,
         };
 
-        let radius = values["spheres"][i]["radius"].as_f64();
+        let radius = values[id][i]["radius"].as_f64();
         let radius = match radius {
             Some(r) => r,
             _ => continue,
         };
 
-        let material = values["spheres"][i]["material"]["type"].as_str();
+        let material = values[id][i]["material"]["type"].as_str();
         let material: Rc<Material> = match material {
-            Some("lambertian") => lambertian::load_from_json(&values["spheres"][i]),
-            Some("metal") => metal::load_from_json(&values["spheres"][i]),
-            Some("dielectric") => dielectric::load_from_json(&values["spheres"][i]),
+            Some("constant") => lambertian::load_from_json(&values[id][i], TextureType::Constant),
+            Some("checkered") => lambertian::load_from_json(&values[id][i], TextureType::Checkered),
+            Some("image") => lambertian::load_from_json(&values[id][i], TextureType::Image),
+            Some("noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
+            Some("metal") => metal::load_from_json(&values[id][i]),
+            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             _ => continue,
         };
 

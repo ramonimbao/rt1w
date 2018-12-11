@@ -1,0 +1,101 @@
+{
+	"planes": [
+        {
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "normal": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "image",
+                "filename": "res/images/floor.png",
+                "scale": 10
+            }
+        }
+    ],
+    "spheres": [
+        {
+            "radius": 1,
+            "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "constant",
+                "color": {
+                    "r": 0.2,
+                    "g": 1.0,
+                    "b": 0.2
+                }
+            }
+        },
+        {
+            "radius": 1,
+            "position": {
+                "x": 2.5,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "checkered",
+                "colors": [
+                    {
+                        "r": 0.2,
+                        "g": 0.2,
+                        "b": 1.0
+                    },
+                    {
+                        "r": 1.0,
+                        "g": 0.2,
+                        "b": 0.2
+                    }
+                ],
+                "scale": 10.0
+            }
+        },
+        {
+            "radius": 1,
+            "position": {
+                "x": -2.5,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "image",
+                "filename": "res/images/star.png",
+                "scale": 1.0
+            }
+        },
+        {
+            "radius": 1,
+            "position": {
+                "x": 5,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "noise",
+                "scale": 10.0
+            }
+        },
+        {
+            "radius": 1,
+            "position": {
+                "x": -5,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "image",
+                "filename": "res/images/non-existent-file.png",
+                "scale": 1.0
+            }
+        }
+    ]
+}

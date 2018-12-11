@@ -13,13 +13,12 @@ Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 Run the program with `cargo run --release`. You can also give it a JSON configuration file as an argument to change the render settings without having to recompile the program using `--config [config.json]`. Scene loading is also now supported using `--scene [scene.json]`.
 
 Example:  
-`$ rt1w --scene res/scenes/two-balls.json --config res/config/good.json`
+`$ rt1w --scene res/scenes/texture-test.json --config res/config/front-good.json`
 
 Rendering the default scene with the `good.json` config (800×600 at 100 samples/pixel) takes almost 19 minutes.
 
 # To Do
 
-- Implement loading textures into scene via JSON
 - Implement defaulting to black and pink checkered texture and warning the user if image file is not found rather than causing a panic.
 
 # License

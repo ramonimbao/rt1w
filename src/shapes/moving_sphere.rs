@@ -3,6 +3,7 @@ use std::rc::Rc;
 use serde_json::Value;
 
 use crate::materials::{dielectric, lambertian, metal, Material};
+use crate::textures::TextureType;
 use crate::util::{
     hitable::{HitRecord, Hitable},
     math,
@@ -78,21 +79,23 @@ impl Hitable for MovingSphere {
 pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
     let mut list: Vec<Box<Hitable>> = Vec::new();
 
-    let length = match values["moving_spheres"].as_array() {
+    let id = "moving_spheres";
+
+    let length = match values[id].as_array() {
         Some(n) => n.len(),
         _ => 0,
     };
 
     for i in 0..length {
         // Get the parameters
-        let p0x = values["moving_spheres"][i]["positions"][0]["x"].as_f64();
-        let p0y = values["moving_spheres"][i]["positions"][0]["y"].as_f64();
-        let p0z = values["moving_spheres"][i]["positions"][0]["z"].as_f64();
-        let t0 = values["moving_spheres"][i]["positions"][0]["t"].as_f64();
-        let p1x = values["moving_spheres"][i]["positions"][1]["x"].as_f64();
-        let p1y = values["moving_spheres"][i]["positions"][1]["y"].as_f64();
-        let p1z = values["moving_spheres"][i]["positions"][1]["z"].as_f64();
-        let t1 = values["moving_spheres"][i]["positions"][1]["t"].as_f64();
+        let p0x = values[id][i]["positions"][0]["x"].as_f64();
+        let p0y = values[id][i]["positions"][0]["y"].as_f64();
+        let p0z = values[id][i]["positions"][0]["z"].as_f64();
+        let t0 = values[id][i]["positions"][0]["t"].as_f64();
+        let p1x = values[id][i]["positions"][1]["x"].as_f64();
+        let p1y = values[id][i]["positions"][1]["y"].as_f64();
+        let p1z = values[id][i]["positions"][1]["z"].as_f64();
+        let t1 = values[id][i]["positions"][1]["t"].as_f64();
         let (p0x, p0y, p0z, p1x, p1y, p1z, t0, t1) = match (p0x, p0y, p0z, p1x, p1y, p1z, t0, t1) {
             (Some(x0), Some(y0), Some(z0), Some(x1), Some(y1), Some(z1), Some(t0), Some(t1)) => {
                 (x0, y0, z0, x1, y1, z1, t0, t1)
@@ -100,17 +103,20 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             (_, _, _, _, _, _, _, _) => continue,
         };
 
-        let radius = values["moving_spheres"][i]["radius"].as_f64();
+        let radius = values[id][i]["radius"].as_f64();
         let radius = match radius {
             Some(r) => r,
             _ => continue,
         };
 
-        let material = values["moving_spheres"][i]["material"]["type"].as_str();
+        let material = values[id][i]["material"]["type"].as_str();
         let material: Rc<Material> = match material {
-            Some("lambertian") => lambertian::load_from_json(&values["moving_spheres"][i]),
-            Some("metal") => metal::load_from_json(&values["moving_spheres"][i]),
-            Some("dielectric") => dielectric::load_from_json(&values["moving_spheres"][i]),
+            Some("constant") => lambertian::load_from_json(&values[id][i], TextureType::Constant),
+            Some("checkered") => lambertian::load_from_json(&values[id][i], TextureType::Checkered),
+            Some("image") => lambertian::load_from_json(&values[id][i], TextureType::Image),
+            Some("noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
+            Some("metal") => metal::load_from_json(&values[id][i]),
+            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             _ => continue,
         };
 
