@@ -62,7 +62,7 @@ pub fn load_from_json(values: &Value) -> Rc<Material> {
     let ri = values["material"]["refractive_index"].as_f64();
     let ri = match ri {
         Some(f) => f,
-        _ => 0.0,
+        _ => 1.0,
     };
 
     Dielectric::new(ri)

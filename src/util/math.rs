@@ -63,14 +63,14 @@ pub fn get_sphere_uv(p: &Vec3, u: &mut f64, v: &mut f64) {
     let theta = p.y.asin();
     let pi = std::f64::consts::PI;
     *u = 1.0 - (phi + pi) / (pi * 2.0);
-    *v = (theta + pi / 2.0) / pi;
+    *v = -(theta + pi / 2.0) / pi;
 }
 
 pub fn get_plane_uv(p: &Vec3, n: &Vec3, u: &mut f64, v: &mut f64) {
-    *u = (p.x * dot(n, &Vec3::new(0.0, 1.0, 0.0)))
+    *v = (p.x * dot(n, &Vec3::new(0.0, 1.0, 0.0)))
         + (p.x * dot(n, &Vec3::new(0.0, 0.0, 1.0)))
-        + (p.z * dot(n, &Vec3::new(1.0, 0.0, 0.0)));
-    *v = (p.z * dot(n, &Vec3::new(0.0, 1.0, 0.0)))
+        + (p.z * -dot(n, &Vec3::new(1.0, 0.0, 0.0)));
+    *u = (p.z * dot(n, &Vec3::new(0.0, 1.0, 0.0)))
         + (p.y * dot(n, &Vec3::new(0.0, 0.0, 1.0)))
         + (p.y * dot(n, &Vec3::new(1.0, 0.0, 0.0)));
 }

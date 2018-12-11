@@ -75,13 +75,19 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         let pz = values[id][i]["position"]["z"].as_f64();
         let (px, py, pz) = match (px, py, pz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
-            (_, _, _) => continue,
+            (_, _, _) => {
+                eprintln!("ERROR: Can't get position of sphere {}! Skipping...", i);
+                continue;
+            }
         };
 
         let radius = values[id][i]["radius"].as_f64();
         let radius = match radius {
             Some(r) => r,
-            _ => continue,
+            _ => {
+                eprintln!("ERROR: Can't get radius of sphere {}! Skipping...", i);
+                continue;
+            }
         };
 
         let material = values[id][i]["material"]["type"].as_str();
@@ -93,7 +99,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             Some("metal") => metal::load_from_json(&values[id][i]),
             Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => continue,
+            _ => {
+                eprintln!("ERROR: Can't get material of sphere {}! Skipping...", i);
+                continue;
+            }
         };
 
         list.push(Sphere::new(Vec3::new(px, py, pz), radius, material));

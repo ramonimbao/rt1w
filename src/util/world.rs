@@ -10,6 +10,7 @@ use crate::materials::{
     Material,
 };
 use crate::shapes::{
+    cuboid::{self, Cuboid},
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
     sphere::{self, Sphere},
@@ -159,7 +160,8 @@ pub fn random_scene() -> HitableList {
     let mut list: Vec<Box<Hitable>> = Vec::new();
     let mut rng = rand::thread_rng();
 
-    list.append(&mut skybox(Vec3::new(0.0625, 0.0625, 0.0625)));
+    //list.append(&mut skybox(Vec3::new(0.0625, 0.0625, 0.0625)));
+    list.append(&mut skybox(Vec3::new(1.0, 1.0, 1.0)));
 
     let choose_image = rng.gen_range(0, 6);
     list.push(Plane::new(
@@ -184,6 +186,7 @@ pub fn random_scene() -> HitableList {
         )),
     ));
 
+    /*
     list.push(Sphere::new(
         Vec3::new(-1000.0, 3000.0, 0.0),
         1500.0,
@@ -297,6 +300,7 @@ pub fn random_scene() -> HitableList {
             10.0,
         )),
     ));
+    */
 
     let list = HitableList::new(list);
     list
@@ -332,6 +336,25 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut plane::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
+
+    // Test cuboid
+    list.append(&mut Cuboid::new(
+        Vec3::new(-6.0, 0.0, -1.0),
+        Vec3::new(2.0, 2.0, 2.0),
+        //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
+        //Dielectric::new(1.8),
+        //Lambertian::new(NoiseTexture::new(10.0)),
+        Lambertian::new(ImageTexture::new(
+            image::open("res/images/crate2_diffuse.png").unwrap(),
+            1.0,
+        )),
+    ));
+
+    list.append(&mut Cuboid::new(
+        Vec3::new(-1.25, 0.0, 5.0),
+        Vec3::new(1.75, 3.0, 0.5),
+        Dielectric::new(2.7),
+    ));
 
     let list = HitableList::new(list);
     list

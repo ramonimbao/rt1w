@@ -1,14 +1,14 @@
 {
 	"config": {
-		"width": 400,
-		"height": 300,
+		"width": 800,
+		"height": 600,
 		"samples": 10
 	},
 	"camera": {
 		"from":	{
-			"x": 0.0,
+			"x": 1.0,
 			"y": 3,
-			"z": 12.5
+			"z": 13.5
 		},
 		"to": {
 			"x": 0.0,

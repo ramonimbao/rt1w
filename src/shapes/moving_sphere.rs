@@ -75,7 +75,6 @@ impl Hitable for MovingSphere {
     }
 }
 
-// TODO: Support loading of moving spheres from JSON
 pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
     let mut list: Vec<Box<Hitable>> = Vec::new();
 
@@ -100,13 +99,25 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             (Some(x0), Some(y0), Some(z0), Some(x1), Some(y1), Some(z1), Some(t0), Some(t1)) => {
                 (x0, y0, z0, x1, y1, z1, t0, t1)
             }
-            (_, _, _, _, _, _, _, _) => continue,
+            (_, _, _, _, _, _, _, _) => {
+                eprintln!(
+                    "ERROR: Can't get position of moving_sphere {}! Skipping...",
+                    i
+                );
+                continue;
+            }
         };
 
         let radius = values[id][i]["radius"].as_f64();
         let radius = match radius {
             Some(r) => r,
-            _ => continue,
+            _ => {
+                eprintln!(
+                    "ERROR: Can't get radius of moving_sphere {}! Skipping...",
+                    i
+                );
+                continue;
+            }
         };
 
         let material = values[id][i]["material"]["type"].as_str();
@@ -118,7 +129,13 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             Some("metal") => metal::load_from_json(&values[id][i]),
             Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => continue,
+            _ => {
+                eprintln!(
+                    "ERROR: Can't get material of moving_sphere {}! Skipping...",
+                    i
+                );
+                continue;
+            }
         };
 
         list.push(MovingSphere::new(

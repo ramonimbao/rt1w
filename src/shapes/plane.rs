@@ -67,7 +67,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         let pz = values[id][i]["position"]["z"].as_f64();
         let (px, py, pz) = match (px, py, pz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
-            (_, _, _) => continue,
+            (_, _, _) => {
+                eprintln!("ERROR: Can't get position of plane {}! Skipping...", i);
+                continue;
+            }
         };
 
         let nx = values[id][i]["normal"]["x"].as_f64();
@@ -75,7 +78,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         let nz = values[id][i]["normal"]["z"].as_f64();
         let (nx, ny, nz) = match (nx, ny, nz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
-            (_, _, _) => continue,
+            (_, _, _) => {
+                eprintln!("ERROR: Can't get normal of plane {}! Skipping...", i);
+                continue;
+            }
         };
 
         let material = values[id][i]["material"]["type"].as_str();
@@ -87,7 +93,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             Some("metal") => metal::load_from_json(&values[id][i]),
             Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => continue,
+            _ => {
+                eprintln!("ERRPR: Can't get material of plane {}! Skipping...", i);
+                continue;
+            }
         };
 
         list.push(Plane::new(

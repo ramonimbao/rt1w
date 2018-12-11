@@ -19,7 +19,7 @@ Rendering the default scene with the `good.json` config (800×600 at 100 samples
 
 # To Do
 
-- Implement defaulting to black and pink checkered texture and warning the user if image file is not found rather than causing a panic.
+- Implement cuboid loading into scene via JSON.
 
 # License
 
@@ -27,3 +27,6 @@ This project is licensed under the MIT license - see the [LICENSE.md](LICENSE.md
 
 Image textures obtained from [OpenGameArt "Seamless Space Rocks Textures Pack (512px)" by mafon2](https://opengameart.org/content/seamless-space-rocks-textures-pack-512px).  
 Licensed under: [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/legalcode)
+
+Crate textures obtained from [OpenGameArt "3 crate textures (w/ bump & normal)" by Luke.RUSTLTD](https://opengameart.org/content/3-crate-textures-w-bump-normal).  
+Licensed under [CC 0 (Public Domain)](https://creativecommons.org/publicdomain/zero/1.0/legalcode).
