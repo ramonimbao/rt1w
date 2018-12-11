@@ -19,9 +19,8 @@ Rendering the default scene with the `good.json` config (800×600 at 100 samples
 
 # To Do
 
-- Implement loading moving spheres into scene via JSON
 - Implement loading textures into scene via JSON
-- Implement defaulting to black and pink checkered texture and warning the user if image file is not found rather then causing a panic.
+- Implement defaulting to black and pink checkered texture and warning the user if image file is not found rather than causing a panic.
 
 # License
 

@@ -33,11 +33,6 @@ fn help() {
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = env::args().collect();
 
-    /*
-    let total_progress = (nx * ny) as f32;
-    let mut current_progress = 0.0;
-    */
-
     // TODO: Refactor the code so camera data is part of scene rather than config files
     // It kinda made sense when I first started making this...
     let ((config, cam), mut world) = match args.len() {
@@ -91,6 +86,9 @@ fn main() -> std::io::Result<()> {
         }
     };
 
+    let total_progress = (config.width * config.height) as f32;
+    let mut current_progress = 0.0;
+
     let mut img = ImageBuffer::new(config.width, config.height);
 
     let mut rng = rand::thread_rng();
@@ -115,8 +113,8 @@ fn main() -> std::io::Result<()> {
 
             /*
             current_progress += 1.0;
-            println!(
-                "Render progress: {:3.1}/100.0%\r",
+            print!(
+                "Render progress: {:3.3} / 100.000%\r",
                 current_progress / total_progress * 100.0
             );
             */

@@ -58,10 +58,6 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
     };
 
     for i in 0..length {
-        if !values["planes"][i].is_object() {
-            break;
-        }
-
         // Get the parameters
         let px = values["planes"][i]["position"]["x"].as_f64();
         let py = values["planes"][i]["position"]["y"].as_f64();

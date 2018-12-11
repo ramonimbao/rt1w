@@ -1,0 +1,51 @@
+{
+	"planes": [
+        {
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "normal": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "lambertian",
+                "color": {
+                    "r": 0.0,
+                    "g": 0.9,
+                    "b": 0.4
+                }
+            }
+        }
+    ],
+    "moving_spheres": [
+        {
+            "positions": [
+                {
+                    "x": 1,
+                    "y": 1,
+                    "z": 0,
+                    "t": 0.0
+                },
+                {
+                    "x": -1,
+                    "y": 1,
+                    "z": 0,
+                    "t": 1.0
+                }
+            ],
+            "radius": 1,
+            "material": {
+                "type": "lambertian",
+                "color": {
+                    "r": 1,
+                    "g": 0,
+                    "b": 0
+                }
+            }
+        }
+    ]
+}

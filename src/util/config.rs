@@ -147,7 +147,7 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
         "Rendering a {}x{} image at {} samples/pixel...",
         width, height, samples
     );
-    println!("Ouput filename: {}", output_filename);
+    println!("Output filename: {}", output_filename);
     println!(
         "Camera positioned at ({},{},{}) looking at ({},{},{})",
         look_from.x, look_from.y, look_from.z, look_to.x, look_to.y, look_to.z

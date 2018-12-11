@@ -68,5 +68,32 @@
                 }
             }
         }
+    ],
+    "moving_spheres": [
+        {
+            "radius": 1.5,
+            "positions": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                    "t": 0.0
+                },
+                {
+                    "x": 0,
+                    "y": 1,
+                    "z": 0,
+                    "t": 1.0
+                }
+            ],
+            "material": {
+                "type": "lambertian",
+                "color": {
+                    "r": 1,
+                    "g": 0,
+                    "b": 0,
+                }
+            }
+        }
     ]
 }

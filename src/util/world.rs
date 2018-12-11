@@ -59,9 +59,9 @@ pub fn color(r: &Ray, world: &mut HitableList, depth: usize) -> Vec3 {
 }
 
 fn skybox() -> Vec<Box<Hitable>> {
-    let min = std::f64::MIN;
-    let max = std::f64::MAX;
-    let mat = Dielectric::new(1.0);
+    let min = std::f64::MIN / 2.0;
+    let max = std::f64::MAX / 2.0;
+    let mat = DiffuseLight::new(ConstantTexture::new(Vec3::new(0.0625, 0.0625, 0.06)));
     let list: Vec<Box<Hitable>> = vec![
         // Y planes
         Plane::new(
@@ -147,7 +147,7 @@ pub fn random_scene() -> HitableList {
     let mut list: Vec<Box<Hitable>> = Vec::new();
     let mut rng = rand::thread_rng();
 
-    //list.append(&mut skybox());
+    list.append(&mut skybox());
 
     let choose_image = rng.gen_range(0, 6);
     list.push(Plane::new(
@@ -172,11 +172,13 @@ pub fn random_scene() -> HitableList {
         )),
     ));
 
+    /*
     list.push(Sphere::new(
         Vec3::new(-1000.0, 3000.0, 0.0),
-        1000.0,
+        1500.0,
         DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
     ));
+
 
     for a in -11..11 {
         for b in -11..11 {
@@ -232,6 +234,7 @@ pub fn random_scene() -> HitableList {
             }
         }
     }
+    */
 
     let choose_image = rng.gen_range(0, 6);
     list.push(Sphere::new(
@@ -265,10 +268,22 @@ pub fn random_scene() -> HitableList {
         Dielectric::new(1.8),
     ));
     list.push(Sphere::new(
+        Vec3::new(-3.9, 1.1, 0.0),
+        1.0,
+        //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
+        Dielectric::new(1.8),
+    ));
+    list.push(Sphere::new(
+        Vec3::new(3.0, 3.0, -1.0),
+        1.0,
+        //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
+        DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
+    ));
+    list.push(Sphere::new(
         Vec3::new(-8.0, 1.1, 0.0),
         1.0,
         Lambertian::new(CheckeredTexture::new(
-            ConstantTexture::new(Vec3::new(0.05, 0.05, 0.05)),
+            ConstantTexture::new(Vec3::new(0.0, 0.0, 0.0)),
             ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95)),
             10.0,
         )),
@@ -301,9 +316,10 @@ pub fn load_from_json(filename: String) -> HitableList {
 
     println!("Loaded scene data.");
 
-    println!("Load all objects to scene...");
+    println!("Loading all objects to scene...");
     let mut list: Vec<Box<Hitable>> = Vec::new();
     list.append(&mut sphere::load_from_json(&values));
+    list.append(&mut moving_sphere::load_from_json(&values));
     list.append(&mut plane::load_from_json(&values));
     println!("Done loading.");
 

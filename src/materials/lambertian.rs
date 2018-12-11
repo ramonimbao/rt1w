@@ -32,6 +32,7 @@ impl Material for Lambertian {
 }
 
 // TODO: Implement loading textures from JSON files
+// Maybe declare an enum of textures to pass to load_from_json and react accordingly?
 pub fn load_from_json(values: &Value) -> Rc<Material> {
     let r = values["material"]["color"]["r"].as_f64();
     let g = values["material"]["color"]["g"].as_f64();
