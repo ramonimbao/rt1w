@@ -73,7 +73,7 @@
             },
             "material": {
                 "type": "image",
-                "filename": "res/images/star.png",
+                "filename": "res/images/cute-face.png",
                 "scale": 1.0
             }
         },

@@ -184,13 +184,11 @@ pub fn random_scene() -> HitableList {
         )),
     ));
 
-    /*
     list.push(Sphere::new(
         Vec3::new(-1000.0, 3000.0, 0.0),
         1500.0,
         DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
     ));
-
 
     for a in -11..11 {
         for b in -11..11 {
@@ -246,7 +244,6 @@ pub fn random_scene() -> HitableList {
             }
         }
     }
-    */
 
     let choose_image = rng.gen_range(0, 6);
     list.push(Sphere::new(
