@@ -58,10 +58,22 @@ pub fn color(r: &Ray, world: &mut HitableList, depth: usize) -> Vec3 {
     }
 }
 
-fn skybox() -> Vec<Box<Hitable>> {
+fn load_skybox_from_json(values: &Value) -> Vec<Box<Hitable>> {
+    let sr = values["skybox"]["r"].as_f64();
+    let sg = values["skybox"]["g"].as_f64();
+    let sb = values["skybox"]["b"].as_f64();
+    let (sr, sg, sb) = match (sr, sg, sb) {
+        (Some(r), Some(g), Some(b)) => (r, g, b),
+        (_, _, _) => return Vec::new(),
+    };
+
+    skybox(Vec3::new(sr, sg, sb))
+}
+
+fn skybox(color: Vec3) -> Vec<Box<Hitable>> {
     let min = std::f64::MIN / 2.0;
     let max = std::f64::MAX / 2.0;
-    let mat = DiffuseLight::new(ConstantTexture::new(Vec3::new(0.0625, 0.0625, 0.06)));
+    let mat = DiffuseLight::new(ConstantTexture::new(color));
     let list: Vec<Box<Hitable>> = vec![
         // Y planes
         Plane::new(
@@ -147,7 +159,7 @@ pub fn random_scene() -> HitableList {
     let mut list: Vec<Box<Hitable>> = Vec::new();
     let mut rng = rand::thread_rng();
 
-    list.append(&mut skybox());
+    list.append(&mut skybox(Vec3::new(0.0625, 0.0625, 0.0625)));
 
     let choose_image = rng.gen_range(0, 6);
     list.push(Plane::new(
@@ -321,6 +333,7 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut sphere::load_from_json(&values));
     list.append(&mut moving_sphere::load_from_json(&values));
     list.append(&mut plane::load_from_json(&values));
+    list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
 
     let list = HitableList::new(list);

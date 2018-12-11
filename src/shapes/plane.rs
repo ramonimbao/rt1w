@@ -2,7 +2,7 @@ use std::rc::Rc;
 
 use serde_json::Value;
 
-use crate::materials::{dielectric, lambertian, metal, Material};
+use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
 use crate::textures::TextureType;
 use crate::util::{
     hitable::{HitRecord, Hitable},
@@ -86,6 +86,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             Some("noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
             Some("metal") => metal::load_from_json(&values[id][i]),
             Some("dielectric") => dielectric::load_from_json(&values[id][i]),
+            Some("light") => diffuse_light::load_from_json(&values[id][i]),
             _ => continue,
         };
 

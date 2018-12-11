@@ -12,4 +12,4 @@ pub const T0: f64 = 0.0;
 pub const T1: f64 = 1.0;
 pub const OUTPUT_FILENAME: &'static str = "output.png";
 
-pub const ENABLE_LIGHTS: bool = false;
+pub const ENABLE_LIGHTS: bool = true;
