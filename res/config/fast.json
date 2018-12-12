@@ -3,5 +3,8 @@
 		"width": 800,
 		"height": 600,
 		"samples": 10
+	},
+	"camera": {
+		"fov": 40
 	}
 }

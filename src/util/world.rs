@@ -19,6 +19,7 @@ use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
     image_texture::ImageTexture, noise_texture::NoiseTexture,
 };
+use crate::transform::translate::Translate;
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
@@ -350,9 +351,18 @@ pub fn load_from_json(filename: String) -> HitableList {
         )),
     ));
 
+    list.push(Translate::new(
+        Sphere::new(
+            Vec3::zero(),
+            1.0,
+            Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
+        ),
+        Vec3::new(0.0, 1.0, 5.0),
+    ));
+
     list.append(&mut Cuboid::new(
-        Vec3::new(-1.25, 0.0, 5.0),
-        Vec3::new(1.75, 3.0, 0.5),
+        Vec3::new(-6.0, 0.0, 2.0),
+        Vec3::new(12.0, 3.0, 0.5),
         Dielectric::new(2.7),
     ));
 

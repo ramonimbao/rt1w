@@ -13,6 +13,10 @@ use crate::util::{
 
 pub struct Cuboid {}
 
+// I think I can restructure this so that `Cuboid` would return itself as a `Box<Hitable>`
+// instead of a `Vec<Box<Hitable>>`. And then when `impl`ementing `Hitable` for `Cuboid,
+// I can iterate through the `Vec` (stored in the Cuboid struct) to check whether the incoming
+// ray hits each component.
 impl Cuboid {
     pub fn new(origin: Vec3, size: Vec3, material: Rc<Material>) -> Vec<Box<Hitable>> {
         let mut components: Vec<Box<Hitable>> = Vec::new();

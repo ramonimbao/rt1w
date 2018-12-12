@@ -3,7 +3,7 @@ use std::rc::Rc;
 use image::DynamicImage;
 
 use crate::textures::Texture;
-use crate::util::{math, vector3::Vec3};
+use crate::util::vector3::Vec3;
 
 pub struct ImageTexture {
     pixels: Vec<Vec3>,
@@ -37,7 +37,7 @@ impl ImageTexture {
 }
 
 impl Texture for ImageTexture {
-    fn value(&self, u: f64, v: f64, p: Vec3) -> Vec3 {
+    fn value(&self, u: f64, v: f64, _: Vec3) -> Vec3 {
         let i = ((u * self.width as f64 / self.scale) as u32 % self.width) as usize;
         let j = ((v * self.height as f64 / self.scale) as u32 % self.height) as usize;
 

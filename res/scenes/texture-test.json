@@ -1,9 +1,4 @@
 {
-    "skybox": {
-        "r": 0.125,
-        "g": 0.125,
-        "b": 0.25
-    },
 	"planes": [
         {
             "position": {
@@ -106,7 +101,7 @@
             "radius": 5,
             "position": {
                 "x": 0,
-                "y": 10,
+                "y": 5,
                 "z": -5
             },
             "material": {

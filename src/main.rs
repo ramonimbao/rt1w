@@ -7,6 +7,7 @@ mod defaults;
 mod materials;
 mod shapes;
 mod textures;
+mod transform;
 mod util;
 use crate::util::{
     camera::Camera,
