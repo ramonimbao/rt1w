@@ -22,8 +22,8 @@ impl Cuboid {
     pub fn new(origin: Vec3, size: Vec3, material: Rc<Material>) -> Box<Hitable> {
         let mut components: Vec<Box<Hitable>> = Vec::new();
 
-        let min = origin;
-        let max = origin + size;
+        let min = origin - (size / 2.0);
+        let max = origin + (size / 2.0);
 
         components.push(RectXY::new(
             Vec3::new(min.x, min.y, 0.0),

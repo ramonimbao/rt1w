@@ -38,12 +38,12 @@ impl Hitable for RotateY {
             let p = Vec3::new(
                 self.cos_theta * rec.p.x + self.sin_theta * rec.p.z,
                 rec.p.y,
-                self.sin_theta * rec.p.x + self.cos_theta * rec.p.z,
+                -self.sin_theta * rec.p.x + self.cos_theta * rec.p.z,
             );
             let normal = Vec3::new(
                 self.cos_theta * rec.normal.x + self.sin_theta * rec.normal.z,
                 rec.normal.y,
-                self.sin_theta * rec.normal.x + self.cos_theta * rec.normal.z,
+                -self.sin_theta * rec.normal.x + self.cos_theta * rec.normal.z,
             );
             rec.p = p;
             rec.normal = normal;
