@@ -112,13 +112,11 @@ fn main() -> std::io::Result<()> {
             let pixel = Rgb::from_channels(r, g, b, 0);
             img.put_pixel(i, config.height - 1 - j, pixel);
 
-            /*
             current_progress += 1.0;
             print!(
                 "Render progress: {:3.3} / 100.000%\r",
                 current_progress / total_progress * 100.0
             );
-            */
         }
     }
 

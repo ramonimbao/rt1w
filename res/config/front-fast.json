@@ -2,7 +2,8 @@
 	"config": {
 		"width": 800,
 		"height": 600,
-		"samples": 10
+		"samples": 10,
+		"output": "output2.png"
 	},
 	"camera": {
 		"from":	{

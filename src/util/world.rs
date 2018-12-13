@@ -340,42 +340,32 @@ pub fn load_from_json(filename: String) -> HitableList {
     println!("Done loading.");
 
     // Test cube
-    list.push(Translate::new(
-        Rotate::new(
-            Cuboid::new(
-                Vec3::new(0.0, 0.0, 0.0),
-                Vec3::new(2.0, 2.0, 2.0),
-                Dielectric::new(1.8),
-                //Lambertian::new(ConstantTexture::new(Vec3::new(0.0, 0.0, 1.0)))
-            ),
-            Vec3::new(15.0, 30.0, 45.0),
-        ),
-        Vec3::new(0.0, 2.0, 3.5),
-    ));
-    list.push(Translate::new(
-        Rotate::new(
-            Cuboid::new(
-                Vec3::new(0.0, 0.0, 0.0),
-                Vec3::new(2.0, 2.0, 2.0),
-                Dielectric::new(1.8),
-                //Lambertian::new(ConstantTexture::new(Vec3::new(0.0, 0.0, 1.0)))
-            ),
-            Vec3::new(30.0, 45.0, 15.0),
-        ),
-        Vec3::new(3.0, 2.0, 3.5),
-    ));
-    list.push(Translate::new(
-        Rotate::new(
-            Cuboid::new(
-                Vec3::new(0.0, 0.0, 0.0),
-                Vec3::new(2.0, 2.0, 2.0),
-                Dielectric::new(1.8),
-                //Lambertian::new(ConstantTexture::new(Vec3::new(0.0, 0.0, 1.0)))
-            ),
-            Vec3::new(45.0, 10.0, 30.0),
-        ),
-        Vec3::new(-3.0, 2.0, 3.5),
-    ));
+    let mut rng = rand::thread_rng();
+    for a in -11..11 {
+        for b in -11..11 {
+            let center = Vec3::new(
+                a as f64 + 0.9 * rng.gen::<f64>(),
+                rng.gen::<f64>() * 3.0 + 1.0,
+                b as f64 + 0.9 * rng.gen::<f64>(),
+            );
+
+            list.push(Translate::new(
+                Rotate::new(
+                    Cuboid::new(
+                        Vec3::new(0.0, 0.0, 0.0),
+                        Vec3::new(1.0, 1.0, 1.0),
+                        DiffuseLight::new(ConstantTexture::new(Vec3::new(
+                            0.5 + rng.gen::<f64>() / 2.0,
+                            0.5 + rng.gen::<f64>() / 2.0,
+                            0.5 + rng.gen::<f64>() / 2.0,
+                        ))),
+                    ),
+                    Vec3::new(35.5, 0.0, 45.0),
+                ),
+                center,
+            ));
+        }
+    }
 
     let list = HitableList::new(list);
     list

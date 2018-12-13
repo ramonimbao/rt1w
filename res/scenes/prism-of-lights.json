@@ -1,0 +1,128 @@
+{
+	"planes": [
+		{
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"normal": {
+				"x": 0,
+				"y": 1,
+				"z": 0
+			},
+			"material": {
+				"type": "constant",
+				"color": {
+					"r": 0.1,
+					"g": 0.1,
+					"b": 0.1
+				}
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 15,
+				"z": 0
+			},
+			"normal": {
+				"x": 0,
+				"y": -1,
+				"z": 0
+			},
+			"material": {
+				"type": "constant",
+				"color": {
+					"r": 0.1,
+					"g": 0.1,
+					"b": 0.1
+				}
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": -15
+			},
+			"normal": {
+				"x": 0,
+				"y": 0,
+				"z": 1
+			},
+			"material": {
+				"type": "metal",
+				"albedo": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				},
+				"fuzz": 0.05
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 15
+			},
+			"normal": {
+				"x": 0,
+				"y": 0,
+				"z": -1
+			},
+			"material": {
+				"type": "metal",
+				"albedo": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				},
+				"fuzz": 0.05
+			}
+		},
+		{
+			"position": {
+				"x": 15,
+				"y": 0,
+				"z": 0
+			},
+			"normal": {
+				"x": -1,
+				"y": 0,
+				"z": 0
+			},
+			"material": {
+				"type": "metal",
+				"albedo": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				},
+				"fuzz": 0.05
+			}	
+		},
+		{
+			"position": {
+				"x": -15,
+				"y": 0,
+				"z": 0
+			},
+			"normal": {
+				"x": 1,
+				"y": 0,
+				"z": 0
+			},
+			"material": {
+				"type": "metal",
+				"albedo": {
+					"r": 1.0,
+					"g": 1.0,
+					"b": 1.0
+				},
+				"fuzz": 0.05
+			}	
+		}
+	]
+}
