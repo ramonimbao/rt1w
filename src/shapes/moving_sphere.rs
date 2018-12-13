@@ -4,6 +4,7 @@ use serde_json::Value;
 
 use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
 use crate::textures::TextureType;
+use crate::transform::{rotate::RotateY, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     math,
@@ -107,6 +108,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
                 continue;
             }
         };
+        let position_difference = Vec3::new(p1x - p0x, p1y - p0y, p1z - p0z);
 
         let radius = values[id][i]["radius"].as_f64();
         let radius = match radius {
@@ -138,13 +140,9 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             }
         };
 
-        list.push(MovingSphere::new(
+        list.push(Translate::new(
+            MovingSphere::new(Vec3::zero(), position_difference, t0, t1, radius, material),
             Vec3::new(p0x, p0y, p0z),
-            Vec3::new(p1x, p1y, p1z),
-            t0,
-            t1,
-            radius,
-            material,
         ));
     }
 

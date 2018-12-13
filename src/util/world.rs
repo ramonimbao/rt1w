@@ -19,7 +19,7 @@ use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
     image_texture::ImageTexture, noise_texture::NoiseTexture,
 };
-use crate::transform::translate::Translate;
+use crate::transform::{rotate::RotateY, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
@@ -338,6 +338,19 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut cuboid::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
+
+    // Test cube
+    list.push(RotateY::new(
+        Cuboid::new(
+            Vec3::new(0.0, 0.0, 0.0),
+            Vec3::new(2.0, 2.0, 2.0),
+            Lambertian::new(ImageTexture::new(
+                image::open("res/images/crate2_diffuse.png").unwrap(),
+                1.0,
+            )),
+        ),
+        45.0,
+    ));
 
     let list = HitableList::new(list);
     list

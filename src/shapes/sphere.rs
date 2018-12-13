@@ -4,6 +4,7 @@ use serde_json::Value;
 
 use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
 use crate::textures::TextureType;
+use crate::transform::{rotate::RotateY, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     math,
@@ -105,7 +106,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             }
         };
 
-        list.push(Sphere::new(Vec3::new(px, py, pz), radius, material));
+        list.push(Translate::new(
+            Sphere::new(Vec3::zero(), radius, material),
+            Vec3::new(px, py, pz),
+        ));
     }
 
     list

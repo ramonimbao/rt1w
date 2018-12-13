@@ -88,22 +88,6 @@
                 "type": "noise",
                 "scale": 10.0
             }
-        },
-        {
-            "radius": 5,
-            "position": {
-                "x": 0,
-                "y": 5,
-                "z": -5
-            },
-            "material": {
-                "type": "light",
-                "color": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0
-                }
-            }
         }
     ],
     "cuboids": [

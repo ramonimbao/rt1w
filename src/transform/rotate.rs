@@ -6,7 +6,6 @@ use crate::util::{
 
 pub struct RotateY {
     object: Box<Hitable>,
-    angle: f64,
     sin_theta: f64,
     cos_theta: f64,
 }
@@ -16,7 +15,6 @@ impl RotateY {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateY {
             object,
-            angle,
             sin_theta: radians.sin(),
             cos_theta: radians.cos(),
         })
@@ -28,12 +26,12 @@ impl Hitable for RotateY {
         let origin = Vec3::new(
             self.cos_theta * r.origin.x - self.sin_theta * r.origin.z,
             r.origin.y,
-            self.sin_theta * r.origin.x - self.cos_theta * r.origin.z,
+            self.sin_theta * r.origin.x + self.cos_theta * r.origin.z,
         );
         let direction = Vec3::new(
             self.cos_theta * r.direction.x - self.sin_theta * r.direction.z,
             r.direction.y,
-            self.sin_theta * r.direction.x - self.cos_theta * r.direction.z,
+            self.sin_theta * r.direction.x + self.cos_theta * r.direction.z,
         );
         let rotated_r = Ray::new(origin, direction, r.time);
         if self.object.hit(&rotated_r, t_min, t_max, rec) {
