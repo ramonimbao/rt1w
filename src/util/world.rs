@@ -340,16 +340,19 @@ pub fn load_from_json(filename: String) -> HitableList {
     println!("Done loading.");
 
     // Test cube
-    list.push(RotateY::new(
-        Cuboid::new(
-            Vec3::new(0.0, 0.0, 0.0),
-            Vec3::new(2.0, 2.0, 2.0),
-            Lambertian::new(ImageTexture::new(
-                image::open("res/images/crate2_diffuse.png").unwrap(),
-                1.0,
-            )),
+    list.push(Translate::new(
+        RotateY::new(
+            Cuboid::new(
+                Vec3::new(0.0, 0.0, 0.0),
+                Vec3::new(2.0, 2.0, 2.0),
+                Lambertian::new(ImageTexture::new(
+                    image::open("res/images/crate2_diffuse.png").unwrap(),
+                    1.0,
+                )),
+            ),
+            45.0,
         ),
-        45.0,
+        Vec3::new(0.0, 0.0, 2.5),
     ));
 
     let list = HitableList::new(list);
