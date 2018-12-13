@@ -19,7 +19,7 @@ use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
     image_texture::ImageTexture, noise_texture::NoiseTexture,
 };
-use crate::transform::{rotate::RotateY, translate::Translate};
+use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
@@ -341,40 +341,40 @@ pub fn load_from_json(filename: String) -> HitableList {
 
     // Test cube
     list.push(Translate::new(
-        RotateY::new(
+        Rotate::new(
             Cuboid::new(
                 Vec3::new(0.0, 0.0, 0.0),
                 Vec3::new(2.0, 2.0, 2.0),
                 Dielectric::new(1.8),
                 //Lambertian::new(ConstantTexture::new(Vec3::new(0.0, 0.0, 1.0)))
             ),
-            45.0,
+            Vec3::new(15.0, 30.0, 45.0),
         ),
-        Vec3::new(0.0, 1.0, 3.5),
+        Vec3::new(0.0, 2.0, 3.5),
     ));
     list.push(Translate::new(
-        RotateY::new(
+        Rotate::new(
             Cuboid::new(
                 Vec3::new(0.0, 0.0, 0.0),
                 Vec3::new(2.0, 2.0, 2.0),
                 Dielectric::new(1.8),
                 //Lambertian::new(ConstantTexture::new(Vec3::new(0.0, 0.0, 1.0)))
             ),
-            15.0,
+            Vec3::new(30.0, 45.0, 15.0),
         ),
-        Vec3::new(3.0, 1.0, 3.5),
+        Vec3::new(3.0, 2.0, 3.5),
     ));
     list.push(Translate::new(
-        RotateY::new(
+        Rotate::new(
             Cuboid::new(
                 Vec3::new(0.0, 0.0, 0.0),
                 Vec3::new(2.0, 2.0, 2.0),
                 Dielectric::new(1.8),
                 //Lambertian::new(ConstantTexture::new(Vec3::new(0.0, 0.0, 1.0)))
             ),
-            30.0,
+            Vec3::new(45.0, 10.0, 30.0),
         ),
-        Vec3::new(-3.0, 1.0, 3.5),
+        Vec3::new(-3.0, 2.0, 3.5),
     ));
 
     let list = HitableList::new(list);

@@ -32,12 +32,13 @@
                 "z": 0
             },
             "material": {
-                "type": "constant",
-                "color": {
+                "type": "metal",
+                "albedo": {
                     "r": 0.2,
                     "g": 1.0,
                     "b": 0.2
-                }
+                },
+                "fuzz": 0.1
             }
         },
         {

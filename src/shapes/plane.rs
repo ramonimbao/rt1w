@@ -4,7 +4,7 @@ use serde_json::Value;
 
 use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
 use crate::textures::TextureType;
-use crate::transform::{rotate::RotateY, translate::Translate};
+use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     math,
