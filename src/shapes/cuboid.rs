@@ -78,6 +78,62 @@ impl Hitable for Cuboid {
     }
 }
 
+pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
+    let mut list: Vec<Box<Hitable>> = Vec::new();
+
+    let id = "cuboids";
+
+    let length = match values[id].as_array() {
+        Some(n) => n.len(),
+        _ => 0,
+    };
+
+    for i in 0..length {
+        // Get the parameters
+        let px = values[id][i]["position"]["x"].as_f64();
+        let py = values[id][i]["position"]["y"].as_f64();
+        let pz = values[id][i]["position"]["z"].as_f64();
+        let sx = values[id][i]["size"]["x"].as_f64();
+        let sy = values[id][i]["size"]["y"].as_f64();
+        let sz = values[id][i]["size"]["z"].as_f64();
+        let (px, py, pz, sx, sy, sz) = match (px, py, pz, sx, sy, sz) {
+            (Some(px), Some(py), Some(pz), Some(sx), Some(sy), Some(sz)) => {
+                (px, py, pz, sx, sy, sz)
+            }
+            (_, _, _, _, _, _) => {
+                eprintln!(
+                    "ERROR: Can't get position and size of cuboid {}! Skipping...",
+                    i
+                );
+                continue;
+            }
+        };
+
+        let material = values[id][i]["material"]["type"].as_str();
+        let material: Rc<Material> = match material {
+            Some("constant") => lambertian::load_from_json(&values[id][i], TextureType::Constant),
+            Some("checkered") => lambertian::load_from_json(&values[id][i], TextureType::Checkered),
+            Some("image") => lambertian::load_from_json(&values[id][i], TextureType::Image),
+            Some("noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
+            Some("metal") => metal::load_from_json(&values[id][i]),
+            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
+            Some("light") => diffuse_light::load_from_json(&values[id][i]),
+            _ => {
+                eprintln!("ERROR: Can't get material of cuboid {}! Skipping...", i);
+                continue;
+            }
+        };
+
+        list.push(Cuboid::new(
+            Vec3::new(px, py, pz),
+            Vec3::new(sx, sy, sz),
+            material,
+        ));
+    }
+
+    list
+}
+
 // Eww, lotsa repeatin' code here...
 
 struct RectXY {

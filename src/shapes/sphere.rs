@@ -63,7 +63,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
     let id = "spheres";
 
-    let length = match values["spheres"].as_array() {
+    let length = match values[id].as_array() {
         Some(n) => n.len(),
         _ => 0,
     };

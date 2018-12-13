@@ -19,7 +19,9 @@ Rendering the default scene with the `good.json` config (800×600 at 100 samples
 
 # To Do
 
-- Implement cuboid loading into scene via JSON.
+- Finish implementing rotational transformations for all axes.
+- Implement Triangle shape.
+- Implement OBJ model loading.
 
 # License
 

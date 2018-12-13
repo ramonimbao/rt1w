@@ -335,39 +335,9 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut sphere::load_from_json(&values));
     list.append(&mut moving_sphere::load_from_json(&values));
     list.append(&mut plane::load_from_json(&values));
+    list.append(&mut cuboid::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
-
-    // Test cuboid
-    /*list.append(&mut Cuboid::new(
-        Vec3::new(-6.0, 0.0, -1.0),
-        Vec3::new(2.0, 2.0, 2.0),
-        //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
-        //Dielectric::new(1.8),
-        //Lambertian::new(NoiseTexture::new(10.0)),
-        Lambertian::new(ImageTexture::new(
-            image::open("res/images/crate2_diffuse.png").unwrap(),
-            1.0,
-        )),
-    ));*/
-
-    list.push(Cuboid::new(
-        Vec3::new(-6.0, 0.0, -1.0),
-        Vec3::new(2.0, 2.0, 2.0),
-        Lambertian::new(ImageTexture::new(
-            image::open("res/images/crate2_diffuse.png").unwrap(),
-            1.0,
-        )),
-    ));
-
-    list.push(Translate::new(
-        Sphere::new(
-            Vec3::zero(),
-            1.0,
-            Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
-        ),
-        Vec3::new(0.0, 1.0, 5.0),
-    ));
 
     let list = HitableList::new(list);
     list

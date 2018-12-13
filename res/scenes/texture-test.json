@@ -90,19 +90,6 @@
             }
         },
         {
-            "radius": 1,
-            "position": {
-                "x": -5,
-                "y": 1,
-                "z": 0
-            },
-            "material": {
-                "type": "image",
-                "filename": "res/images/non-existent-file.png",
-                "scale": 1.0
-            }
-        },
-        {
             "radius": 5,
             "position": {
                 "x": 0,
@@ -116,6 +103,25 @@
                     "g": 1.0,
                     "b": 1.0
                 }
+            }
+        }
+    ],
+    "cuboids": [
+        {
+            "position": {
+                "x": -6.0,
+                "y": 0.0,
+                "z": -1.0
+            },
+            "size": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 2.0
+            },
+            "material": {
+                "type": "image",
+                "filename": "res/images/crate0_diffuse.png",
+                "scale": 1.0
             }
         }
     ]
