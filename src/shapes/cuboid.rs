@@ -6,19 +6,19 @@ use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
 use crate::textures::TextureType;
 use crate::util::{
     hitable::{HitRecord, Hitable},
+    hitable_list::HitableList,
     math,
     ray::Ray,
     vector3::Vec3,
 };
 
-pub struct Cuboid {}
+pub struct Cuboid {
+    object: HitableList,
+}
 
-// I think I can restructure this so that `Cuboid` would return itself as a `Box<Hitable>`
-// instead of a `Vec<Box<Hitable>>`. And then when `impl`ementing `Hitable` for `Cuboid,
-// I can iterate through the `Vec` (stored in the Cuboid struct) to check whether the incoming
-// ray hits each component.
+// Derp. I forgot there's a `hitable_list` which implements exactly what I wanted already.
 impl Cuboid {
-    pub fn new(origin: Vec3, size: Vec3, material: Rc<Material>) -> Vec<Box<Hitable>> {
+    pub fn new(origin: Vec3, size: Vec3, material: Rc<Material>) -> Box<Hitable> {
         let mut components: Vec<Box<Hitable>> = Vec::new();
 
         let min = origin;
@@ -38,7 +38,6 @@ impl Cuboid {
             false,
             material.clone(),
         ));
-
         components.push(RectXZ::new(
             Vec3::new(min.x, 0.0, min.z),
             Vec3::new(max.x, 0.0, max.z),
@@ -67,7 +66,15 @@ impl Cuboid {
             false,
             material.clone(),
         ));
-        components
+        Box::new(Cuboid {
+            object: HitableList::new(components),
+        })
+    }
+}
+
+impl Hitable for Cuboid {
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
+        self.object.hit(r, t_min, t_max, rec)
     }
 }
 
@@ -167,7 +174,7 @@ impl Hitable for RectXZ {
         }
         rec.u = (x - self.min.x) / (self.max.x - self.min.x)
             * if self.normal_flip { -1.0 } else { 1.0 };
-        rec.v = (z - self.min.y) / (self.max.z - self.min.z);
+        rec.v = (z - self.min.z) / (self.max.z - self.min.z);
         rec.t = t;
         rec.material = self.material.clone();
         rec.p = r.point_at_parameter(t);

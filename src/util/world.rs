@@ -339,12 +339,21 @@ pub fn load_from_json(filename: String) -> HitableList {
     println!("Done loading.");
 
     // Test cuboid
-    list.append(&mut Cuboid::new(
+    /*list.append(&mut Cuboid::new(
         Vec3::new(-6.0, 0.0, -1.0),
         Vec3::new(2.0, 2.0, 2.0),
         //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
         //Dielectric::new(1.8),
         //Lambertian::new(NoiseTexture::new(10.0)),
+        Lambertian::new(ImageTexture::new(
+            image::open("res/images/crate2_diffuse.png").unwrap(),
+            1.0,
+        )),
+    ));*/
+
+    list.push(Cuboid::new(
+        Vec3::new(-6.0, 0.0, -1.0),
+        Vec3::new(2.0, 2.0, 2.0),
         Lambertian::new(ImageTexture::new(
             image::open("res/images/crate2_diffuse.png").unwrap(),
             1.0,
@@ -358,12 +367,6 @@ pub fn load_from_json(filename: String) -> HitableList {
             Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
         ),
         Vec3::new(0.0, 1.0, 5.0),
-    ));
-
-    list.append(&mut Cuboid::new(
-        Vec3::new(-6.0, 0.0, 2.0),
-        Vec3::new(12.0, 3.0, 0.5),
-        Dielectric::new(2.7),
     ));
 
     let list = HitableList::new(list);
