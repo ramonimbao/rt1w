@@ -341,11 +341,11 @@ pub fn load_from_json(filename: String) -> HitableList {
 
     // Test cube
     let mut rng = rand::thread_rng();
-    for a in -11..11 {
-        for b in -11..11 {
+    for a in (-4..5).step_by(1) {
+        for b in (-4..5).step_by(1) {
             let center = Vec3::new(
                 a as f64 + 0.9 * rng.gen::<f64>(),
-                rng.gen::<f64>() * 3.0 + 1.0,
+                rng.gen::<f64>() * 4.0 + 0.5,
                 b as f64 + 0.9 * rng.gen::<f64>(),
             );
 
@@ -353,14 +353,14 @@ pub fn load_from_json(filename: String) -> HitableList {
                 Rotate::new(
                     Cuboid::new(
                         Vec3::new(0.0, 0.0, 0.0),
-                        Vec3::new(1.0, 1.0, 1.0),
+                        Vec3::new(0.2, 0.2, 0.2),
                         DiffuseLight::new(ConstantTexture::new(Vec3::new(
                             0.5 + rng.gen::<f64>() / 2.0,
                             0.5 + rng.gen::<f64>() / 2.0,
                             0.5 + rng.gen::<f64>() / 2.0,
                         ))),
                     ),
-                    Vec3::new(35.5, 0.0, 45.0),
+                    Vec3::new(35.5, rng.gen::<f64>() * 360.0, 45.0),
                 ),
                 center,
             ));

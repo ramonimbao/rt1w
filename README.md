@@ -19,6 +19,7 @@ Rendering the default scene with the `good.json` config (800×600 at 100 samples
 
 # To Do
 
+- Implement being able to input random via JSON so I don't have to hardcode scenes with random object positions/materials.
 - Implement Triangle shape.
 - Implement OBJ model loading.
 
