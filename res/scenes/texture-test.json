@@ -20,6 +20,11 @@
                 "type": "image",
                 "filename": "res/images/floor.png",
                 "scale": 10
+            },
+            "rotation": {
+                "x": 0,
+                "y": "360",
+                "z": 0
             }
         }
     ],
@@ -118,6 +123,11 @@
                 "x": 2.0,
                 "y": 2.0,
                 "z": 2.0
+            },
+            "rotation": {
+                "x": "-45,45",
+                "y": "-45,45",
+                "z": "-45,45"
             },
             "material": {
                 "type": "image",

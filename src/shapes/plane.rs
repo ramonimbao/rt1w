@@ -7,7 +7,7 @@ use crate::textures::TextureType;
 use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
-    math,
+    json, math,
     ray::Ray,
     vector3::Vec3,
 };
@@ -63,9 +63,9 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
     for i in 0..length {
         // Get the parameters
-        let px = values[id][i]["position"]["x"].as_f64();
-        let py = values[id][i]["position"]["y"].as_f64();
-        let pz = values[id][i]["position"]["z"].as_f64();
+        let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
+        let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
+        let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
         let (px, py, pz) = match (px, py, pz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
             (_, _, _) => {
@@ -74,14 +74,28 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             }
         };
 
-        let nx = values[id][i]["normal"]["x"].as_f64();
-        let ny = values[id][i]["normal"]["y"].as_f64();
-        let nz = values[id][i]["normal"]["z"].as_f64();
+        let nx = json::get_f64_or_rand(&values[id][i]["normal"]["x"]);
+        let ny = json::get_f64_or_rand(&values[id][i]["normal"]["y"]);
+        let nz = json::get_f64_or_rand(&values[id][i]["normal"]["z"]);
         let (nx, ny, nz) = match (nx, ny, nz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
             (_, _, _) => {
                 eprintln!("ERROR: Can't get normal of plane {}! Skipping...", i);
                 continue;
+            }
+        };
+
+        let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
+        let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
+        let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
+        let (rx, ry, rz) = match (rx, ry, rz) {
+            (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
+            (_, _, _) => {
+                eprintln!(
+                    "ERROR: Can't get rotation of plane {}! Defaulting to (0,0,0)...",
+                    i
+                );
+                (0.0, 0.0, 0.0)
             }
         };
 
@@ -101,7 +115,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         list.push(Translate::new(
-            Plane::new(Vec3::zero(), Vec3::new(nx, ny, nz), material),
+            Rotate::new(
+                Plane::new(Vec3::zero(), Vec3::new(nx, ny, nz), material),
+                Vec3::new(rx, ry, rz),
+            ),
             Vec3::new(px, py, pz),
         ));
     }

@@ -33,7 +33,12 @@ impl Config {
 }
 
 pub fn load_from_json(filename: String) -> (Config, Camera) {
-    println!("Loading config JSON file...");
+    if filename == "".to_string() {
+        println!("Defaulting to config defaults...");
+        return (Config::default(), Camera::default());
+    }
+
+    println!("Loading config JSON file from {}...", filename);
     let data = match fs::read_to_string(filename) {
         Ok(d) => d,
         Err(e) => {

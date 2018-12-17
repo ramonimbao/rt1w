@@ -187,7 +187,6 @@ pub fn random_scene() -> HitableList {
         )),
     ));
 
-    /*
     list.push(Sphere::new(
         Vec3::new(-1000.0, 3000.0, 0.0),
         1500.0,
@@ -301,15 +300,18 @@ pub fn random_scene() -> HitableList {
             10.0,
         )),
     ));
-    */
 
     let list = HitableList::new(list);
     list
 }
 
 pub fn load_from_json(filename: String) -> HitableList {
-    println!("Loading scene data from {}", filename);
+    if filename == "" {
+        println!("Generating random scene...");
+        return random_scene();
+    }
 
+    println!("Loading scene data from {}", filename);
     let data = match fs::read_to_string(filename) {
         Ok(d) => d,
         Err(e) => {
@@ -340,6 +342,7 @@ pub fn load_from_json(filename: String) -> HitableList {
     println!("Done loading.");
 
     // Test cube
+    /*
     let mut rng = rand::thread_rng();
     for a in (-4..5).step_by(1) {
         for b in (-4..5).step_by(1) {
@@ -366,6 +369,7 @@ pub fn load_from_json(filename: String) -> HitableList {
             ));
         }
     }
+    */
 
     let list = HitableList::new(list);
     list

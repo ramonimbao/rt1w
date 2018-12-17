@@ -1,7 +1,10 @@
+use std::env;
+use std::path::PathBuf;
+
 use image::{ImageBuffer, Pixel, Rgb};
 use rand::Rng;
-
-use std::env;
+#[macro_use]
+use structopt::StructOpt;
 
 mod defaults;
 mod materials;
@@ -31,61 +34,27 @@ fn help() {
     println!("   --scene [scene.json]       Input a scene JSON file.");
 }
 
-fn main() -> std::io::Result<()> {
-    let args: Vec<String> = env::args().collect();
+// Got this from here: https://www.reddit.com/r/rust/comments/a6pvjk/my_first_rust_project/ebx03gn/
+#[derive(StructOpt, Debug)]
+#[structopt(name = "rt1w")]
+struct Opt {
+    /// Show verbose output
+    #[structopt(short = "v", long = "verbose")]
+    verbose: bool,
 
-    // TODO: Refactor the code so camera data is part of scene rather than config files
-    // It kinda made sense when I first started making this...
-    let ((config, cam), mut world) = match args.len() {
-        1 | 2 | 4 => {
-            help();
-            println!("Rendering with default settings.");
-            get_default()
-        }
-        3 => {
-            let cmd = &args[1];
-            let file = &args[2];
-            match &cmd[..] {
-                "--config" => (
-                    config::load_from_json(file.to_string()),
-                    world::random_scene(),
-                ),
-                "--scene" => (
-                    (Config::default(), Camera::default()),
-                    world::load_from_json(file.to_string()),
-                ),
-                _ => {
-                    eprintln!("Can't load the file. Reverting to defaults...");
-                    get_default()
-                }
-            }
-        }
-        5 => {
-            let cmd1 = &args[1];
-            let cmd2 = &args[3];
-            let file1 = &args[2];
-            let file2 = &args[4];
-            match (&cmd1[..], &cmd2[..]) {
-                ("--config", "--scene") => (
-                    config::load_from_json(file1.to_string()),
-                    world::load_from_json(file2.to_string()),
-                ),
-                ("--scene", "--config") => (
-                    config::load_from_json(file2.to_string()),
-                    world::load_from_json(file1.to_string()),
-                ),
-                (_, _) => {
-                    eprintln!("Can't load the files. Reverting to defaults...");
-                    get_default()
-                }
-            }
-        }
-        _ => {
-            help();
-            println!("Rendering with default settings.");
-            get_default()
-        }
-    };
+    /// Input config file
+    #[structopt(short = "c", long = "config", parse(from_os_str), default_value = "")]
+    config_file: PathBuf,
+
+    /// Input scene file
+    #[structopt(short = "s", long = "scene", parse(from_os_str), default_value = "")]
+    scene_file: PathBuf,
+}
+
+fn main() -> std::io::Result<()> {
+    let opt = Opt::from_args();
+    let (config, cam) = config::load_from_json(opt.config_file.to_str().unwrap().to_string());
+    let mut world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string());
 
     let total_progress = (config.width * config.height) as f32;
     let mut current_progress = 0.0;
@@ -113,10 +82,12 @@ fn main() -> std::io::Result<()> {
             img.put_pixel(i, config.height - 1 - j, pixel);
 
             current_progress += 1.0;
-            print!(
-                "Render progress: {:3.3} / 100.000%\r",
-                current_progress / total_progress * 100.0
-            );
+            if opt.verbose {
+                print!(
+                    "Render progress: {:3.3} / 100.000%\r",
+                    current_progress / total_progress * 100.0
+                );
+            }
         }
     }
 

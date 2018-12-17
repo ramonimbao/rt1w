@@ -9,7 +9,7 @@ pub trait Material {
         scattered: &mut Ray,
     ) -> bool;
 
-    fn emit(&self, u: f64, v: f64, p: &Vec3) -> Vec3 {
+    fn emit(&self, _u: f64, _v: f64, _p: &Vec3) -> Vec3 {
         Vec3::zero()
     }
 }

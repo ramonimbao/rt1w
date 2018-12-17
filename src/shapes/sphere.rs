@@ -7,7 +7,7 @@ use crate::textures::TextureType;
 use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
-    math,
+    json, math,
     ray::Ray,
     vector3::Vec3,
 };
@@ -71,9 +71,9 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
     for i in 0..length {
         // Get the parameters
-        let px = values[id][i]["position"]["x"].as_f64();
-        let py = values[id][i]["position"]["y"].as_f64();
-        let pz = values[id][i]["position"]["z"].as_f64();
+        let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
+        let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
+        let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
         let (px, py, pz) = match (px, py, pz) {
             (Some(x), Some(y), Some(z)) => (x, y, z),
             (_, _, _) => {
@@ -82,12 +82,26 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             }
         };
 
-        let radius = values[id][i]["radius"].as_f64();
+        let radius = json::get_f64_or_rand(&values[id][i]["radius"]);
         let radius = match radius {
             Some(r) => r,
             _ => {
                 eprintln!("ERROR: Can't get radius of sphere {}! Skipping...", i);
                 continue;
+            }
+        };
+
+        let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
+        let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
+        let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
+        let (rx, ry, rz) = match (rx, ry, rz) {
+            (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
+            (_, _, _) => {
+                eprintln!(
+                    "ERROR: Can't get rotation of sphere {}! Defaulting to (0,0,0)...",
+                    i
+                );
+                (0.0, 0.0, 0.0)
             }
         };
 
@@ -107,7 +121,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         list.push(Translate::new(
-            Sphere::new(Vec3::zero(), radius, material),
+            Rotate::new(
+                Sphere::new(Vec3::zero(), radius, material),
+                Vec3::new(rx, ry, rz),
+            ),
             Vec3::new(px, py, pz),
         ));
     }

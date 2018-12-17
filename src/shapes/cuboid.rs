@@ -8,7 +8,7 @@ use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
-    math,
+    json,
     ray::Ray,
     vector3::Vec3,
 };
@@ -91,12 +91,12 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
     for i in 0..length {
         // Get the parameters
-        let px = values[id][i]["position"]["x"].as_f64();
-        let py = values[id][i]["position"]["y"].as_f64();
-        let pz = values[id][i]["position"]["z"].as_f64();
-        let sx = values[id][i]["size"]["x"].as_f64();
-        let sy = values[id][i]["size"]["y"].as_f64();
-        let sz = values[id][i]["size"]["z"].as_f64();
+        let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
+        let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
+        let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
+        let sx = json::get_f64_or_rand(&values[id][i]["size"]["x"]);
+        let sy = json::get_f64_or_rand(&values[id][i]["size"]["y"]);
+        let sz = json::get_f64_or_rand(&values[id][i]["size"]["z"]);
         let (px, py, pz, sx, sy, sz) = match (px, py, pz, sx, sy, sz) {
             (Some(px), Some(py), Some(pz), Some(sx), Some(sy), Some(sz)) => {
                 (px, py, pz, sx, sy, sz)
@@ -107,6 +107,19 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
                     i
                 );
                 continue;
+            }
+        };
+        let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
+        let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
+        let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
+        let (rx, ry, rz) = match (rx, ry, rz) {
+            (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
+            (_, _, _) => {
+                eprintln!(
+                    "ERROR: Can't get rotation of cuboid {}! Defaulting to (0,0,0)...",
+                    i
+                );
+                (0.0, 0.0, 0.0)
             }
         };
 
@@ -126,7 +139,10 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         list.push(Translate::new(
-            Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
+            Rotate::new(
+                Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
+                Vec3::new(rx, ry, rz),
+            ),
             Vec3::new(px, py, pz),
         ));
     }

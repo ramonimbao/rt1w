@@ -4,9 +4,9 @@ A Rust implementation of the book [*Ray Tracing in One Weekend* by Peter Shirley
 
 Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
-<p align="center">
+<!--<p align="center">
 	<img src="output.png" alt="">	
-</p>
+</p>-->
 
 # Usage
 
@@ -19,7 +19,8 @@ Rendering the default scene with the `good.json` config (800×600 at 100 samples
 
 # To Do
 
-- Implement being able to input random via JSON so I don't have to hardcode scenes with random object positions/materials.
+- Implement being able to input random materials via JSON.
+- Implement `--verbose` option input to display all messages.
 - Implement Triangle shape.
 - Implement OBJ model loading.
 
