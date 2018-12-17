@@ -1,9 +1,12 @@
+#[macro_use]
+extern crate structopt;
+
 use std::env;
 use std::path::PathBuf;
 
 use image::{ImageBuffer, Pixel, Rgb};
 use rand::Rng;
-#[macro_use]
+
 use structopt::StructOpt;
 
 mod defaults;

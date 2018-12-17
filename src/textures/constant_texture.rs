@@ -21,14 +21,3 @@ impl Texture for ConstantTexture {
         self.color
     }
 }
-
-pub fn load_from_json(values: &Value) -> Rc<Material> {
-    let r = values["material"]["color"]["r"].as_f64();
-    let g = values["material"]["color"]["g"].as_f64();
-    let b = values["material"]["color"]["b"].as_f64();
-    let (r, g, b) = match (r, g, b) {
-        (Some(r), Some(g), Some(b)) => (r, g, b),
-        (_, _, _) => (0.0, 0.0, 0.0),
-    };
-    Lambertian::new(ConstantTexture::new(Vec3::new(r, g, b)))
-}

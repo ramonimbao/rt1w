@@ -221,11 +221,11 @@ pub fn random_scene() -> HitableList {
                         center,
                         0.2,
                         Metal::new(
-                            Vec3::new(
+                            ConstantTexture::new(Vec3::new(
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                                 (1.0 + rng.gen::<f64>()) * 0.5,
-                            ),
+                            )),
                             0.5 * rng.gen::<f64>(),
                         ),
                     ));
@@ -271,7 +271,7 @@ pub fn random_scene() -> HitableList {
     list.push(Sphere::new(
         Vec3::new(-4.0, 1.1, 0.0),
         1.0,
-        Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
+        Metal::new(ConstantTexture::new(Vec3::new(0.7, 0.6, 0.5)), 0.0),
     ));
     list.push(Sphere::new(
         Vec3::new(4.0, 1.1, 0.0),
@@ -340,6 +340,16 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut cuboid::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
+
+    // Test plane
+    list.push(Plane::new(
+        Vec3::zero(),
+        Vec3::new(0.0, 1.0, 0.0),
+        Metal::new(
+            ImageTexture::new(image::open("res/images/floor.png").unwrap(), 10.0),
+            0.05,
+        ),
+    ));
 
     // Test cube
     /*

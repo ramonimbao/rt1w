@@ -12,7 +12,7 @@
 				"z": 0
 			},
 			"material": {
-				"type": "constant",
+				"type": "matte/constant",
 				"color": {
 					"r": 0.1,
 					"g": 0.1,
@@ -32,7 +32,7 @@
 				"z": 0
 			},
 			"material": {
-				"type": "constant",
+				"type": "matte/constant",
 				"color": {
 					"r": 0.1,
 					"g": 0.1,
@@ -52,11 +52,11 @@
 				"z": 1
 			},
 			"material": {
-				"type": "metal",
-				"albedo": {
-					"r": 0.25,
-					"g": 0.25,
-					"b": 0.25
+				"type": "metal/constant",
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.5
 				},
 				"fuzz": 0.005
 			}
@@ -73,11 +73,11 @@
 				"z": -1
 			},
 			"material": {
-				"type": "metal",
-				"albedo": {
-					"r": 0.25,
-					"g": 0.25,
-					"b": 0.25
+				"type": "metal/constant",
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.5
 				},
 				"fuzz": 0.005
 			}
@@ -94,11 +94,11 @@
 				"z": 0
 			},
 			"material": {
-				"type": "metal",
-				"albedo": {
-					"r": 0.25,
-					"g": 0.25,
-					"b": 0.25
+				"type": "metal/constant",
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.5
 				},
 				"fuzz": 0.005
 			}	
@@ -115,11 +115,11 @@
 				"z": 0
 			},
 			"material": {
-				"type": "metal",
-				"albedo": {
-					"r": 0.25,
-					"g": 0.25,
-					"b": 0.25
+				"type": "metal/constant",
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.5
 				},
 				"fuzz": 0.005
 			}	

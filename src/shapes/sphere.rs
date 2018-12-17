@@ -91,27 +91,22 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             }
         };
 
-        let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
-        let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
-        let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
-        let (rx, ry, rz) = match (rx, ry, rz) {
-            (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
-            (_, _, _) => {
-                eprintln!(
-                    "ERROR: Can't get rotation of sphere {}! Defaulting to (0,0,0)...",
-                    i
-                );
-                (0.0, 0.0, 0.0)
-            }
-        };
-
         let material = values[id][i]["material"]["type"].as_str();
         let material: Rc<Material> = match material {
-            Some("constant") => lambertian::load_from_json(&values[id][i], TextureType::Constant),
-            Some("checkered") => lambertian::load_from_json(&values[id][i], TextureType::Checkered),
-            Some("image") => lambertian::load_from_json(&values[id][i], TextureType::Image),
-            Some("noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
-            Some("metal") => metal::load_from_json(&values[id][i]),
+            Some("matte/constant") => {
+                lambertian::load_from_json(&values[id][i], TextureType::Constant)
+            }
+            Some("matte/checkered") => {
+                lambertian::load_from_json(&values[id][i], TextureType::Checkered)
+            }
+            Some("matte/image") => lambertian::load_from_json(&values[id][i], TextureType::Image),
+            Some("matte/noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
+            Some("metal/constant") => metal::load_from_json(&values[id][i], TextureType::Constant),
+            Some("metal/checkered") => {
+                metal::load_from_json(&values[id][i], TextureType::Checkered)
+            }
+            Some("metal/image") => metal::load_from_json(&values[id][i], TextureType::Image),
+            Some("metal/noise") => metal::load_from_json(&values[id][i], TextureType::Noise),
             Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             Some("light") => diffuse_light::load_from_json(&values[id][i]),
             _ => {
@@ -121,10 +116,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         list.push(Translate::new(
-            Rotate::new(
-                Sphere::new(Vec3::zero(), radius, material),
-                Vec3::new(rx, ry, rz),
-            ),
+            Sphere::new(Vec3::zero(), radius, material),
             Vec3::new(px, py, pz),
         ));
     }

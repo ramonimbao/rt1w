@@ -26,13 +26,3 @@ impl Texture for NoiseTexture {
         Vec3::unit() * 0.5 * (1.0 + (self.scale * p.z + 10.0 * self.noise.turbulence(p, 7)).sin())
     }
 }
-
-pub fn load_from_json(values: &Value) -> Rc<Material> {
-    let scale = values["material"]["scale"].as_f64();
-    let scale = match scale {
-        Some(s) => s,
-        _ => 1.0,
-    };
-
-    Lambertian::new(NoiseTexture::new(scale))
-}

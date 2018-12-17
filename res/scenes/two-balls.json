@@ -8,7 +8,7 @@
 				"z": 0
 			},
 			"material": {
-				"type": "constant",
+				"type": "matte/constant",
 				"color": {
 					"r": 1,
 					"g": 0,
@@ -24,7 +24,7 @@
 				"z": 0
 			},
 			"material": {
-				"type": "constant",
+				"type": "matte/constant",
 				"color": {
 					"r": 0,
 					"g": 0,

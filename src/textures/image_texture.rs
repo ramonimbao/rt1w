@@ -52,38 +52,3 @@ impl Texture for ImageTexture {
         Vec3::new(r, g, b)
     }
 }
-
-pub fn load_from_json(values: &Value) -> Rc<Material> {
-    let filename = values["material"]["filename"].as_str();
-    let filename = match filename {
-        Some(filename) => filename,
-        _ => {
-            return Lambertian::new(CheckeredTexture::new(
-                ConstantTexture::new(Vec3::new(0.0, 0.0, 0.0)),
-                ConstantTexture::new(Vec3::new(1.0, 0.0, 1.0)),
-                10.0,
-            ));
-        }
-    };
-
-    let scale = values["material"]["scale"].as_f64();
-    let scale = match scale {
-        Some(s) => s,
-        _ => 1.0,
-    };
-
-    let image_file = image::open(filename);
-    let image_file = match image_file {
-        Ok(image_file) => image_file,
-        Err(e) => {
-            eprintln!("ERROR [{}]: {}", filename, e);
-            return Lambertian::new(CheckeredTexture::new(
-                ConstantTexture::new(Vec3::new(0.0, 0.0, 0.0)),
-                ConstantTexture::new(Vec3::new(1.0, 0.0, 1.0)),
-                10.0,
-            ));
-        }
-    };
-
-    Lambertian::new(ImageTexture::new(image_file, scale))
-}
