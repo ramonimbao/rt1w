@@ -23,20 +23,6 @@ use crate::util::{
     world,
 };
 
-fn get_default() -> ((Config, Camera), HitableList) {
-    (
-        (Config::default(), Camera::default()),
-        world::random_scene(),
-    )
-}
-
-fn help() {
-    println!("rt1w -- A Rust implementation of the book Ray Tracing in One Weekend.");
-    println!("Arguments:");
-    println!("   --config [config.json]     Input a configuration JSON file.");
-    println!("   --scene [scene.json]       Input a scene JSON file.");
-}
-
 // Got this from here: https://www.reddit.com/r/rust/comments/a6pvjk/my_first_rust_project/ebx03gn/
 #[derive(StructOpt, Debug)]
 #[structopt(name = "rt1w")]
