@@ -103,5 +103,14 @@ fn main() -> std::io::Result<()> {
 
     let _ = img.save(config.output_filename);
 
+    current_time = time::now();
+    let total_hours = (current_time - start_time).num_hours();
+    let total_mins = (current_time - start_time).num_minutes() % 60;
+    let total_secs = (current_time - start_time).num_seconds() % 60;
+    println!(
+        "Finished in {:02}:{:02}:{:02}",
+        total_hours, total_mins, total_secs
+    );
+
     Ok(())
 }

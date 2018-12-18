@@ -137,7 +137,7 @@
             },
             "material": {
                 "fuzz": 0.05,
-                "type": "matte/image",
+                "type": "metal/image",
                 "filename": "res/images/crate0_diffuse.png",
                 "scale": 1.0
             }

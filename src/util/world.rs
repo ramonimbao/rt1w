@@ -12,9 +12,11 @@ use crate::materials::{
 use crate::shapes::{
     constant_medium::{self, ConstantMedium},
     cuboid::{self, Cuboid},
+    mesh::Mesh,
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
     sphere::{self, Sphere},
+    triangle::Triangle,
 };
 use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
@@ -347,6 +349,48 @@ pub fn load_from_json(filename: String) -> HitableList {
         Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
     ));
     */
+
+    // Triangle test
+    /*
+    list.push(Triangle::new(
+        vec![
+            Vec3::new(-1.0, 1.0, 2.0),
+            Vec3::new(1.0, 1.0, 3.0),
+            Vec3::new(0.0, 2.0, 4.0),
+        ],
+        //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
+        //Metal::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0)), 0.05),
+        Lambertian::new(ImageTexture::new(
+            &image::open("res/images/crate2_diffuse.png").unwrap(),
+            10.0,
+        )),
+    ));
+    */
+
+    // Mesh test
+    list.push(Translate::new(
+        Rotate::new(
+            Mesh::new(
+                "res/models/teapot.stl",
+                //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
+                Metal::new(ConstantTexture::new(Vec3::new(0.87, 0.86, 0.85)), 0.05),
+                0.05,
+            ),
+            Vec3::new(90.0, 0.0, 0.0),
+        ),
+        Vec3::new(-2.0, 0.0, 6.0),
+    ));
+    list.push(Translate::new(
+        Rotate::new(
+            Mesh::new(
+                "res/models/Bunny-LowPoly.stl",
+                Metal::new(ConstantTexture::new(Vec3::new(0.72, 0.92, 0.46)), 0.1),
+                0.015,
+            ),
+            Vec3::new(90.0, 0.0, 0.0),
+        ),
+        Vec3::new(2.0, 0.0, 6.0),
+    ));
 
     HitableList::new(list)
 }

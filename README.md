@@ -21,15 +21,20 @@ Rendering the default scene with the `good.json` config (800×600 at 100 samples
 
 - Implement being able to input random materials via JSON.
 - Implement `--verbose` option input to display all messages.
-- Implement Triangle shape.
-- Implement OBJ model loading.
+- Implement mesh loading via JSON.
 
 # License
 
 This project is licensed under the MIT license - see the [LICENSE.md](LICENSE.md) for details.
 
-Image textures obtained from [OpenGameArt "Seamless Space Rocks Textures Pack (512px)" by mafon2](https://opengameart.org/content/seamless-space-rocks-textures-pack-512px).  
+Image textures obtained from [OpenGameArt: "Seamless Space Rocks Textures Pack (512px)" by mafon2](https://opengameart.org/content/seamless-space-rocks-textures-pack-512px).  
 Licensed under: [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/legalcode)
 
-Crate textures obtained from [OpenGameArt "3 crate textures (w/ bump & normal)" by Luke.RUSTLTD](https://opengameart.org/content/3-crate-textures-w-bump-normal).  
+Crate textures obtained from [OpenGameArt: "3 crate textures (w/ bump & normal)" by Luke.RUSTLTD](https://opengameart.org/content/3-crate-textures-w-bump-normal).  
 Licensed under [CC 0 (Public Domain)](https://creativecommons.org/publicdomain/zero/1.0/legalcode).
+
+Utah Teapot STL file obtained from [Thingiverse: "Utah teapot" by phooky](https://www.thingiverse.com/thing:821).  
+Licensed under [Public Domain](https://creativecommons.org/licenses/publicdomain/).
+
+Stanford Bunny STL file obtained from [Thingiverse: "Low Poly Stanford Bunny" by johnny6](https://www.thingiverse.com/thing:151081).  
+Licensed under [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/).
