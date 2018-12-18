@@ -46,14 +46,14 @@ impl Material for Metal {
 }
 
 // The code here and in the lambert repeat. Maybe there's a way to generalize it?
-pub fn load_from_json(values: &Value, texture_type: TextureType) -> Rc<Material> {
+pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material> {
     let fuzz = values["material"]["fuzz"].as_f64();
     let fuzz = match fuzz {
         Some(f) => f,
         _ => 0.0,
     };
 
-    let result = match texture_type {
+    match *texture_type {
         TextureType::Checkered => {
             let or = values["material"]["colors"][0]["r"].as_f64();
             let og = values["material"]["colors"][0]["g"].as_f64();
@@ -133,7 +133,7 @@ pub fn load_from_json(values: &Value, texture_type: TextureType) -> Rc<Material>
                 }
             };
 
-            Metal::new(ImageTexture::new(image_file, scale), fuzz)
+            Metal::new(ImageTexture::new(&image_file, scale), fuzz)
         }
 
         TextureType::Noise => {
@@ -145,7 +145,5 @@ pub fn load_from_json(values: &Value, texture_type: TextureType) -> Rc<Material>
 
             Metal::new(NoiseTexture::new(scale), fuzz)
         }
-    };
-
-    result
+    }
 }

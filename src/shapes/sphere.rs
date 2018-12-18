@@ -94,19 +94,19 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         let material = values[id][i]["material"]["type"].as_str();
         let material: Rc<Material> = match material {
             Some("matte/constant") => {
-                lambertian::load_from_json(&values[id][i], TextureType::Constant)
+                lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }
             Some("matte/checkered") => {
-                lambertian::load_from_json(&values[id][i], TextureType::Checkered)
+                lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
             }
-            Some("matte/image") => lambertian::load_from_json(&values[id][i], TextureType::Image),
-            Some("matte/noise") => lambertian::load_from_json(&values[id][i], TextureType::Noise),
-            Some("metal/constant") => metal::load_from_json(&values[id][i], TextureType::Constant),
+            Some("matte/image") => lambertian::load_from_json(&values[id][i], &TextureType::Image),
+            Some("matte/noise") => lambertian::load_from_json(&values[id][i], &TextureType::Noise),
+            Some("metal/constant") => metal::load_from_json(&values[id][i], &TextureType::Constant),
             Some("metal/checkered") => {
-                metal::load_from_json(&values[id][i], TextureType::Checkered)
+                metal::load_from_json(&values[id][i], &TextureType::Checkered)
             }
-            Some("metal/image") => metal::load_from_json(&values[id][i], TextureType::Image),
-            Some("metal/noise") => metal::load_from_json(&values[id][i], TextureType::Noise),
+            Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
+            Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
             Some("dielectric") => dielectric::load_from_json(&values[id][i]),
             Some("light") => diffuse_light::load_from_json(&values[id][i]),
             _ => {

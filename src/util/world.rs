@@ -40,23 +40,21 @@ pub fn color(r: &Ray, world: &mut HitableList, depth: usize) -> Vec3 {
                 .material
                 .scatter(&r, &mut rec, &mut attenuation, &mut scattered)
         {
-            return attenuation * color(&scattered, world, depth + 1)
+            attenuation * color(&scattered, world, depth + 1)
                 + if crate::defaults::ENABLE_LIGHTS {
                     emitted
                 } else {
                     Vec3::zero()
-                };
+                }
         } else {
-            return emitted;
+            emitted
         }
+    } else if crate::defaults::ENABLE_LIGHTS {
+        Vec3::zero()
     } else {
-        if crate::defaults::ENABLE_LIGHTS {
-            Vec3::zero()
-        } else {
-            let unit_direction = math::unit_vector(&r.direction);
-            let t = 0.5 * (unit_direction.y + 1.0);
-            Vec3::unit() * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
-        }
+        let unit_direction = math::unit_vector(&r.direction);
+        let t = 0.5 * (unit_direction.y + 1.0);
+        Vec3::unit() * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
     }
 }
 
@@ -129,7 +127,7 @@ fn choose_random_texture() -> Rc<Material> {
     } else if choose_texture < 0.75 {
         let choose_image = rng.gen_range(0, 6);
         Lambertian::new(ImageTexture::new(
-            image::open(match choose_image {
+            &image::open(match choose_image {
                 0 => "res/images/Blood Stone CH16.png",
                 1 => "res/images/Lava Planet CH16.png",
                 //2 => "res/images/Mars CH16.png", // This is too boring
@@ -174,7 +172,7 @@ pub fn random_scene() -> HitableList {
         //Lambertian::new(NoiseTexture::new(10.0)),
         //DiffuseLight::new(ConstantTexture::new(Vec3::unit())),
         Lambertian::new(ImageTexture::new(
-            image::open(match choose_image {
+            &image::open(match choose_image {
                 0 => "res/images/Blood Stone CH16.png",
                 1 => "res/images/Lava Planet CH16.png",
                 //2 => "res/images/Mars CH16.png", // This is too boring
@@ -255,7 +253,7 @@ pub fn random_scene() -> HitableList {
         //Dielectric::new(1.5),
         //Lambertian::new(NoiseTexture::new(10.0)),
         Lambertian::new(ImageTexture::new(
-            image::open(match choose_image {
+            &image::open(match choose_image {
                 0 => "res/images/Blood Stone CH16.png",
                 1 => "res/images/Lava Planet CH16.png",
                 2 => "res/images/Mars CH16.png",
@@ -301,8 +299,7 @@ pub fn random_scene() -> HitableList {
         )),
     ));
 
-    let list = HitableList::new(list);
-    list
+    HitableList::new(list)
 }
 
 pub fn load_from_json(filename: String) -> HitableList {
@@ -341,46 +338,5 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
 
-    // Test plane
-    list.push(Plane::new(
-        Vec3::zero(),
-        Vec3::new(0.0, 1.0, 0.0),
-        Metal::new(
-            ImageTexture::new(image::open("res/images/floor.png").unwrap(), 10.0),
-            0.05,
-        ),
-    ));
-
-    // Test cube
-    /*
-    let mut rng = rand::thread_rng();
-    for a in (-4..5).step_by(1) {
-        for b in (-4..5).step_by(1) {
-            let center = Vec3::new(
-                a as f64 + 0.9 * rng.gen::<f64>(),
-                rng.gen::<f64>() * 4.0 + 0.5,
-                b as f64 + 0.9 * rng.gen::<f64>(),
-            );
-
-            list.push(Translate::new(
-                Rotate::new(
-                    Cuboid::new(
-                        Vec3::new(0.0, 0.0, 0.0),
-                        Vec3::new(0.2, 0.2, 0.2),
-                        DiffuseLight::new(ConstantTexture::new(Vec3::new(
-                            0.5 + rng.gen::<f64>() / 2.0,
-                            0.5 + rng.gen::<f64>() / 2.0,
-                            0.5 + rng.gen::<f64>() / 2.0,
-                        ))),
-                    ),
-                    Vec3::new(35.5, rng.gen::<f64>() * 360.0, 45.0),
-                ),
-                center,
-            ));
-        }
-    }
-    */
-
-    let list = HitableList::new(list);
-    list
+    HitableList::new(list)
 }

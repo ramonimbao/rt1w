@@ -35,8 +35,8 @@ impl Material for Lambertian {
     }
 }
 
-pub fn load_from_json(values: &Value, texture_type: TextureType) -> Rc<Material> {
-    let result = match texture_type {
+pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material> {
+    match *texture_type {
         TextureType::Checkered => {
             let or = values["material"]["colors"][0]["r"].as_f64();
             let og = values["material"]["colors"][0]["g"].as_f64();
@@ -107,7 +107,7 @@ pub fn load_from_json(values: &Value, texture_type: TextureType) -> Rc<Material>
                 }
             };
 
-            Lambertian::new(ImageTexture::new(image_file, scale))
+            Lambertian::new(ImageTexture::new(&image_file, scale))
         }
 
         TextureType::Noise => {
@@ -119,7 +119,5 @@ pub fn load_from_json(values: &Value, texture_type: TextureType) -> Rc<Material>
 
             Lambertian::new(NoiseTexture::new(scale))
         }
-    };
-
-    result
+    }
 }

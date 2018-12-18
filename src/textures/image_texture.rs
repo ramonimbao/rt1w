@@ -17,16 +17,16 @@ pub struct ImageTexture {
 }
 
 impl ImageTexture {
-    pub fn new(image: DynamicImage, scale: f64) -> Rc<ImageTexture> {
+    pub fn new(image: &DynamicImage, scale: f64) -> Rc<ImageTexture> {
         let image = image.to_rgb();
         let (width, height) = image.dimensions();
         let pixels: Vec<Vec3> = image
             .pixels()
             .map(|rgb| {
                 Vec3::new(
-                    rgb[0] as f64 / 255.0,
-                    rgb[1] as f64 / 255.0,
-                    rgb[2] as f64 / 255.0,
+                    f64::from(rgb[0]) / 255.0,
+                    f64::from(rgb[1]) / 255.0,
+                    f64::from(rgb[2]) / 255.0,
                 )
             })
             .collect();
@@ -42,13 +42,13 @@ impl ImageTexture {
 
 impl Texture for ImageTexture {
     fn value(&self, u: f64, v: f64, _: Vec3) -> Vec3 {
-        let i = ((u * self.width as f64 / self.scale) as u32 % self.width) as usize;
-        let j = ((v * self.height as f64 / self.scale) as u32 % self.height) as usize;
+        let i = ((u * f64::from(self.width) / self.scale) as u32 % self.width) as usize;
+        let j = ((v * f64::from(self.height) / self.scale) as u32 % self.height) as usize;
 
-        let r = self.pixels[i + self.width as usize * j].x as f64;
-        let g = self.pixels[i + self.width as usize * j].y as f64;
-        let b = self.pixels[i + self.width as usize * j].z as f64;
+        let red = self.pixels[i + self.width as usize * j].x;
+        let green = self.pixels[i + self.width as usize * j].y;
+        let blue = self.pixels[i + self.width as usize * j].z;
 
-        Vec3::new(r, g, b)
+        Vec3::new(red, green, blue)
     }
 }

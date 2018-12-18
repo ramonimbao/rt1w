@@ -37,7 +37,7 @@ impl Perlin {
                 }
             }
         }
-        trilinear_interp(c, u, v, w)
+        trilinear_interp(&c, u, v, w)
     }
 
     pub fn turbulence(&self, p: Vec3, depth: usize) -> f64 {
@@ -85,7 +85,7 @@ fn permute(p: &mut Vec<i64>) {
     }
 }
 
-fn trilinear_interp(c: Vec<Vec<Vec<Vec3>>>, u: f64, v: f64, w: f64) -> f64 {
+fn trilinear_interp(c: &Vec<Vec<Vec<Vec3>>>, u: f64, v: f64, w: f64) -> f64 {
     let mut accum = 0.0;
     let uu = u * u * (3.0 - 2.0 * u);
     let vv = v * v * (3.0 - 2.0 * v);

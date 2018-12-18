@@ -1,8 +1,6 @@
 use std::f64::consts::PI;
-use std::fs;
 
 use rand::Rng;
-use serde_json::Value;
 
 use crate::defaults;
 use crate::util::{math, ray::Ray, vector3::Vec3};
@@ -72,12 +70,12 @@ impl Camera {
                 defaults::VERTICAL.1,
                 defaults::VERTICAL.2,
             ), // Vertical
-            defaults::FOV,                                    // Field of view
-            defaults::WIDTH as f64 / defaults::HEIGHT as f64, // Aspect ratio
-            defaults::APERTURE,                               // Aperture
-            defaults::FOCUS_DISTANCE,                         // Focus distance
-            defaults::T0,                                     // t_0 for movement
-            defaults::T1,                                     // t_1 for movement
+            defaults::FOV,                                            // Field of view
+            f64::from(defaults::WIDTH) / f64::from(defaults::HEIGHT), // Aspect ratio
+            defaults::APERTURE,                                       // Aperture
+            defaults::FOCUS_DISTANCE,                                 // Focus distance
+            defaults::T0,                                             // t_0 for movement
+            defaults::T1,                                             // t_1 for movement
         )
     }
 

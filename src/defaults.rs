@@ -10,6 +10,6 @@ pub const APERTURE: f64 = 0.05;
 pub const FOCUS_DISTANCE: f64 = 10.0;
 pub const T0: f64 = 0.0;
 pub const T1: f64 = 1.0;
-pub const OUTPUT_FILENAME: &'static str = "output.png";
+pub const OUTPUT_FILENAME: &str = "output.png";
 
 pub const ENABLE_LIGHTS: bool = true;
