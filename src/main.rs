@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use image::{ImageBuffer, Pixel, Rgb};
 use rand::Rng;
+use time::Duration;
 
 use structopt::StructOpt;
 
@@ -41,13 +42,17 @@ fn main() -> std::io::Result<()> {
     let (config, cam) = config::load_from_json(opt.config_file.to_str().unwrap().to_string());
     let mut world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string());
 
-    let total_progress = (config.width * config.height) as f32;
+    let total_progress = (config.width * config.height) as f64;
     let mut current_progress = 0.0;
+    let mut current_time = time::now();
+    let mut previous_time = time::now();
+    let mut previous_progress = 0.0;
 
     let mut img = ImageBuffer::new(config.width, config.height);
 
     let mut rng = rand::thread_rng();
 
+    let start_time = time::now();
     println!("Rendering...");
     for j in 0..config.height {
         for i in 0..config.width {
@@ -67,11 +72,31 @@ fn main() -> std::io::Result<()> {
             img.put_pixel(i, config.height - 1 - j, pixel);
 
             current_progress += 1.0;
-            if opt.verbose {
-                print!(
-                    "Render progress: {:3.3} / 100.000%\r",
-                    current_progress / total_progress * 100.0
-                );
+            current_time = time::now();
+
+            if (current_time - previous_time) >= time::Duration::milliseconds(1000) {
+                let progress = previous_time.tm_nsec as f64
+                    + (total_progress - previous_progress)
+                        * (current_time - previous_time).num_nanoseconds().unwrap() as f64
+                        / (current_progress - previous_progress);
+                let time = Duration::nanoseconds(progress as i64);
+
+                let hours = time.num_hours();
+                let mins = time.num_minutes() % 60;
+                let secs = time.num_seconds() % 60;
+
+                previous_progress = current_progress;
+                previous_time = current_time;
+
+                if opt.verbose {
+                    println!(
+                        "ETA: {:02}:{:02}:{:02} | Render progress: {:3.1} / 100.0%\r",
+                        hours,
+                        mins,
+                        secs,
+                        current_progress / total_progress * 100.0
+                    );
+                }
             }
         }
     }
