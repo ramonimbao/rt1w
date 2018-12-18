@@ -20,7 +20,7 @@ use crate::util::{
 };
 
 // Got this from here: https://www.reddit.com/r/rust/comments/a6pvjk/my_first_rust_project/ebx03gn/
-#[derive(StructOpt, Debug)]
+#[derive(StructOpt)]
 #[structopt(name = "rt1w")]
 struct Opt {
     /// Show verbose output

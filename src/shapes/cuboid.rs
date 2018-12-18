@@ -2,7 +2,8 @@ use std::rc::Rc;
 
 use serde_json::Value;
 
-use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
+use crate::materials::{blank::Blank, dielectric, diffuse_light, lambertian, metal, Material};
+use crate::shapes::constant_medium::ConstantMedium;
 use crate::textures::TextureType;
 use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
@@ -91,6 +92,8 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
     for i in 0..length {
         // Get the parameters
+        let density = json::get_f64_or_rand(&values[id][i]["density"]);
+
         let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
         let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
         let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
@@ -147,13 +150,30 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
             }
         };
 
-        list.push(Translate::new(
-            Rotate::new(
-                Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
-                Vec3::new(rx, ry, rz),
-            ),
-            Vec3::new(px, py, pz),
-        ));
+        match density {
+            Some(density) => {
+                list.push(Translate::new(
+                    Rotate::new(
+                        ConstantMedium::new(
+                            density,
+                            Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), Blank::new()),
+                            material,
+                        ),
+                        Vec3::new(rx, ry, rz),
+                    ),
+                    Vec3::new(px, py, pz),
+                ));
+            }
+            None => {
+                list.push(Translate::new(
+                    Rotate::new(
+                        Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
+                        Vec3::new(rx, ry, rz),
+                    ),
+                    Vec3::new(px, py, pz),
+                ));
+            }
+        }
     }
 
     list

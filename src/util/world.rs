@@ -6,10 +6,11 @@ use rand::Rng;
 use serde_json::Value;
 
 use crate::materials::{
-    dielectric::Dielectric, diffuse_light::DiffuseLight, lambertian::Lambertian, metal::Metal,
-    Material,
+    blank::Blank, dielectric::Dielectric, diffuse_light::DiffuseLight, isotropic::Isotropic,
+    lambertian::Lambertian, metal::Metal, Material,
 };
 use crate::shapes::{
+    constant_medium::{self, ConstantMedium},
     cuboid::{self, Cuboid},
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
@@ -337,6 +338,15 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut cuboid::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
+
+    // Volume test
+    /*
+    list.push(ConstantMedium::new(
+        0.5,
+        Sphere::new(Vec3::new(0.0, 1.0, 4.0), 1.0, Blank::new()),
+        Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
+    ));
+    */
 
     HitableList::new(list)
 }

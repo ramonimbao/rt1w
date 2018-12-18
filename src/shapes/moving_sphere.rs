@@ -18,7 +18,7 @@ pub struct MovingSphere {
     t1: f64,
     center0: Vec3,
     center1: Vec3,
-    material: Rc<Material>,
+    pub material: Rc<Material>,
 }
 
 impl MovingSphere {

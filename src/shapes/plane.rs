@@ -15,7 +15,7 @@ use crate::util::{
 pub struct Plane {
     position: Vec3,
     normal: Vec3,
-    material: Rc<Material>,
+    pub material: Rc<Material>,
 }
 
 impl Plane {
