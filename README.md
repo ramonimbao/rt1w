@@ -10,7 +10,7 @@ Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
 # Usage
 
-Run the program with `cargo run --release`. You can also give it a JSON configuration file as an argument to change the render settings without having to recompile the program using `--config [config.json]`. Scene loading is also now supported using `--scene [scene.json]`. You can also run the program in single-threaded mode by passing `--single-threaded` for whatever reason. ¯\\_(ツ)_/¯
+Run the program with `cargo run --release`. You can also give it a JSON configuration file as an argument to change the render settings without having to recompile the program using `--config [config.json]`. Scene loading is also now supported using `--scene [scene.json]`. You can also run the program in single-threaded mode by passing `--single-threaded` for whatever reason. ¯\\\_(ツ)\_/¯
 
 Example:  
 `$ rt1w --scene res/scenes/texture-test.json --config res/config/front-good.json`
@@ -22,7 +22,7 @@ The following are a few stats on renders done on a PC with an i3-2100 CPU. You c
 | | Multithreaded | Single threaded |  
 | --- | --- | --- |
 | Cornell box at 800×600 with 10 SPP | 1m 50s | 4m 19s |
-| Cornell box at 800x600 with 100 SPP | 21m 05s | 41m 14s |
+| Cornell box at 800×600 with 100 SPP | 21m 05s | 41m 14s |
 
 # To Do
 
