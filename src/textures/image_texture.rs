@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use image::DynamicImage;
 use serde_json::Value;
@@ -17,7 +17,7 @@ pub struct ImageTexture {
 }
 
 impl ImageTexture {
-    pub fn new(image: &DynamicImage, scale: f64) -> Rc<ImageTexture> {
+    pub fn new(image: &DynamicImage, scale: f64) -> Arc<ImageTexture> {
         let image = image.to_rgb();
         let (width, height) = image.dimensions();
         let pixels: Vec<Vec3> = image
@@ -31,7 +31,7 @@ impl ImageTexture {
             })
             .collect();
 
-        Rc::new(ImageTexture {
+        Arc::new(ImageTexture {
             pixels,
             width,
             height,

@@ -1,7 +1,7 @@
 use std::rc::Rc;
+use std::sync::Arc;
 
-use crate::materials::{lambertian::Lambertian, Material};
-use crate::textures::constant_texture::ConstantTexture;
+use crate::materials::{blank::Blank, Material};
 use crate::util::{ray::Ray, vector3::Vec3};
 
 #[derive(Clone)]
@@ -11,7 +11,7 @@ pub struct HitRecord {
     pub v: f64,
     pub p: Vec3,
     pub normal: Vec3,
-    pub material: Rc<Material>,
+    pub material: Arc<Material>,
 }
 
 impl HitRecord {
@@ -22,7 +22,7 @@ impl HitRecord {
             v: 0.0,
             p: Vec3::zero(),
             normal: Vec3::zero(),
-            material: Lambertian::new(ConstantTexture::new(Vec3::zero())),
+            material: Blank::new(),
         }
     }
 }

@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -12,8 +12,8 @@ pub struct NoiseTexture {
 }
 
 impl NoiseTexture {
-    pub fn new(scale: f64) -> Rc<NoiseTexture> {
-        Rc::new(NoiseTexture {
+    pub fn new(scale: f64) -> Arc<NoiseTexture> {
+        Arc::new(NoiseTexture {
             noise: Perlin::new(),
             scale,
         })

@@ -1,5 +1,3 @@
-use std::f64::consts::PI;
-
 use rand::Rng;
 
 use crate::defaults;
@@ -33,7 +31,7 @@ impl Camera {
         let _w = math::unit_vector(&(look_from - look_at));
         let _u = math::unit_vector(&math::cross(&vup, &_w));
         let _v = math::cross(&_w, &_u);
-        let theta = vfov * PI / 180.0;
+        let theta = vfov * std::f64::consts::PI / 180.0;
         let half_height = (theta / 2.0).tan();
         let half_width = aspect * half_height;
         Camera {

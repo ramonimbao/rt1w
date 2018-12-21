@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -20,7 +20,7 @@ pub struct Cuboid {
 
 // Derp. I forgot there's a `hitable_list` which implements exactly what I wanted already.
 impl Cuboid {
-    pub fn new(origin: Vec3, size: Vec3, material: Rc<Material>) -> Box<Hitable> {
+    pub fn new(origin: Vec3, size: Vec3, material: Arc<Material>) -> Box<Hitable> {
         let mut components: Vec<Box<Hitable>> = Vec::new();
 
         let min = origin - (size / 2.0);
@@ -127,7 +127,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         let material = values[id][i]["material"]["type"].as_str();
-        let material: Rc<Material> = match material {
+        let material: Arc<Material> = match material {
             Some("matte/constant") => {
                 lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }
@@ -181,13 +181,13 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
 
 // Eww, lotsa repeatin' code here...
 
-struct RectXY {
+pub struct RectXY {
     min: Vec3,
     max: Vec3,
     // Z for min and max will be disregarded
     z: f64,
     normal_flip: bool,
-    material: Rc<Material>,
+    material: Arc<Material>,
 }
 
 impl RectXY {
@@ -196,7 +196,7 @@ impl RectXY {
         max: Vec3,
         z: f64,
         normal_flip: bool,
-        material: Rc<Material>,
+        material: Arc<Material>,
     ) -> Box<RectXY> {
         Box::new(RectXY {
             min,
@@ -235,13 +235,13 @@ impl Hitable for RectXY {
     }
 }
 
-struct RectXZ {
+pub struct RectXZ {
     min: Vec3,
     max: Vec3,
     // Z for min and max will be disregarded
     y: f64,
     normal_flip: bool,
-    material: Rc<Material>,
+    material: Arc<Material>,
 }
 
 impl RectXZ {
@@ -250,7 +250,7 @@ impl RectXZ {
         max: Vec3,
         y: f64,
         normal_flip: bool,
-        material: Rc<Material>,
+        material: Arc<Material>,
     ) -> Box<RectXZ> {
         Box::new(RectXZ {
             min,
@@ -289,13 +289,13 @@ impl Hitable for RectXZ {
     }
 }
 
-struct RectYZ {
+pub struct RectYZ {
     min: Vec3,
     max: Vec3,
-    // Z for min and max will be disregarded
+    // X for min and max will be disregarded
     x: f64,
     normal_flip: bool,
-    material: Rc<Material>,
+    material: Arc<Material>,
 }
 
 impl RectYZ {
@@ -304,7 +304,7 @@ impl RectYZ {
         max: Vec3,
         x: f64,
         normal_flip: bool,
-        material: Rc<Material>,
+        material: Arc<Material>,
     ) -> Box<RectYZ> {
         Box::new(RectYZ {
             min,

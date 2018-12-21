@@ -1,9 +1,4 @@
 {
-    "skybox": {
-        "r": 0.25,
-        "g": 0.25,
-        "b": 0.25
-    },
     "planes": [
         {
             "position": {
@@ -18,7 +13,7 @@
             },
             "material": {
                 "fuzz": 0.05,
-                "type": "metal/image",
+                "type": "matte/image",
                 "filename": "res/images/floor.png",
                 "scale": 10
             },
@@ -101,18 +96,17 @@
             }
         },
         {
-            "density": 0.05,
-            "radius": 5,
+            "radius": 2000,
             "position": {
                 "x": 0,
-                "y": 5,
-                "z": -5
+                "y": 3000,
+                "z": -3000
             },
             "material": {
                 "type": "light",
                 "color": {
                     "r": 1.0,
-                    "g": 0.75,
+                    "g": 1.0,
                     "b": 1.0
                 }
             }

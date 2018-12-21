@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -18,7 +18,7 @@ pub struct MovingSphere {
     t1: f64,
     center0: Vec3,
     center1: Vec3,
-    pub material: Rc<Material>,
+    pub material: Arc<Material>,
 }
 
 impl MovingSphere {
@@ -28,7 +28,7 @@ impl MovingSphere {
         t0: f64,
         t1: f64,
         radius: f64,
-        material: Rc<Material>,
+        material: Arc<Material>,
     ) -> Box<MovingSphere> {
         Box::new(MovingSphere {
             radius,
@@ -125,7 +125,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         let material = values[id][i]["material"]["type"].as_str();
-        let material: Rc<Material> = match material {
+        let material: Arc<Material> = match material {
             Some("matte/constant") => {
                 lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }

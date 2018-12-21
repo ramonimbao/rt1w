@@ -1,16 +1,16 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::materials::Material;
 use crate::textures::Texture;
 use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
 
 pub struct Isotropic {
-    texture: Rc<Texture>,
+    texture: Arc<Texture>,
 }
 
 impl Isotropic {
-    pub fn new(texture: Rc<Texture>) -> Rc<Isotropic> {
-        Rc::new(Isotropic { texture })
+    pub fn new(texture: Arc<Texture>) -> Arc<Isotropic> {
+        Arc::new(Isotropic { texture })
     }
 }
 

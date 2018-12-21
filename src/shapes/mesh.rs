@@ -1,5 +1,5 @@
 use std::fs::OpenOptions;
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -20,7 +20,7 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn new(filename: &str, material: Rc<Material>, scale: f64) -> Box<Hitable> {
+    pub fn new(filename: &str, material: Arc<Material>, scale: f64) -> Box<Hitable> {
         let mut triangles: Vec<Box<Hitable>> = Vec::new();
 
         let mut file = OpenOptions::new().read(true).open(filename).unwrap();

@@ -1,18 +1,18 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use rand::Rng;
 use serde_json::Value;
 
 use crate::materials::Material;
-use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
+use crate::util::{hitable::HitRecord, json, math, ray::Ray, vector3::Vec3};
 
 pub struct Dielectric {
     refractive_index: f64,
 }
 
 impl Dielectric {
-    pub fn new(refractive_index: f64) -> Rc<Dielectric> {
-        Rc::new(Dielectric { refractive_index })
+    pub fn new(refractive_index: f64) -> Arc<Dielectric> {
+        Arc::new(Dielectric { refractive_index })
     }
 }
 
@@ -58,8 +58,8 @@ impl Material for Dielectric {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Rc<Material> {
-    let ri = values["material"]["refractive_index"].as_f64();
+pub fn load_from_json(values: &Value) -> Arc<Material> {
+    let ri = json::get_f64_or_rand(&values["material"]["refractive_index"]);
     let ri = match ri {
         Some(f) => f,
         _ => 1.0,

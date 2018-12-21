@@ -1,0 +1,254 @@
+{
+	"planes": [
+		{
+			"name": "back",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 500
+			},
+			"normal": {
+				"x": 0,
+				"y": 0,
+				"z": -1
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.73,
+					"g": 0.73,
+					"b": 0.73
+				}
+			}
+		},
+		{
+			"name": "left",
+			"position": {
+				"x": 250,
+				"y": 0,
+				"z": 0
+			},
+			"normal": {
+				"x": -1,
+				"y": 0,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.12,
+					"g": 0.45,
+					"b": 0.15
+				}
+			}
+		},
+		{
+			"name": "right",
+			"position": {
+				"x": -250,
+				"y": 0,
+				"z": 0
+			},
+			"normal": {
+				"x": 1,
+				"y": 0,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.65,
+					"g": 0.05,
+					"b": 0.05
+				}
+			}
+		},
+		{
+			"name": "bottom",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"normal": {
+				"x": 0,
+				"y": 1,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.73,
+					"g": 0.73,
+					"b": 0.73
+				}
+			}
+		},
+		{
+			"name": "top",
+			"position": {
+				"x": 0,
+				"y": 500,
+				"z": 0
+			},
+			"normal": {
+				"x": 0,
+				"y": -1,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.73,
+					"g": 0.73,
+					"b": 0.73
+				}
+			}
+		}
+	],
+	"cuboids": [
+		{
+			"position": {
+				"x": 0,
+				"y": 499,
+				"z": 0
+			},
+			"size": {
+				"x": 300,
+				"y": 1,
+				"z": 300
+			},
+			"material": {
+				"type": "light",
+				"color": {
+					"r": 1,
+					"g": 1,
+					"b": 1
+				}
+			}
+		},
+
+		{
+			"position": {
+				"x": 125,
+				"y": 150,
+				"z": 230
+			},
+			"size": {
+				"x": 150,
+				"y": 300,
+				"z": 150
+			},
+			"rotation": {
+				"x": 0,
+				"y": 15,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.72,
+					"g": 0.72,
+					"b": 0.72
+				}
+			}
+		},
+		{
+			"position": {
+				"x": -125,
+				"y": 75,
+				"z": 150
+			},
+			"size": {
+				"x": 150,
+				"y": 150,
+				"z": 150
+			},
+			"rotation": {
+				"x": 0,
+				"y": -18,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.72,
+					"g": 0.72,
+					"b": 0.72
+				}
+			}
+		}
+	],
+	"spheres": [
+		{
+			"position": {
+				"x": 125,
+				"y": 375,
+				"z": 230
+			},
+			"radius": 75,
+			"material": {
+				"type": "metal/constant",
+				"color": {
+					"r": 0.9,
+					"g": 0.9,
+					"b": 0.9
+				},
+				"fuzz": 0.05
+			}
+		},
+		{
+			"position": {
+				"x": -125,
+				"y": 225,
+				"z": 150
+			},
+			"radius": 75,
+			"material": {
+				"type": "metal/constant",
+				"color": {
+					"r": 0.9,
+					"g": 0.9,
+					"b": 0.9
+				},
+				"fuzz": 0.05
+			}
+		},
+		{
+			"position": {
+				"x": 50,
+				"y": 75,
+				"z": 0
+			},
+			"radius": 75,
+			"material": {
+				"type": "dielectric",
+				"refractive_index": 1.5
+			}
+		},
+		{
+			"position": {
+				"x": -50,
+				"y": 50,
+				"z": -125
+			},
+			"radius": 50,
+			"material": {
+				"type": "dielectric",
+				"refractive_index": 1.5
+			}
+		},
+		{
+			"position": {
+				"x": 0,
+				"y": 25,
+				"z": -250
+			},
+			"radius": 25,
+			"material": {
+				"type": "dielectric",
+				"refractive_index": 1.5
+			}
+		}
+	]
+}

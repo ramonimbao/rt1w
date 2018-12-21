@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use rand::Rng;
 
@@ -12,11 +12,11 @@ use crate::util::{
 pub struct ConstantMedium {
     density: f64,
     object: Box<Hitable>,
-    material: Rc<Material>,
+    material: Arc<Material>,
 }
 
 impl ConstantMedium {
-    pub fn new(density: f64, object: Box<Hitable>, material: Rc<Material>) -> Box<ConstantMedium> {
+    pub fn new(density: f64, object: Box<Hitable>, material: Arc<Material>) -> Box<ConstantMedium> {
         Box::new(ConstantMedium {
             density,
             object,

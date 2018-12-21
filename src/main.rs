@@ -40,7 +40,7 @@ struct Opt {
 fn main() -> std::io::Result<()> {
     let opt = Opt::from_args();
     let (config, cam) = config::load_from_json(opt.config_file.to_str().unwrap().to_string());
-    let mut world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string());
+    let world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string());
 
     let total_progress = (config.width * config.height) as f64;
     let mut current_progress = 0.0;
@@ -54,6 +54,9 @@ fn main() -> std::io::Result<()> {
 
     let start_time = time::now();
     println!("Rendering...");
+
+    // TODO: Change this so everything's computed first and stored into a vector (try in parallel!)
+    // before writing it to the image and saving.
     for j in 0..config.height {
         for i in 0..config.width {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
@@ -61,7 +64,7 @@ fn main() -> std::io::Result<()> {
                 let u = (f64::from(i) + rng.gen::<f64>()) / f64::from(config.width);
                 let v = (f64::from(j) + rng.gen::<f64>()) / f64::from(config.height);
                 let r = cam.get_ray(u, v);
-                col += world::color(&r, &mut world, 0);
+                col += world::color(&r, &world, 0);
             }
             col /= f64::from(config.samples);
             col = Vec3::new(col.x.sqrt(), col.y.sqrt(), col.z.sqrt());

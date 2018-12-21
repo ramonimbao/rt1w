@@ -1,13 +1,13 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use crate::materials::Material;
-use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
+use crate::util::{hitable::HitRecord, ray::Ray, vector3::Vec3};
 
 pub struct Blank {}
 
 impl Blank {
-    pub fn new() -> Rc<Blank> {
-        Rc::new(Blank {})
+    pub fn new() -> Arc<Blank> {
+        Arc::new(Blank {})
     }
 }
 

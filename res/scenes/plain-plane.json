@@ -1,0 +1,47 @@
+{
+    "skybox": {
+        "r": 0.25,
+        "g": 0.25,
+        "b": 0.25
+    },
+    "planes": [
+        {
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "normal": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "matte/constant",
+                "color": {
+                    "r": 0.5,
+                    "g": 0.5,
+                    "b": 0.5
+                }
+            }
+        }
+    ],
+    "spheres": [
+        {
+            "radius": 2000,
+            "position": {
+                "x": 0,
+                "y": 3000,
+                "z": -3000
+            },
+            "material": {
+                "type": "light",
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            }
+        }
+    ]
+}

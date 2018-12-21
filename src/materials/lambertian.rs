@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use image;
 use serde_json::Value;
@@ -8,15 +8,15 @@ use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
     image_texture::ImageTexture, noise_texture::NoiseTexture, Texture, TextureType,
 };
-use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
+use crate::util::{hitable::HitRecord, json, math, ray::Ray, vector3::Vec3};
 
 pub struct Lambertian {
-    albedo: Rc<Texture>,
+    albedo: Arc<Texture>,
 }
 
 impl Lambertian {
-    pub fn new(albedo: Rc<Texture>) -> Rc<Lambertian> {
-        Rc::new(Lambertian { albedo })
+    pub fn new(albedo: Arc<Texture>) -> Arc<Lambertian> {
+        Arc::new(Lambertian { albedo })
     }
 }
 
@@ -35,15 +35,15 @@ impl Material for Lambertian {
     }
 }
 
-pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material> {
+pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Material> {
     match *texture_type {
         TextureType::Checkered => {
-            let or = values["material"]["colors"][0]["r"].as_f64();
-            let og = values["material"]["colors"][0]["g"].as_f64();
-            let ob = values["material"]["colors"][0]["b"].as_f64();
-            let er = values["material"]["colors"][1]["r"].as_f64();
-            let eg = values["material"]["colors"][1]["g"].as_f64();
-            let eb = values["material"]["colors"][1]["b"].as_f64();
+            let or = json::get_f64_or_rand(&values["material"]["colors"][0]["r"]);
+            let og = json::get_f64_or_rand(&values["material"]["colors"][0]["g"]);
+            let ob = json::get_f64_or_rand(&values["material"]["colors"][0]["b"]);
+            let er = json::get_f64_or_rand(&values["material"]["colors"][1]["r"]);
+            let eg = json::get_f64_or_rand(&values["material"]["colors"][1]["g"]);
+            let eb = json::get_f64_or_rand(&values["material"]["colors"][1]["b"]);
             let (or, og, ob, er, eg, eb) = match (or, og, ob, er, eg, eb) {
                 (Some(or), Some(og), Some(ob), Some(er), Some(eg), Some(eb)) => {
                     (or, og, ob, er, eg, eb)
@@ -51,7 +51,7 @@ pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material
                 (_, _, _, _, _, _) => (0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
             };
 
-            let scale = values["material"]["scale"].as_f64();
+            let scale = json::get_f64_or_rand(&values["material"]["scale"]);
             let scale = match scale {
                 Some(s) => s,
                 _ => 1.0,
@@ -65,9 +65,9 @@ pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material
         }
 
         TextureType::Constant => {
-            let r = values["material"]["color"]["r"].as_f64();
-            let g = values["material"]["color"]["g"].as_f64();
-            let b = values["material"]["color"]["b"].as_f64();
+            let r = json::get_f64_or_rand(&values["material"]["color"]["r"]);
+            let g = json::get_f64_or_rand(&values["material"]["color"]["g"]);
+            let b = json::get_f64_or_rand(&values["material"]["color"]["b"]);
             let (r, g, b) = match (r, g, b) {
                 (Some(r), Some(g), Some(b)) => (r, g, b),
                 (_, _, _) => (0.0, 0.0, 0.0),
@@ -88,7 +88,7 @@ pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material
                 }
             };
 
-            let scale = values["material"]["scale"].as_f64();
+            let scale = json::get_f64_or_rand(&values["material"]["scale"]);
             let scale = match scale {
                 Some(s) => s,
                 _ => 1.0,
@@ -111,7 +111,7 @@ pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Rc<Material
         }
 
         TextureType::Noise => {
-            let scale = values["material"]["scale"].as_f64();
+            let scale = json::get_f64_or_rand(&values["material"]["scale"]);
             let scale = match scale {
                 Some(s) => s,
                 _ => 1.0,

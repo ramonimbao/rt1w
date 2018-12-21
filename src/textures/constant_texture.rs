@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -11,8 +11,8 @@ pub struct ConstantTexture {
 }
 
 impl ConstantTexture {
-    pub fn new(color: Vec3) -> Rc<ConstantTexture> {
-        Rc::new(ConstantTexture { color })
+    pub fn new(color: Vec3) -> Arc<ConstantTexture> {
+        Arc::new(ConstantTexture { color })
     }
 }
 

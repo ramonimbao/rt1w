@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -7,14 +7,14 @@ use crate::textures::{constant_texture::ConstantTexture, Texture};
 use crate::util::vector3::Vec3;
 
 pub struct CheckeredTexture {
-    odd: Rc<Texture>,
-    even: Rc<Texture>,
+    odd: Arc<Texture>,
+    even: Arc<Texture>,
     scale: f64,
 }
 
 impl CheckeredTexture {
-    pub fn new(odd: Rc<Texture>, even: Rc<Texture>, scale: f64) -> Rc<CheckeredTexture> {
-        Rc::new(CheckeredTexture { odd, even, scale })
+    pub fn new(odd: Arc<Texture>, even: Arc<Texture>, scale: f64) -> Arc<CheckeredTexture> {
+        Arc::new(CheckeredTexture { odd, even, scale })
     }
 }
 

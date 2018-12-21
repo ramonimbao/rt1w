@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -15,11 +15,11 @@ use crate::util::{
 pub struct Triangle {
     vertices: Vec<Vec3>,
     normal: Vec3,
-    material: Rc<Material>,
+    material: Arc<Material>,
 }
 
 impl Triangle {
-    pub fn new(vertices: Vec<Vec3>, material: Rc<Material>) -> Box<Triangle> {
+    pub fn new(vertices: Vec<Vec3>, material: Arc<Material>) -> Box<Triangle> {
         let normal = math::cross(&(vertices[1] - vertices[0]), &(vertices[2] - vertices[0]));
 
         Box::new(Triangle {

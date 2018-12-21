@@ -1,5 +1,6 @@
 use std::fs;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use image;
 use rand::Rng;
@@ -11,7 +12,7 @@ use crate::materials::{
 };
 use crate::shapes::{
     constant_medium::{self, ConstantMedium},
-    cuboid::{self, Cuboid},
+    cuboid::{self, Cuboid, RectXY, RectXZ, RectYZ},
     mesh::Mesh,
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
@@ -31,7 +32,7 @@ use crate::util::{
     vector3::Vec3,
 };
 
-pub fn color(r: &Ray, world: &mut HitableList, depth: usize) -> Vec3 {
+pub fn color(r: &Ray, world: &HitableList, depth: usize) -> Vec3 {
     let mut rec = HitRecord::new();
     if world.hit(r, 0.001, std::f64::MAX, &mut rec) {
         let mut scattered = Ray::new(Vec3::zero(), Vec3::zero(), r.time);
@@ -116,7 +117,7 @@ fn skybox(color: Vec3) -> Vec<Box<Hitable>> {
     list
 }
 
-fn choose_random_texture() -> Rc<Material> {
+fn choose_random_texture() -> Arc<Material> {
     let mut rng = rand::thread_rng();
     let choose_texture: f64 = rng.gen();
     if choose_texture < 0.25 {
@@ -163,60 +164,28 @@ pub fn random_scene() -> HitableList {
     let mut rng = rand::thread_rng();
 
     //list.append(&mut skybox(Vec3::new(0.0625, 0.0625, 0.0625)));
-    list.append(&mut skybox(Vec3::new(1.0, 1.0, 1.0)));
-
-    let choose_image = rng.gen_range(0, 6);
-    list.push(Plane::new(
-        Vec3::zero(),
-        Vec3::new(0.0, 1.0, 0.0),
-        //Lambertian::new(ConstantTexture::new(Vec3::new(0.8, 0.8, 0.8))),
-        //Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.05),
-        //Dielectric::new(1.5),
-        //Lambertian::new(NoiseTexture::new(10.0)),
-        //DiffuseLight::new(ConstantTexture::new(Vec3::unit())),
-        Lambertian::new(ImageTexture::new(
-            &image::open(match choose_image {
-                0 => "res/images/Blood Stone CH16.png",
-                1 => "res/images/Lava Planet CH16.png",
-                //2 => "res/images/Mars CH16.png", // This is too boring
-                3 => "res/images/Mine Rocks CH16.png",
-                4 => "res/images/Red rubble ch16.png",
-                _ => "res/images/Snow Planet CH16.png",
-            })
-            .expect("Failed to open file."),
-            10.0,
-        )),
-    ));
-
-    list.push(Sphere::new(
-        Vec3::new(-1000.0, 3000.0, 0.0),
-        1500.0,
-        DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
-    ));
+    //list.append(&mut skybox(Vec3::new(1.0, 1.0, 1.0)));
 
     for a in -11..11 {
         for b in -11..11 {
-            let choose_mat = rng.gen_range(0, 5);
+            let choose_mat = rng.gen::<f64>();
             let center = Vec3::new(
                 a as f64 + 0.9 * rng.gen::<f64>(),
-                3.0,
+                0.2,
                 b as f64 + 0.9 * rng.gen::<f64>(),
             );
             if (center - Vec3::new(4.0, 2.0, 0.0)).length() > 0.9 {
-                if choose_mat == 0 {
-                    // Moving sphere
-                    list.push(MovingSphere::new(
+                if choose_mat < 0.8 {
+                    list.push(Sphere::new(
                         center,
-                        center + Vec3::new(0.0, 0.5 * rng.gen::<f64>(), 0.0),
-                        0.0,
-                        1.0,
                         0.2,
-                        choose_random_texture(),
+                        Lambertian::new(ConstantTexture::new(Vec3::new(
+                            rng.gen::<f64>() * rng.gen::<f64>(),
+                            rng.gen::<f64>() * rng.gen::<f64>(),
+                            rng.gen::<f64>() * rng.gen::<f64>(),
+                        ))),
                     ));
-                } else if choose_mat == 1 {
-                    // Diffuse
-                    list.push(Sphere::new(center, 0.2, choose_random_texture()));
-                } else if choose_mat == 2 {
+                } else if choose_mat < 0.95 {
                     // Metal
                     list.push(Sphere::new(
                         center,
@@ -230,76 +199,28 @@ pub fn random_scene() -> HitableList {
                             0.5 * rng.gen::<f64>(),
                         ),
                     ));
-                } else if choose_mat == 3 {
-                    // Glass
-                    list.push(Sphere::new(center, 0.2, Dielectric::new(2.4)));
                 } else {
-                    // Light
-                    list.push(Sphere::new(
-                        center,
-                        0.2,
-                        DiffuseLight::new(ConstantTexture::new(Vec3::new(
-                            0.5 * rng.gen::<f64>() + 0.5,
-                            0.5 * rng.gen::<f64>() + 0.5,
-                            0.5 * rng.gen::<f64>() + 0.5,
-                        ))),
-                    ))
+                    // Glass
+                    list.push(Sphere::new(center, 0.2, Dielectric::new(1.5)));
                 }
             }
         }
     }
 
-    let choose_image = rng.gen_range(0, 6);
     list.push(Sphere::new(
-        Vec3::new(0.0, 1.1, 0.0),
+        Vec3::new(-4.0, 1.0, 0.0),
         1.0,
-        //Dielectric::new(1.5),
-        //Lambertian::new(NoiseTexture::new(10.0)),
-        Lambertian::new(ImageTexture::new(
-            &image::open(match choose_image {
-                0 => "res/images/Blood Stone CH16.png",
-                1 => "res/images/Lava Planet CH16.png",
-                2 => "res/images/Mars CH16.png",
-                3 => "res/images/Mine Rocks CH16.png",
-                4 => "res/images/Red rubble ch16.png",
-                _ => "res/images/Snow Planet CH16.png",
-            })
-            .expect("Failed to open file."),
-            1.0,
-        )),
-        //DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
+        Dielectric::new(1.5),
     ));
     list.push(Sphere::new(
-        Vec3::new(-4.0, 1.1, 0.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        1.0,
+        DiffuseLight::new(ConstantTexture::new(Vec3::new(4.0, 4.0, 4.0))),
+    ));
+    list.push(Sphere::new(
+        Vec3::new(4.0, 1.0, 0.0),
         1.0,
         Metal::new(ConstantTexture::new(Vec3::new(0.7, 0.6, 0.5)), 0.0),
-    ));
-    list.push(Sphere::new(
-        Vec3::new(4.0, 1.1, 0.0),
-        1.0,
-        //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
-        Dielectric::new(1.8),
-    ));
-    list.push(Sphere::new(
-        Vec3::new(-3.9, 1.1, 0.0),
-        1.0,
-        //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
-        Dielectric::new(1.8),
-    ));
-    list.push(Sphere::new(
-        Vec3::new(3.0, 3.0, -1.0),
-        1.0,
-        //Metal::new(Vec3::new(0.7, 0.6, 0.5), 0.0),
-        DiffuseLight::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0))),
-    ));
-    list.push(Sphere::new(
-        Vec3::new(-8.0, 1.1, 0.0),
-        1.0,
-        Lambertian::new(CheckeredTexture::new(
-            ConstantTexture::new(Vec3::new(0.0, 0.0, 0.0)),
-            ConstantTexture::new(Vec3::new(0.95, 0.05, 0.95)),
-            10.0,
-        )),
     ));
 
     HitableList::new(list)
@@ -340,57 +261,6 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut cuboid::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
-
-    // Volume test
-    /*
-    list.push(ConstantMedium::new(
-        0.5,
-        Sphere::new(Vec3::new(0.0, 1.0, 4.0), 1.0, Blank::new()),
-        Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
-    ));
-    */
-
-    // Triangle test
-    /*
-    list.push(Triangle::new(
-        vec![
-            Vec3::new(-1.0, 1.0, 2.0),
-            Vec3::new(1.0, 1.0, 3.0),
-            Vec3::new(0.0, 2.0, 4.0),
-        ],
-        //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
-        //Metal::new(ConstantTexture::new(Vec3::new(1.0, 1.0, 1.0)), 0.05),
-        Lambertian::new(ImageTexture::new(
-            &image::open("res/images/crate2_diffuse.png").unwrap(),
-            10.0,
-        )),
-    ));
-    */
-
-    // Mesh test
-    list.push(Translate::new(
-        Rotate::new(
-            Mesh::new(
-                "res/models/teapot.stl",
-                //Lambertian::new(ConstantTexture::new(Vec3::new(1.0, 0.0, 0.0))),
-                Metal::new(ConstantTexture::new(Vec3::new(0.87, 0.86, 0.85)), 0.05),
-                0.05,
-            ),
-            Vec3::new(90.0, 0.0, 0.0),
-        ),
-        Vec3::new(-2.0, 0.0, 6.0),
-    ));
-    list.push(Translate::new(
-        Rotate::new(
-            Mesh::new(
-                "res/models/Bunny-LowPoly.stl",
-                Metal::new(ConstantTexture::new(Vec3::new(0.72, 0.92, 0.46)), 0.1),
-                0.015,
-            ),
-            Vec3::new(90.0, 0.0, 0.0),
-        ),
-        Vec3::new(2.0, 0.0, 6.0),
-    ));
 
     HitableList::new(list)
 }

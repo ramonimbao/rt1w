@@ -1,5 +1,6 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
+use image;
 use serde_json::Value;
 
 use crate::materials::Material;
@@ -7,12 +8,12 @@ use crate::textures::{constant_texture::ConstantTexture, Texture};
 use crate::util::{hitable::HitRecord, json, ray::Ray, vector3::Vec3};
 
 pub struct DiffuseLight {
-    emitter: Rc<Texture>,
+    emitter: Arc<Texture>,
 }
 
 impl DiffuseLight {
-    pub fn new(emitter: Rc<Texture>) -> Rc<DiffuseLight> {
-        Rc::new(DiffuseLight { emitter })
+    pub fn new(emitter: Arc<Texture>) -> Arc<DiffuseLight> {
+        Arc::new(DiffuseLight { emitter })
     }
 }
 
@@ -32,7 +33,7 @@ impl Material for DiffuseLight {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Rc<Material> {
+pub fn load_from_json(values: &Value) -> Arc<Material> {
     let r = json::get_f64_or_rand(&values["material"]["color"]["r"]);
     let g = json::get_f64_or_rand(&values["material"]["color"]["g"]);
     let b = json::get_f64_or_rand(&values["material"]["color"]["b"]);

@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 
 use serde_json::Value;
 
@@ -16,11 +16,11 @@ use crate::util::{
 pub struct Sphere {
     center: Vec3,
     radius: f64,
-    material: Rc<Material>,
+    material: Arc<Material>,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64, material: Rc<Material>) -> Box<Sphere> {
+    pub fn new(center: Vec3, radius: f64, material: Arc<Material>) -> Box<Sphere> {
         Box::new(Sphere {
             center,
             radius,
@@ -99,7 +99,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         let material = values[id][i]["material"]["type"].as_str();
-        let material: Rc<Material> = match material {
+        let material: Arc<Material> = match material {
             Some("matte/constant") => {
                 lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }
