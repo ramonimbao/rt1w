@@ -49,9 +49,6 @@ fn main() -> std::io::Result<()> {
     if !opt.single_threaded {
         println!("Rendering in multithreaded mode...");
 
-        let 
-
-
         // I have to give credit to https://github.com/rudolphalmeida/raytrac for letting me
         // see how easy it is to parallelize this whole thing. Whew!
         let result: Vec<Vec<Vec3>> = (0..config.height)
