@@ -13,7 +13,7 @@ use crate::materials::{
 use crate::shapes::{
     constant_medium::{self, ConstantMedium},
     cuboid::{self, Cuboid, RectXY, RectXZ, RectYZ},
-    mesh::Mesh,
+    mesh::{self, Mesh},
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
     sphere::{self, Sphere},
@@ -259,6 +259,7 @@ pub fn load_from_json(filename: String) -> HitableList {
     list.append(&mut moving_sphere::load_from_json(&values));
     list.append(&mut plane::load_from_json(&values));
     list.append(&mut cuboid::load_from_json(&values));
+    list.append(&mut mesh::load_from_json(&values));
     list.append(&mut load_skybox_from_json(&values));
     println!("Done loading.");
 

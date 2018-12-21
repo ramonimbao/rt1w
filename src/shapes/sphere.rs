@@ -78,66 +78,80 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
         // like usual...
         let density = json::get_f64_or_rand(&values[id][i]["density"]);
 
-        let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
-        let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
-        let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
-        let (px, py, pz) = match (px, py, pz) {
-            (Some(x), Some(y), Some(z)) => (x, y, z),
-            (_, _, _) => {
-                eprintln!("ERROR: Can't get position of sphere {}! Skipping...", i);
-                continue;
-            }
-        };
+        let copies = json::get_f64_or_rand(&values[id][i]["copies"]);
+        let copies = match copies {
+            Some(n) => n,
+            _ => 1.0,
+        } as usize;
 
-        let radius = json::get_f64_or_rand(&values[id][i]["radius"]);
-        let radius = match radius {
-            Some(r) => r,
-            _ => {
-                eprintln!("ERROR: Can't get radius of sphere {}! Skipping...", i);
-                continue;
-            }
-        };
+        for _ in 0..copies {
+            let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
+            let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
+            let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
+            let (px, py, pz) = match (px, py, pz) {
+                (Some(x), Some(y), Some(z)) => (x, y, z),
+                (_, _, _) => {
+                    eprintln!("ERROR: Can't get position of sphere {}! Skipping...", i);
+                    continue;
+                }
+            };
 
-        let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material + Sync + Send> = match material {
-            Some("matte/constant") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Constant)
-            }
-            Some("matte/checkered") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("matte/image") => lambertian::load_from_json(&values[id][i], &TextureType::Image),
-            Some("matte/noise") => lambertian::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("metal/constant") => metal::load_from_json(&values[id][i], &TextureType::Constant),
-            Some("metal/checkered") => {
-                metal::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
-            Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
-            Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => {
-                eprintln!("ERROR: Can't get material of sphere {}! Skipping...", i);
-                continue;
-            }
-        };
+            let radius = json::get_f64_or_rand(&values[id][i]["radius"]);
+            let radius = match radius {
+                Some(r) => r,
+                _ => {
+                    eprintln!("ERROR: Can't get radius of sphere {}! Skipping...", i);
+                    continue;
+                }
+            };
 
-        match density {
-            Some(density) => {
-                list.push(Translate::new(
-                    ConstantMedium::new(
-                        density,
-                        Sphere::new(Vec3::zero(), radius, Blank::new()),
-                        material,
-                    ),
-                    Vec3::new(px, py, pz),
-                ));
-            }
-            None => {
-                list.push(Translate::new(
-                    Sphere::new(Vec3::zero(), radius, material),
-                    Vec3::new(px, py, pz),
-                ));
+            let material = values[id][i]["material"]["type"].as_str();
+            let material: Arc<Material + Sync + Send> = match material {
+                Some("matte/constant") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("matte/checkered") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("matte/image") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Image)
+                }
+                Some("matte/noise") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Noise)
+                }
+                Some("metal/constant") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("metal/checkered") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
+                Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
+                Some("dielectric") => dielectric::load_from_json(&values[id][i]),
+                Some("light") => diffuse_light::load_from_json(&values[id][i]),
+                _ => {
+                    eprintln!("ERROR: Can't get material of sphere {}! Skipping...", i);
+                    continue;
+                }
+            };
+
+            match density {
+                Some(density) => {
+                    list.push(Translate::new(
+                        ConstantMedium::new(
+                            density,
+                            Sphere::new(Vec3::zero(), radius, Blank::new()),
+                            material,
+                        ),
+                        Vec3::new(px, py, pz),
+                    ));
+                }
+                None => {
+                    list.push(Translate::new(
+                        Sphere::new(Vec3::zero(), radius, material),
+                        Vec3::new(px, py, pz),
+                    ));
+                }
             }
         }
     }

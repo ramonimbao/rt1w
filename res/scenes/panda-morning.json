@@ -1,0 +1,70 @@
+{
+	"skybox": {
+		"r": 0.93,
+		"g": 0.89,
+		"b": 0.69
+	},
+	"meshes": [
+		{
+			"filename": "res/models/panda_dual_black_1000tri.stl",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"x": 90,
+				"y": 45,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.1,
+					"g": 0.1,
+					"b": 0.1
+				}
+			}
+		},
+		{
+			"filename": "res/models/panda_dual_white_1000tri.stl",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"x": 90,
+				"y": 45,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.9,
+					"g": 0.9,
+					"b": 0.9
+				}
+			}
+		}
+	],
+	"spheres": [
+		{
+			"position": {
+				"x": 0,
+				"y": -1000,
+				"z": 0
+			},
+			"radius": 1000,
+			"material": {
+				"type": "metal/constant",
+				"color": {
+					"r": 0.13,
+					"g": 0.69,
+					"b": 0.3
+				},
+				"fuzz": 0.1
+			}
+		}
+	]
+}

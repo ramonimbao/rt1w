@@ -1,0 +1,89 @@
+{
+	"skybox": {
+		"r": 0.05,
+		"g": 0.06,
+		"b": 0.18
+	},
+	"meshes": [
+		{
+			"filename": "res/models/panda_dual_black_1000tri.stl",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"x": 90,
+				"y": 45,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.1,
+					"g": 0.1,
+					"b": 0.1
+				}
+			},
+			"scale": 0.66
+		},
+		{
+			"filename": "res/models/panda_dual_white_1000tri.stl",
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"rotation": {
+				"x": 90,
+				"y": 45,
+				"z": 0
+			},
+			"material": {
+				"type": "matte/constant",
+				"color": {
+					"r": 0.9,
+					"g": 0.9,
+					"b": 0.9
+				}
+			},
+			"scale": 0.66
+		}
+	],
+	"spheres": [
+		{
+			"position": {
+				"x": 0,
+				"y": -1000,
+				"z": 0
+			},
+			"radius": 1000,
+			"material": {
+				"type": "metal/constant",
+				"color": {
+					"r": 0.13,
+					"g": 0.69,
+					"b": 0.3
+				},
+				"fuzz": 0.1
+			}
+		},
+		{
+			"position": {
+				"x": "-150,150",
+				"y": "2,50",
+				"z": "-150,150"
+			},
+			"radius": 0.5,
+			"material": {
+				"type": "light",
+				"color": {
+					"r": 0.13,
+					"g": 0.69,
+					"b": 0.3
+				}
+			},
+			"copies": 250
+		}
+	]
+}
