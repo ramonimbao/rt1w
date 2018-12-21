@@ -44,4 +44,7 @@ Utah Teapot STL file obtained from [Thingiverse: "Utah teapot" by phooky](https:
 Licensed under [Public Domain](https://creativecommons.org/licenses/publicdomain/).
 
 Stanford Bunny STL file obtained from [Thingiverse: "Low Poly Stanford Bunny" by johnny6](https://www.thingiverse.com/thing:151081).  
-Licensed under [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/).
+Licensed under [CC BY-NC 3.0](https://creativecommons.org/licenses/by-nc/3.0/legalcode).
+
+Panda STL file obtained from [Thingiverse: "Sleeping Panda - dual color" by jkavalik](https://www.thingiverse.com/thing:2968129).  
+Licensed under [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/legalcode).
