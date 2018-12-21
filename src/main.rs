@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
 
 use image::{ImageBuffer, Pixel, Rgb};
 use rand::Rng;
@@ -18,7 +19,7 @@ use crate::util::{config, vector3::Vec3, world};
 #[derive(StructOpt)]
 #[structopt(name = "rt1w")]
 struct Opt {
-    /// Show ETA. Currently does not work in multithreaded mode.
+    /// Show ETA for renders
     #[structopt(short = "v", long = "verbose")]
     verbose: bool,
 
@@ -49,6 +50,10 @@ fn main() -> std::io::Result<()> {
     if !opt.single_threaded {
         println!("Rendering in multithreaded mode...");
 
+        let current_progress = Arc::new(Mutex::new(0.0));
+        let previous_progress = Arc::new(Mutex::new(0.0));
+        let previous_time = Arc::new(Mutex::new(time::now()));
+
         // I have to give credit to https://github.com/rudolphalmeida/raytrac for letting me
         // see how easy it is to parallelize this whole thing. Whew!
         let result: Vec<Vec<Vec3>> = (0..config.height)
@@ -64,10 +69,47 @@ fn main() -> std::io::Result<()> {
                             let v = (f64::from(y) + rng.gen::<f64>()) / f64::from(config.height);
                             let r = cam.get_ray(u, v);
                             col += world::color(&r, &world, 0);
-
-                            // TODO: Implement a new way to estimate the time
-                            // while doing this parallel operation
                         }
+
+                        // Thanks to the Rust Book Ch 16.3 for providing me this.
+                        // I mean the algorithm for estimating the time is still bad, but at least it works!
+                        let current_progress = Arc::clone(&current_progress);
+                        let mut current_progress = current_progress.lock().unwrap();
+                        *current_progress += 1.0;
+                        let current_time = time::now();
+
+                        let previous_time = Arc::clone(&previous_time);
+                        let mut previous_time = previous_time.lock().unwrap();
+
+                        let previous_progress = Arc::clone(&previous_progress);
+                        let mut previous_progress = previous_progress.lock().unwrap();
+
+                        if (current_time - *previous_time) >= time::Duration::milliseconds(1000) {
+                            let progress = previous_time.tm_nsec as f64
+                                + (total_progress - *previous_progress)
+                                    * (current_time - *previous_time).num_nanoseconds().unwrap()
+                                        as f64
+                                    / (*current_progress - *previous_progress);
+
+                            let time = Duration::nanoseconds(progress as i64);
+                            let hours = time.num_hours();
+                            let mins = time.num_minutes() % 60;
+                            let secs = time.num_seconds() % 60;
+
+                            *previous_progress = *current_progress;
+                            *previous_time = current_time;
+
+                            if opt.verbose {
+                                println!(
+                                    "ETA: {:02}:{:02}:{:02} | Render progress: {:3.2} / 100.00%\r",
+                                    hours,
+                                    mins,
+                                    secs,
+                                    *current_progress / total_progress * 100.0
+                                );
+                            }
+                        }
+
                         col /= f64::from(config.samples);
                         col = Vec3::new(col.x.sqrt(), col.y.sqrt(), col.z.sqrt());
                         col
@@ -131,7 +173,7 @@ fn main() -> std::io::Result<()> {
 
                     if opt.verbose {
                         println!(
-                            "ETA: {:02}:{:02}:{:02} | Render progress: {:3.1} / 100.0%\r",
+                            "ETA: {:02}:{:02}:{:02} | Render progress: {:3.2} / 100.00%\r",
                             hours,
                             mins,
                             secs,
