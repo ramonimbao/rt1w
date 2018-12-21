@@ -20,8 +20,12 @@ pub struct Cuboid {
 
 // Derp. I forgot there's a `hitable_list` which implements exactly what I wanted already.
 impl Cuboid {
-    pub fn new(origin: Vec3, size: Vec3, material: Arc<Material>) -> Box<Hitable> {
-        let mut components: Vec<Box<Hitable>> = Vec::new();
+    pub fn new(
+        origin: Vec3,
+        size: Vec3,
+        material: Arc<Material + Sync + Send>,
+    ) -> Box<Hitable + Sync> {
+        let mut components: Vec<Box<Hitable + Sync>> = Vec::new();
 
         let min = origin - (size / 2.0);
         let max = origin + (size / 2.0);
@@ -80,8 +84,8 @@ impl Hitable for Cuboid {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
-    let mut list: Vec<Box<Hitable>> = Vec::new();
+pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
+    let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
 
     let id = "cuboids";
 
@@ -127,7 +131,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material> = match material {
+        let material: Arc<Material + Sync + Send> = match material {
             Some("matte/constant") => {
                 lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }
@@ -187,7 +191,7 @@ pub struct RectXY {
     // Z for min and max will be disregarded
     z: f64,
     normal_flip: bool,
-    material: Arc<Material>,
+    material: Arc<Material + Sync + Send>,
 }
 
 impl RectXY {
@@ -196,7 +200,7 @@ impl RectXY {
         max: Vec3,
         z: f64,
         normal_flip: bool,
-        material: Arc<Material>,
+        material: Arc<Material + Sync + Send>,
     ) -> Box<RectXY> {
         Box::new(RectXY {
             min,
@@ -241,7 +245,7 @@ pub struct RectXZ {
     // Z for min and max will be disregarded
     y: f64,
     normal_flip: bool,
-    material: Arc<Material>,
+    material: Arc<Material + Sync + Send>,
 }
 
 impl RectXZ {
@@ -250,7 +254,7 @@ impl RectXZ {
         max: Vec3,
         y: f64,
         normal_flip: bool,
-        material: Arc<Material>,
+        material: Arc<Material + Sync + Send>,
     ) -> Box<RectXZ> {
         Box::new(RectXZ {
             min,
@@ -295,7 +299,7 @@ pub struct RectYZ {
     // X for min and max will be disregarded
     x: f64,
     normal_flip: bool,
-    material: Arc<Material>,
+    material: Arc<Material + Sync + Send>,
 }
 
 impl RectYZ {
@@ -304,7 +308,7 @@ impl RectYZ {
         max: Vec3,
         x: f64,
         normal_flip: bool,
-        material: Arc<Material>,
+        material: Arc<Material + Sync + Send>,
     ) -> Box<RectYZ> {
         Box::new(RectYZ {
             min,

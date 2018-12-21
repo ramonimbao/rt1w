@@ -5,11 +5,11 @@ use crate::textures::Texture;
 use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
 
 pub struct Isotropic {
-    texture: Arc<Texture>,
+    texture: Arc<Texture + Sync + Send>,
 }
 
 impl Isotropic {
-    pub fn new(texture: Arc<Texture>) -> Arc<Isotropic> {
+    pub fn new(texture: Arc<Texture + Sync + Send>) -> Arc<Isotropic> {
         Arc::new(Isotropic { texture })
     }
 }

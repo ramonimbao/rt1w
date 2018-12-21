@@ -15,11 +15,11 @@ use crate::util::{
 pub struct Plane {
     position: Vec3,
     normal: Vec3,
-    pub material: Arc<Material>,
+    pub material: Arc<Material + Sync + Send>,
 }
 
 impl Plane {
-    pub fn new(position: Vec3, normal: Vec3, material: Arc<Material>) -> Box<Plane> {
+    pub fn new(position: Vec3, normal: Vec3, material: Arc<Material + Sync + Send>) -> Box<Plane> {
         Box::new(Plane {
             position,
             normal,
@@ -51,8 +51,8 @@ impl Hitable for Plane {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
-    let mut list: Vec<Box<Hitable>> = Vec::new();
+pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
+    let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
 
     let id = "planes";
 
@@ -100,7 +100,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material> = match material {
+        let material: Arc<Material + Sync + Send> = match material {
             Some("matte/constant") => {
                 lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }

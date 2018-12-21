@@ -8,11 +8,11 @@ use crate::textures::{constant_texture::ConstantTexture, Texture};
 use crate::util::{hitable::HitRecord, json, ray::Ray, vector3::Vec3};
 
 pub struct DiffuseLight {
-    emitter: Arc<Texture>,
+    emitter: Arc<Texture + Sync + Send>,
 }
 
 impl DiffuseLight {
-    pub fn new(emitter: Arc<Texture>) -> Arc<DiffuseLight> {
+    pub fn new(emitter: Arc<Texture + Sync + Send>) -> Arc<DiffuseLight> {
         Arc::new(DiffuseLight { emitter })
     }
 }
@@ -33,7 +33,7 @@ impl Material for DiffuseLight {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Arc<Material> {
+pub fn load_from_json(values: &Value) -> Arc<Material + Sync + Send> {
     let r = json::get_f64_or_rand(&values["material"]["color"]["r"]);
     let g = json::get_f64_or_rand(&values["material"]["color"]["g"]);
     let b = json::get_f64_or_rand(&values["material"]["color"]["b"]);

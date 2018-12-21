@@ -20,8 +20,8 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn new(filename: &str, material: Arc<Material>, scale: f64) -> Box<Hitable> {
-        let mut triangles: Vec<Box<Hitable>> = Vec::new();
+    pub fn new(filename: &str, material: Arc<Material + Sync + Send>, scale: f64) -> Box<Hitable> {
+        let mut triangles: Vec<Box<Hitable + Sync>> = Vec::new();
 
         let mut file = OpenOptions::new().read(true).open(filename).unwrap();
         let stl = stl_io::read_stl(&mut file).unwrap();

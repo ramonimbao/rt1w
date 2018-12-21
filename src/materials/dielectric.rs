@@ -58,7 +58,7 @@ impl Material for Dielectric {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Arc<Material> {
+pub fn load_from_json(values: &Value) -> Arc<Material + Sync + Send> {
     let ri = json::get_f64_or_rand(&values["material"]["refractive_index"]);
     let ri = match ri {
         Some(f) => f,

@@ -15,11 +15,11 @@ use crate::util::{
 pub struct Triangle {
     vertices: Vec<Vec3>,
     normal: Vec3,
-    material: Arc<Material>,
+    material: Arc<Material + Sync + Send>,
 }
 
 impl Triangle {
-    pub fn new(vertices: Vec<Vec3>, material: Arc<Material>) -> Box<Triangle> {
+    pub fn new(vertices: Vec<Vec3>, material: Arc<Material + Sync + Send>) -> Box<Triangle> {
         let normal = math::cross(&(vertices[1] - vertices[0]), &(vertices[2] - vertices[0]));
 
         Box::new(Triangle {

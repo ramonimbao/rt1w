@@ -4,11 +4,11 @@ use crate::util::{
 };
 
 pub struct HitableList {
-    pub list: Vec<Box<Hitable>>,
+    pub list: Vec<Box<Hitable + Sync>>,
 }
 
 impl HitableList {
-    pub fn new(list: Vec<Box<Hitable>>) -> HitableList {
+    pub fn new(list: Vec<Box<Hitable + Sync>>) -> HitableList {
         HitableList { list }
     }
 }

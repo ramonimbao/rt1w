@@ -5,11 +5,11 @@ use crate::util::{
 };
 
 pub struct Rotate {
-    object: Box<Hitable>,
+    object: Box<Hitable + Sync>,
 }
 
 impl Rotate {
-    pub fn new(object: Box<Hitable>, angles: Vec3) -> Box<Hitable> {
+    pub fn new(object: Box<Hitable + Sync>, angles: Vec3) -> Box<Hitable + Sync> {
         Box::new(Rotate {
             object: RotateZ::new(
                 RotateY::new(RotateX::new(object, angles.x), angles.y),
@@ -26,13 +26,13 @@ impl Hitable for Rotate {
 }
 
 struct RotateY {
-    object: Box<Hitable>,
+    object: Box<Hitable + Sync>,
     sin_theta: f64,
     cos_theta: f64,
 }
 
 impl RotateY {
-    pub fn new(object: Box<Hitable>, angle: f64) -> Box<Hitable> {
+    pub fn new(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateY {
             object,
@@ -76,13 +76,13 @@ impl Hitable for RotateY {
 }
 
 struct RotateX {
-    object: Box<Hitable>,
+    object: Box<Hitable + Sync>,
     sin_theta: f64,
     cos_theta: f64,
 }
 
 impl RotateX {
-    pub fn new(object: Box<Hitable>, angle: f64) -> Box<Hitable> {
+    pub fn new(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateX {
             object,
@@ -125,13 +125,13 @@ impl Hitable for RotateX {
 }
 
 struct RotateZ {
-    object: Box<Hitable>,
+    object: Box<Hitable + Sync>,
     sin_theta: f64,
     cos_theta: f64,
 }
 
 impl RotateZ {
-    pub fn new(object: Box<Hitable>, angle: f64) -> Box<Hitable> {
+    pub fn new(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateZ {
             object,

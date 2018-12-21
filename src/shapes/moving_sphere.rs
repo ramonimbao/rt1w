@@ -4,7 +4,7 @@ use serde_json::Value;
 
 use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
 use crate::textures::TextureType;
-use crate::transform::{rotate::Rotate, translate::Translate};
+use crate::transform::translate::Translate;
 use crate::util::{
     hitable::{HitRecord, Hitable},
     json, math,
@@ -18,7 +18,7 @@ pub struct MovingSphere {
     t1: f64,
     center0: Vec3,
     center1: Vec3,
-    pub material: Arc<Material>,
+    pub material: Arc<Material + Sync + Send>,
 }
 
 impl MovingSphere {
@@ -28,7 +28,7 @@ impl MovingSphere {
         t0: f64,
         t1: f64,
         radius: f64,
-        material: Arc<Material>,
+        material: Arc<Material + Sync + Send>,
     ) -> Box<MovingSphere> {
         Box::new(MovingSphere {
             radius,
@@ -76,8 +76,8 @@ impl Hitable for MovingSphere {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
-    let mut list: Vec<Box<Hitable>> = Vec::new();
+pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
+    let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
 
     let id = "moving_spheres";
 
@@ -125,7 +125,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable>> {
         };
 
         let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material> = match material {
+        let material: Arc<Material + Sync + Send> = match material {
             Some("matte/constant") => {
                 lambertian::load_from_json(&values[id][i], &TextureType::Constant)
             }

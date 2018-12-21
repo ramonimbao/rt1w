@@ -27,7 +27,7 @@ use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
-    math,
+    json, math,
     ray::Ray,
     vector3::Vec3,
 };
@@ -62,10 +62,10 @@ pub fn color(r: &Ray, world: &HitableList, depth: usize) -> Vec3 {
     }
 }
 
-fn load_skybox_from_json(values: &Value) -> Vec<Box<Hitable>> {
-    let sr = values["skybox"]["r"].as_f64();
-    let sg = values["skybox"]["g"].as_f64();
-    let sb = values["skybox"]["b"].as_f64();
+fn load_skybox_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
+    let sr = json::get_f64_or_rand(&values["skybox"]["r"]);
+    let sg = json::get_f64_or_rand(&values["skybox"]["g"]);
+    let sb = json::get_f64_or_rand(&values["skybox"]["b"]);
     let (sr, sg, sb) = match (sr, sg, sb) {
         (Some(r), Some(g), Some(b)) => (r, g, b),
         (_, _, _) => return Vec::new(),
@@ -74,11 +74,11 @@ fn load_skybox_from_json(values: &Value) -> Vec<Box<Hitable>> {
     skybox(Vec3::new(sr, sg, sb))
 }
 
-fn skybox(color: Vec3) -> Vec<Box<Hitable>> {
+fn skybox(color: Vec3) -> Vec<Box<Hitable + Sync>> {
     let min = std::f64::MIN / 2.0;
     let max = std::f64::MAX / 2.0;
     let mat = DiffuseLight::new(ConstantTexture::new(color));
-    let list: Vec<Box<Hitable>> = vec![
+    let list: Vec<Box<Hitable + Sync>> = vec![
         // Y planes
         Plane::new(
             Vec3::new(0.0, min, 0.0),
@@ -117,7 +117,7 @@ fn skybox(color: Vec3) -> Vec<Box<Hitable>> {
     list
 }
 
-fn choose_random_texture() -> Arc<Material> {
+fn choose_random_texture() -> Arc<Material + Sync + Send> {
     let mut rng = rand::thread_rng();
     let choose_texture: f64 = rng.gen();
     if choose_texture < 0.25 {
@@ -160,7 +160,7 @@ fn choose_random_texture() -> Arc<Material> {
 }
 
 pub fn random_scene() -> HitableList {
-    let mut list: Vec<Box<Hitable>> = Vec::new();
+    let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
     let mut rng = rand::thread_rng();
 
     //list.append(&mut skybox(Vec3::new(0.0625, 0.0625, 0.0625)));
@@ -254,7 +254,7 @@ pub fn load_from_json(filename: String) -> HitableList {
     println!("Loaded scene data.");
 
     println!("Loading all objects to scene...");
-    let mut list: Vec<Box<Hitable>> = Vec::new();
+    let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
     list.append(&mut sphere::load_from_json(&values));
     list.append(&mut moving_sphere::load_from_json(&values));
     list.append(&mut plane::load_from_json(&values));

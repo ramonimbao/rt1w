@@ -5,12 +5,12 @@ use crate::util::{
 };
 
 pub struct Translate {
-    object: Box<Hitable>,
+    object: Box<Hitable + Sync>,
     offset: Vec3,
 }
 
 impl Translate {
-    pub fn new(object: Box<Hitable>, offset: Vec3) -> Box<Hitable> {
+    pub fn new(object: Box<Hitable + Sync>, offset: Vec3) -> Box<Hitable + Sync> {
         Box::new(Translate { object, offset })
     }
 }

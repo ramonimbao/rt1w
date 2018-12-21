@@ -11,12 +11,16 @@ use crate::util::{
 
 pub struct ConstantMedium {
     density: f64,
-    object: Box<Hitable>,
-    material: Arc<Material>,
+    object: Box<Hitable + Sync>,
+    material: Arc<Material + Sync + Send>,
 }
 
 impl ConstantMedium {
-    pub fn new(density: f64, object: Box<Hitable>, material: Arc<Material>) -> Box<ConstantMedium> {
+    pub fn new(
+        density: f64,
+        object: Box<Hitable + Sync>,
+        material: Arc<Material + Sync + Send>,
+    ) -> Box<ConstantMedium> {
         Box::new(ConstantMedium {
             density,
             object,

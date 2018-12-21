@@ -11,11 +11,11 @@ use crate::textures::{
 use crate::util::{hitable::HitRecord, json, math, ray::Ray, vector3::Vec3};
 
 pub struct Lambertian {
-    albedo: Arc<Texture>,
+    albedo: Arc<Texture + Sync + Send>,
 }
 
 impl Lambertian {
-    pub fn new(albedo: Arc<Texture>) -> Arc<Lambertian> {
+    pub fn new(albedo: Arc<Texture + Sync + Send>) -> Arc<Lambertian> {
         Arc::new(Lambertian { albedo })
     }
 }
@@ -35,7 +35,7 @@ impl Material for Lambertian {
     }
 }
 
-pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Material> {
+pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Material + Sync + Send> {
     match *texture_type {
         TextureType::Checkered => {
             let or = json::get_f64_or_rand(&values["material"]["colors"][0]["r"]);

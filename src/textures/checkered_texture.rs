@@ -7,13 +7,17 @@ use crate::textures::{constant_texture::ConstantTexture, Texture};
 use crate::util::vector3::Vec3;
 
 pub struct CheckeredTexture {
-    odd: Arc<Texture>,
-    even: Arc<Texture>,
+    odd: Arc<Texture + Sync + Send>,
+    even: Arc<Texture + Sync + Send>,
     scale: f64,
 }
 
 impl CheckeredTexture {
-    pub fn new(odd: Arc<Texture>, even: Arc<Texture>, scale: f64) -> Arc<CheckeredTexture> {
+    pub fn new(
+        odd: Arc<Texture + Sync + Send>,
+        even: Arc<Texture + Sync + Send>,
+        scale: f64,
+    ) -> Arc<CheckeredTexture> {
         Arc::new(CheckeredTexture { odd, even, scale })
     }
 }
