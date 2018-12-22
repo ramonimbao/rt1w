@@ -4,9 +4,9 @@ A Rust implementation of the book [*Ray Tracing in One Weekend* by Peter Shirley
 
 Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
-<p align="center">
+<!--<p align="center">
 	<img src="output.png" alt="">	
-</p>
+</p>-->
 
 # Usage
 
@@ -23,6 +23,11 @@ The following are a few stats on renders done on a PC with an i3-2100 CPU. You c
 | --- | --- | --- |
 | Cornell box at 800×600 with 10 SPP | 1m 50s | 4m 19s |
 | Cornell box at 800×600 with 100 SPP | 21m 05s | 41m 14s |
+
+Here are some stats done on my laptop equipped with an i7-7500U CPU. Seems it's 25% than my old desktop. 
+
+| | Multithreaded | Single threaded |  
+| --- | --- | --- |
 | Panda Night at 2524×2524 with 25 SPP | 9h 31m | TBD |
 
 # To Do
