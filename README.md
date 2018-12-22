@@ -23,6 +23,7 @@ The following are a few stats on renders done on a PC with an i3-2100 CPU. You c
 | --- | --- | --- |
 | Cornell box at 800×600 with 10 SPP | 1m 50s | 4m 19s |
 | Cornell box at 800×600 with 100 SPP | 21m 05s | 41m 14s |
+| Panda Night at 2524×2524 with 25 SPP | 9h 31m | TBD |
 
 # To Do
 
