@@ -5,7 +5,7 @@ use serde_json::Value;
 use crate::materials::{lambertian::Lambertian, metal::Metal};
 use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
-    image_texture::ImageTexture, noise_texture::NoiseTexture, Texture, TextureType,
+    image_texture::ImageTexture, noise_texture::NoiseTexture, TextureType,
 };
 use crate::util::{hitable::HitRecord, json, ray::Ray, vector3::Vec3};
 

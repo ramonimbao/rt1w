@@ -1,8 +1,5 @@
 use std::sync::Arc;
 
-use serde_json::Value;
-
-use crate::materials::{lambertian::Lambertian, Material};
 use crate::textures::Texture;
 use crate::util::{perlin::Perlin, vector3::Vec3};
 

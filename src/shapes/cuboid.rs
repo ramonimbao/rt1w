@@ -30,46 +30,52 @@ impl Cuboid {
         let min = origin - (size / 2.0);
         let max = origin + (size / 2.0);
 
-        components.push(RectXY::new(
+        components.push(Rect::new(
+            RectType::RectXY,
             Vec3::new(min.x, min.y, 0.0),
             Vec3::new(max.x, max.y, 0.0),
             min.z,
-            true,
+            NormalType::Flipped,
             material.clone(),
         ));
-        components.push(RectXY::new(
+        components.push(Rect::new(
+            RectType::RectXY,
             Vec3::new(min.x, min.y, 0.0),
             Vec3::new(max.x, max.y, 0.0),
             max.z,
-            false,
+            NormalType::NotFlipped,
             material.clone(),
         ));
-        components.push(RectXZ::new(
+        components.push(Rect::new(
+            RectType::RectXZ,
             Vec3::new(min.x, 0.0, min.z),
             Vec3::new(max.x, 0.0, max.z),
             min.y,
-            true,
+            NormalType::Flipped,
             material.clone(),
         ));
-        components.push(RectXZ::new(
+        components.push(Rect::new(
+            RectType::RectXZ,
             Vec3::new(min.x, 0.0, min.z),
             Vec3::new(max.x, 0.0, max.z),
             max.y,
-            false,
+            NormalType::NotFlipped,
             material.clone(),
         ));
-        components.push(RectYZ::new(
+        components.push(Rect::new(
+            RectType::RectYZ,
             Vec3::new(0.0, min.y, min.z),
             Vec3::new(0.0, max.y, max.z),
             min.x,
-            true,
+            NormalType::Flipped,
             material.clone(),
         ));
-        components.push(RectYZ::new(
+        components.push(Rect::new(
+            RectType::RectYZ,
             Vec3::new(0.0, min.y, min.z),
             Vec3::new(0.0, max.y, max.z),
             max.x,
-            false,
+            NormalType::NotFlipped,
             material.clone(),
         ));
         Box::new(Cuboid {
@@ -199,163 +205,130 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
 // Eww, lotsa repeatin' code here...
 
-pub struct RectXY {
+pub enum RectType {
+    RectXY,
+    RectXZ,
+    RectYZ,
+}
+
+#[derive(PartialEq)]
+pub enum NormalType {
+    Flipped,
+    NotFlipped,
+}
+
+pub struct Rect {
+    rect_type: RectType,
     min: Vec3,
     max: Vec3,
-    // Z for min and max will be disregarded
-    z: f64,
-    normal_flip: bool,
+    offset: f64,
+    normal_flip: NormalType,
     material: Arc<Material + Sync + Send>,
 }
 
-impl RectXY {
+impl Rect {
     pub fn new(
+        rect_type: RectType,
         min: Vec3,
         max: Vec3,
-        z: f64,
-        normal_flip: bool,
+        offset: f64,
+        normal_flip: NormalType,
         material: Arc<Material + Sync + Send>,
-    ) -> Box<RectXY> {
-        Box::new(RectXY {
+    ) -> Box<Rect> {
+        Box::new(Rect {
+            rect_type,
             min,
             max,
-            z,
+            offset,
             normal_flip,
             material,
         })
     }
 }
 
-impl Hitable for RectXY {
+impl Hitable for Rect {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let t = (self.z - r.origin.z) / r.direction.z;
-        if t < t_min || t > t_max {
-            return false;
+        match self.rect_type {
+            RectType::RectXY => {
+                let t = (self.offset - r.origin.z) / r.direction.z;
+                if t < t_min || t > t_max {
+                    return false;
+                }
+                let x = r.origin.x + t * r.direction.x;
+                let y = r.origin.y + t * r.direction.y;
+                if x < self.min.x || x > self.max.x || y < self.min.y || y > self.max.y {
+                    return false;
+                }
+                rec.u = (x - self.min.x) / (self.max.x - self.min.x)
+                    * if self.normal_flip == NormalType::Flipped {
+                        -1.0
+                    } else {
+                        1.0
+                    };
+                rec.v = (self.min.y - y) / (self.max.y - self.min.y);
+                rec.t = t;
+                rec.p = r.point_at_parameter(t);
+                rec.normal = if self.normal_flip == NormalType::Flipped {
+                    Vec3::new(0.0, 0.0, -1.0)
+                } else {
+                    Vec3::new(0.0, 0.0, 1.0)
+                };
+            }
+
+            RectType::RectXZ => {
+                let t = (self.offset - r.origin.y) / r.direction.y;
+                if t < t_min || t > t_max {
+                    return false;
+                }
+                let x = r.origin.x + t * r.direction.x;
+                let z = r.origin.z + t * r.direction.z;
+                if x < self.min.x || x > self.max.x || z < self.min.z || z > self.max.z {
+                    return false;
+                }
+                rec.u = (x - self.min.x) / (self.max.x - self.min.x)
+                    * if self.normal_flip == NormalType::Flipped {
+                        -1.0
+                    } else {
+                        1.0
+                    };
+                rec.v = (z - self.min.z) / (self.max.z - self.min.z);
+                rec.t = t;
+                rec.p = r.point_at_parameter(t);
+                rec.normal = if self.normal_flip == NormalType::Flipped {
+                    Vec3::new(0.0, -1.0, 0.0)
+                } else {
+                    Vec3::new(0.0, 1.0, 0.0)
+                };
+            }
+
+            RectType::RectYZ => {
+                let t = (self.offset - r.origin.x) / r.direction.x;
+                if t < t_min || t > t_max {
+                    return false;
+                }
+                let y = r.origin.y + t * r.direction.y;
+                let z = r.origin.z + t * r.direction.z;
+                if y < self.min.y || y > self.max.y || z < self.min.z || z > self.max.z {
+                    return false;
+                }
+                rec.u = (z - self.min.z) / (self.max.z - self.min.z)
+                    * if self.normal_flip == NormalType::Flipped {
+                        1.0
+                    } else {
+                        -1.0
+                    };
+                rec.v = (self.min.y - y) / (self.max.y - self.min.y);
+                rec.t = t;
+                rec.p = r.point_at_parameter(t);
+                rec.normal = if self.normal_flip == NormalType::Flipped {
+                    Vec3::new(-1.0, 0.0, 0.0)
+                } else {
+                    Vec3::new(1.0, 0.0, 0.0)
+                };
+            }
         }
-        let x = r.origin.x + t * r.direction.x;
-        let y = r.origin.y + t * r.direction.y;
-        if x < self.min.x || x > self.max.x || y < self.min.y || y > self.max.y {
-            return false;
-        }
-        rec.u = (x - self.min.x) / (self.max.x - self.min.x)
-            * if self.normal_flip { -1.0 } else { 1.0 };
-        rec.v = (self.min.y - y) / (self.max.y - self.min.y);
-        rec.t = t;
+
         rec.material = self.material.clone();
-        rec.p = r.point_at_parameter(t);
-        rec.normal = if self.normal_flip {
-            Vec3::new(0.0, 0.0, -1.0)
-        } else {
-            Vec3::new(0.0, 0.0, 1.0)
-        };
-
-        true
-    }
-}
-
-pub struct RectXZ {
-    min: Vec3,
-    max: Vec3,
-    // Z for min and max will be disregarded
-    y: f64,
-    normal_flip: bool,
-    material: Arc<Material + Sync + Send>,
-}
-
-impl RectXZ {
-    pub fn new(
-        min: Vec3,
-        max: Vec3,
-        y: f64,
-        normal_flip: bool,
-        material: Arc<Material + Sync + Send>,
-    ) -> Box<RectXZ> {
-        Box::new(RectXZ {
-            min,
-            max,
-            y,
-            normal_flip,
-            material,
-        })
-    }
-}
-
-impl Hitable for RectXZ {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let t = (self.y - r.origin.y) / r.direction.y;
-        if t < t_min || t > t_max {
-            return false;
-        }
-        let x = r.origin.x + t * r.direction.x;
-        let z = r.origin.z + t * r.direction.z;
-        if x < self.min.x || x > self.max.x || z < self.min.z || z > self.max.z {
-            return false;
-        }
-        rec.u = (x - self.min.x) / (self.max.x - self.min.x)
-            * if self.normal_flip { -1.0 } else { 1.0 };
-        rec.v = (z - self.min.z) / (self.max.z - self.min.z);
-        rec.t = t;
-        rec.material = self.material.clone();
-        rec.p = r.point_at_parameter(t);
-        rec.normal = if self.normal_flip {
-            Vec3::new(0.0, -1.0, 0.0)
-        } else {
-            Vec3::new(0.0, 1.0, 0.0)
-        };
-
-        true
-    }
-}
-
-pub struct RectYZ {
-    min: Vec3,
-    max: Vec3,
-    // X for min and max will be disregarded
-    x: f64,
-    normal_flip: bool,
-    material: Arc<Material + Sync + Send>,
-}
-
-impl RectYZ {
-    pub fn new(
-        min: Vec3,
-        max: Vec3,
-        x: f64,
-        normal_flip: bool,
-        material: Arc<Material + Sync + Send>,
-    ) -> Box<RectYZ> {
-        Box::new(RectYZ {
-            min,
-            max,
-            x,
-            normal_flip,
-            material,
-        })
-    }
-}
-
-impl Hitable for RectYZ {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let t = (self.x - r.origin.x) / r.direction.x;
-        if t < t_min || t > t_max {
-            return false;
-        }
-        let y = r.origin.y + t * r.direction.y;
-        let z = r.origin.z + t * r.direction.z;
-        if y < self.min.y || y > self.max.y || z < self.min.z || z > self.max.z {
-            return false;
-        }
-        rec.u = (z - self.min.z) / (self.max.z - self.min.z)
-            * if self.normal_flip { 1.0 } else { -1.0 };
-        rec.v = (self.min.y - y) / (self.max.y - self.min.y);
-        rec.t = t;
-        rec.material = self.material.clone();
-        rec.p = r.point_at_parameter(t);
-        rec.normal = if self.normal_flip {
-            Vec3::new(-1.0, 0.0, 0.0)
-        } else {
-            Vec3::new(1.0, 0.0, 0.0)
-        };
 
         true
     }

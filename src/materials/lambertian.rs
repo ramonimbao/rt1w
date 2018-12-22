@@ -5,7 +5,7 @@ use serde_json::Value;
 
 use crate::materials::{create_material, Material, MaterialType};
 use crate::textures::{Texture, TextureType};
-use crate::util::{hitable::HitRecord, json, math, ray::Ray, vector3::Vec3};
+use crate::util::{hitable::HitRecord, math, ray::Ray, vector3::Vec3};
 
 pub struct Lambertian {
     albedo: Arc<Texture + Sync + Send>,

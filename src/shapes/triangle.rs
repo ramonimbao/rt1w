@@ -1,13 +1,9 @@
 use std::sync::Arc;
 
-use serde_json::Value;
-
-use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
-use crate::textures::TextureType;
-use crate::transform::{rotate::Rotate, translate::Translate};
+use crate::materials::Material;
 use crate::util::{
     hitable::{HitRecord, Hitable},
-    json, math,
+    math,
     ray::Ray,
     vector3::Vec3,
 };

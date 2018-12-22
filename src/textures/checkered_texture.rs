@@ -1,9 +1,6 @@
 use std::sync::Arc;
 
-use serde_json::Value;
-
-use crate::materials::{lambertian::Lambertian, Material};
-use crate::textures::{constant_texture::ConstantTexture, Texture};
+use crate::textures::Texture;
 use crate::util::vector3::Vec3;
 
 pub struct CheckeredTexture {

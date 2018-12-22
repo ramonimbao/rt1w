@@ -3,21 +3,14 @@ use std::sync::Arc;
 
 use serde_json::Value;
 
-use crate::materials::{
-    blank::Blank,
-    dielectric, diffuse_light,
-    lambertian::{self, Lambertian},
-    metal, Material,
-};
+use crate::materials::{blank::Blank, dielectric, diffuse_light, lambertian, metal, Material};
 use crate::shapes::{constant_medium::ConstantMedium, triangle::Triangle};
-use crate::textures::{
-    checkered_texture::CheckeredTexture, constant_texture::ConstantTexture, TextureType,
-};
+use crate::textures::TextureType;
 use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
-    json, math,
+    json,
     ray::Ray,
     vector3::Vec3,
 };

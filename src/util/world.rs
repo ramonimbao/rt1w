@@ -1,5 +1,4 @@
 use std::fs;
-use std::rc::Rc;
 use std::sync::Arc;
 
 use image;
@@ -12,12 +11,11 @@ use crate::materials::{
 };
 use crate::shapes::{
     constant_medium::{self, ConstantMedium},
-    cuboid::{self, Cuboid, RectXY, RectXZ, RectYZ},
+    cuboid::{self, Cuboid},
     mesh::{self, Mesh},
     moving_sphere::{self, MovingSphere},
     plane::{self, Plane},
     sphere::{self, Sphere},
-    triangle::Triangle,
 };
 use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
