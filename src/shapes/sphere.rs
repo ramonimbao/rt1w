@@ -72,19 +72,14 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
     for i in 0..length {
         // Get the parameters
-
-        // For volumes, I can probably just read if there's a value for `density` in the
-        // JSON file, and if there is, return a volume, and if there isn't, return a sphere
-        // like usual...
-        let density = json::get_f64_or_rand(&values[id][i]["density"]);
-
-        let copies = json::get_f64_or_rand(&values[id][i]["copies"]);
-        let copies = match copies {
+        let copies = match json::get_f64_or_rand(&values[id][i]["copies"]) {
             Some(n) => n,
             _ => 1.0,
         } as usize;
 
         for _ in 0..copies {
+            let density = json::get_f64_or_rand(&values[id][i]["density"]);
+
             let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
             let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
             let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
@@ -96,8 +91,7 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                 }
             };
 
-            let radius = json::get_f64_or_rand(&values[id][i]["radius"]);
-            let radius = match radius {
+            let radius = match json::get_f64_or_rand(&values[id][i]["radius"]) {
                 Some(r) => r,
                 _ => {
                     eprintln!("ERROR: Can't get radius of sphere {}! Skipping...", i);
@@ -105,8 +99,9 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                 }
             };
 
-            let material = values[id][i]["material"]["type"].as_str();
-            let material: Arc<Material + Sync + Send> = match material {
+            let material: Arc<Material + Sync + Send> = match values[id][i]["material"]["type"]
+                .as_str()
+            {
                 Some("matte/constant") => {
                     lambertian::load_from_json(&values[id][i], &TextureType::Constant)
                 }

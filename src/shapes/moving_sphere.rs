@@ -2,9 +2,10 @@ use std::sync::Arc;
 
 use serde_json::Value;
 
-use crate::materials::{dielectric, diffuse_light, lambertian, metal, Material};
+use crate::materials::{blank::Blank, dielectric, diffuse_light, lambertian, metal, Material};
+use crate::shapes::constant_medium::ConstantMedium;
 use crate::textures::TextureType;
-use crate::transform::translate::Translate;
+use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     json, math,
@@ -88,73 +89,124 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
     for i in 0..length {
         // Get the parameters
-        let p0x = json::get_f64_or_rand(&values[id][i]["positions"][0]["x"]);
-        let p0y = json::get_f64_or_rand(&values[id][i]["positions"][0]["y"]);
-        let p0z = json::get_f64_or_rand(&values[id][i]["positions"][0]["z"]);
-        let t0 = json::get_f64_or_rand(&values[id][i]["positions"][0]["t"]);
+        let copies = match json::get_f64_or_rand(&values[id][i]["copies"]) {
+            Some(n) => n,
+            _ => 1.0,
+        } as usize;
 
-        let p1x = json::get_f64_or_rand(&values[id][i]["positions"][1]["x"]);
-        let p1y = json::get_f64_or_rand(&values[id][i]["positions"][1]["y"]);
-        let p1z = json::get_f64_or_rand(&values[id][i]["positions"][1]["z"]);
-        let t1 = json::get_f64_or_rand(&values[id][i]["positions"][1]["t"]);
+        for _ in 0..copies {
+            let density = json::get_f64_or_rand(&values[id][i]["density"]);
 
-        let (p0x, p0y, p0z, p1x, p1y, p1z, t0, t1) = match (p0x, p0y, p0z, p1x, p1y, p1z, t0, t1) {
-            (Some(x0), Some(y0), Some(z0), Some(x1), Some(y1), Some(z1), Some(t0), Some(t1)) => {
-                (x0, y0, z0, x1, y1, z1, t0, t1)
-            }
-            (_, _, _, _, _, _, _, _) => {
-                eprintln!(
-                    "ERROR: Can't get positions of moving_sphere {}! Skipping...",
-                    i
-                );
-                continue;
-            }
-        };
-        let position_difference = Vec3::new(p1x - p0x, p1y - p0y, p1z - p0z);
+            let p0x = json::get_f64_or_rand(&values[id][i]["positions"][0]["x"]);
+            let p0y = json::get_f64_or_rand(&values[id][i]["positions"][0]["y"]);
+            let p0z = json::get_f64_or_rand(&values[id][i]["positions"][0]["z"]);
+            let t0 = json::get_f64_or_rand(&values[id][i]["positions"][0]["t"]);
 
-        let radius = json::get_f64_or_rand(&values[id][i]["radius"]);
-        let radius = match radius {
-            Some(r) => r,
-            _ => {
-                eprintln!(
-                    "ERROR: Can't get radius of moving_sphere {}! Skipping...",
-                    i
-                );
-                continue;
-            }
-        };
+            let p1x = json::get_f64_or_rand(&values[id][i]["positions"][1]["x"]);
+            let p1y = json::get_f64_or_rand(&values[id][i]["positions"][1]["y"]);
+            let p1z = json::get_f64_or_rand(&values[id][i]["positions"][1]["z"]);
+            let t1 = json::get_f64_or_rand(&values[id][i]["positions"][1]["t"]);
 
-        let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material + Sync + Send> = match material {
-            Some("matte/constant") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Constant)
-            }
-            Some("matte/checkered") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("matte/image") => lambertian::load_from_json(&values[id][i], &TextureType::Image),
-            Some("matte/noise") => lambertian::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("metal/constant") => metal::load_from_json(&values[id][i], &TextureType::Constant),
-            Some("metal/checkered") => {
-                metal::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
-            Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
-            Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => {
-                eprintln!(
-                    "ERROR: Can't get material of moving_sphere {}! Skipping...",
-                    i
-                );
-                continue;
-            }
-        };
+            let (p0x, p0y, p0z, p1x, p1y, p1z, t0, t1) =
+                match (p0x, p0y, p0z, p1x, p1y, p1z, t0, t1) {
+                    (
+                        Some(x0),
+                        Some(y0),
+                        Some(z0),
+                        Some(x1),
+                        Some(y1),
+                        Some(z1),
+                        Some(t0),
+                        Some(t1),
+                    ) => (x0, y0, z0, x1, y1, z1, t0, t1),
+                    (_, _, _, _, _, _, _, _) => {
+                        eprintln!(
+                            "ERROR: Can't get positions of moving_sphere {}! Skipping...",
+                            i
+                        );
+                        continue;
+                    }
+                };
+            let position_difference = Vec3::new(p1x - p0x, p1y - p0y, p1z - p0z);
 
-        list.push(Translate::new(
-            MovingSphere::new(Vec3::zero(), position_difference, t0, t1, radius, material),
-            Vec3::new(p0x, p0y, p0z),
-        ));
+            let radius = match json::get_f64_or_rand(&values[id][i]["radius"]) {
+                Some(r) => r,
+                _ => {
+                    eprintln!(
+                        "ERROR: Can't get radius of moving_sphere {}! Skipping...",
+                        i
+                    );
+                    continue;
+                }
+            };
+
+            let material: Arc<Material + Sync + Send> = match values[id][i]["material"]["type"]
+                .as_str()
+            {
+                Some("matte/constant") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("matte/checkered") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("matte/image") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Image)
+                }
+                Some("matte/noise") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Noise)
+                }
+                Some("metal/constant") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("metal/checkered") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
+                Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
+                Some("dielectric") => dielectric::load_from_json(&values[id][i]),
+                Some("light") => diffuse_light::load_from_json(&values[id][i]),
+                _ => {
+                    eprintln!(
+                        "ERROR: Can't get material of moving_sphere {}! Skipping...",
+                        i
+                    );
+                    continue;
+                }
+            };
+
+            match density {
+                Some(density) => {
+                    list.push(Translate::new(
+                        ConstantMedium::new(
+                            density,
+                            MovingSphere::new(
+                                Vec3::zero(),
+                                position_difference,
+                                t0,
+                                t1,
+                                radius,
+                                Blank::new(),
+                            ),
+                            material,
+                        ),
+                        Vec3::new(p0x, p0y, p0z),
+                    ));
+                }
+                _ => {
+                    list.push(Translate::new(
+                        MovingSphere::new(
+                            Vec3::zero(),
+                            position_difference,
+                            t0,
+                            t1,
+                            radius,
+                            material,
+                        ),
+                        Vec3::new(p0x, p0y, p0z),
+                    ));
+                }
+            }
+        }
     }
 
     list

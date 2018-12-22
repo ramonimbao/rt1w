@@ -28,7 +28,6 @@ The following are a few stats on renders done on a PC with an i3-2100 CPU. You c
 
 - Implement being able to input random materials via JSON.
 - Implement `--verbose` option input to display all messages.
-- Implement `copies` key in the JSON scenes for all shapes.
 
 # License
 

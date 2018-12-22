@@ -34,6 +34,7 @@ impl Mesh {
     ) -> Box<Hitable + Sync> {
         let mut triangles: Vec<Box<Hitable + Sync>> = Vec::new();
 
+        // TODO: Handle this gracefully.
         let mut file = OpenOptions::new().read(true).open(filename).unwrap();
         let stl = stl_io::read_stl(&mut file).unwrap();
 
@@ -82,88 +83,100 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
     for i in 0..length {
         //Get the parameters
-        let density = json::get_f64_or_rand(&values[id][i]["density"]);
-
-        let scale = json::get_f64_or_rand(&values[id][i]["scale"]);
-        let scale = match scale {
-            Some(s) => s,
+        let copies = match json::get_f64_or_rand(&values[id][i]["copies"]) {
+            Some(n) => n,
             _ => 1.0,
-        };
+        } as usize;
 
-        let filename = values[id][i]["filename"].as_str();
-        let filename = match filename {
-            Some(filename) => filename,
-            _ => continue,
-        };
+        for _ in 0..copies {
+            let density = json::get_f64_or_rand(&values[id][i]["density"]);
 
-        let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
-        let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
-        let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
-        let (px, py, pz) = match (px, py, pz) {
-            (Some(px), Some(py), Some(pz)) => (px, py, pz),
-            (_, _, _) => {
-                eprintln!("ERROR: Can't get position of mesh {}! Skipping...", i);
-                continue;
-            }
-        };
+            let scale = match json::get_f64_or_rand(&values[id][i]["scale"]) {
+                Some(s) => s,
+                _ => 1.0,
+            };
 
-        let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
-        let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
-        let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
-        let (rx, ry, rz) = match (rx, ry, rz) {
-            (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
-            (_, _, _) => {
-                eprintln!(
-                    "ERROR: Can't get rotation of mesh {}! Defaulting to (0,0,0)...",
-                    i
-                );
-                (0.0, 0.0, 0.0)
-            }
-        };
+            let filename = match values[id][i]["filename"].as_str() {
+                Some(filename) => filename,
+                _ => continue,
+            };
 
-        let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material + Sync + Send> = match material {
-            Some("matte/constant") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Constant)
-            }
-            Some("matte/checkered") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("matte/image") => lambertian::load_from_json(&values[id][i], &TextureType::Image),
-            Some("matte/noise") => lambertian::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("metal/constant") => metal::load_from_json(&values[id][i], &TextureType::Constant),
-            Some("metal/checkered") => {
-                metal::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
-            Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
-            Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => {
-                eprintln!("ERROR: Can't get material of sphere {}! Skipping...", i);
-                continue;
-            }
-        };
+            let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
+            let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
+            let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
+            let (px, py, pz) = match (px, py, pz) {
+                (Some(px), Some(py), Some(pz)) => (px, py, pz),
+                (_, _, _) => {
+                    eprintln!("ERROR: Can't get position of mesh {}! Skipping...", i);
+                    continue;
+                }
+            };
 
-        match density {
-            Some(density) => {
-                list.push(Translate::new(
-                    Rotate::new(
-                        ConstantMedium::new(
-                            density,
-                            Mesh::new(filename, Blank::new(), scale),
-                            material,
+            let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
+            let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
+            let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
+            let (rx, ry, rz) = match (rx, ry, rz) {
+                (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
+                (_, _, _) => {
+                    eprintln!(
+                        "ERROR: Can't get rotation of mesh {}! Defaulting to (0,0,0)...",
+                        i
+                    );
+                    (0.0, 0.0, 0.0)
+                }
+            };
+
+            let material: Arc<Material + Sync + Send> = match values[id][i]["material"]["type"]
+                .as_str()
+            {
+                Some("matte/constant") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("matte/checkered") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("matte/image") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Image)
+                }
+                Some("matte/noise") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Noise)
+                }
+                Some("metal/constant") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("metal/checkered") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
+                Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
+                Some("dielectric") => dielectric::load_from_json(&values[id][i]),
+                Some("light") => diffuse_light::load_from_json(&values[id][i]),
+                _ => {
+                    eprintln!("ERROR: Can't get material of sphere {}! Skipping...", i);
+                    continue;
+                }
+            };
+
+            match density {
+                Some(density) => {
+                    list.push(Translate::new(
+                        Rotate::new(
+                            ConstantMedium::new(
+                                density,
+                                Mesh::new(filename, Blank::new(), scale),
+                                material,
+                            ),
+                            Vec3::new(rx, ry, rz),
                         ),
-                        Vec3::new(rx, ry, rz),
-                    ),
-                    Vec3::new(px, py, pz),
-                ));
-            }
-            None => {
-                list.push(Translate::new(
-                    Rotate::new(Mesh::new(filename, material, scale), Vec3::new(rx, ry, rz)),
-                    Vec3::new(px, py, pz),
-                ));
+                        Vec3::new(px, py, pz),
+                    ));
+                }
+                None => {
+                    list.push(Translate::new(
+                        Rotate::new(Mesh::new(filename, material, scale), Vec3::new(rx, ry, rz)),
+                        Vec3::new(px, py, pz),
+                    ));
+                }
             }
         }
     }

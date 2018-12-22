@@ -96,86 +96,100 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
     for i in 0..length {
         // Get the parameters
-        let density = json::get_f64_or_rand(&values[id][i]["density"]);
+        let copies = match json::get_f64_or_rand(&values[id][i]["copies"]) {
+            Some(n) => n,
+            _ => 1.0,
+        } as usize;
 
-        let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
-        let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
-        let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
-        let sx = json::get_f64_or_rand(&values[id][i]["size"]["x"]);
-        let sy = json::get_f64_or_rand(&values[id][i]["size"]["y"]);
-        let sz = json::get_f64_or_rand(&values[id][i]["size"]["z"]);
-        let (px, py, pz, sx, sy, sz) = match (px, py, pz, sx, sy, sz) {
-            (Some(px), Some(py), Some(pz), Some(sx), Some(sy), Some(sz)) => {
-                (px, py, pz, sx, sy, sz)
-            }
-            (_, _, _, _, _, _) => {
-                eprintln!(
-                    "ERROR: Can't get position and size of cuboid {}! Skipping...",
-                    i
-                );
-                continue;
-            }
-        };
-        let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
-        let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
-        let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
-        let (rx, ry, rz) = match (rx, ry, rz) {
-            (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
-            (_, _, _) => {
-                eprintln!(
-                    "ERROR: Can't get rotation of cuboid {}! Defaulting to (0,0,0)...",
-                    i
-                );
-                (0.0, 0.0, 0.0)
-            }
-        };
+        for _ in 0..copies {
+            let density = json::get_f64_or_rand(&values[id][i]["density"]);
 
-        let material = values[id][i]["material"]["type"].as_str();
-        let material: Arc<Material + Sync + Send> = match material {
-            Some("matte/constant") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Constant)
-            }
-            Some("matte/checkered") => {
-                lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("matte/image") => lambertian::load_from_json(&values[id][i], &TextureType::Image),
-            Some("matte/noise") => lambertian::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("metal/constant") => metal::load_from_json(&values[id][i], &TextureType::Constant),
-            Some("metal/checkered") => {
-                metal::load_from_json(&values[id][i], &TextureType::Checkered)
-            }
-            Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
-            Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
-            Some("dielectric") => dielectric::load_from_json(&values[id][i]),
-            Some("light") => diffuse_light::load_from_json(&values[id][i]),
-            _ => {
-                eprintln!("ERROR: Can't get material of cuboid {}! Skipping...", i);
-                continue;
-            }
-        };
+            let px = json::get_f64_or_rand(&values[id][i]["position"]["x"]);
+            let py = json::get_f64_or_rand(&values[id][i]["position"]["y"]);
+            let pz = json::get_f64_or_rand(&values[id][i]["position"]["z"]);
+            let sx = json::get_f64_or_rand(&values[id][i]["size"]["x"]);
+            let sy = json::get_f64_or_rand(&values[id][i]["size"]["y"]);
+            let sz = json::get_f64_or_rand(&values[id][i]["size"]["z"]);
+            let (px, py, pz, sx, sy, sz) = match (px, py, pz, sx, sy, sz) {
+                (Some(px), Some(py), Some(pz), Some(sx), Some(sy), Some(sz)) => {
+                    (px, py, pz, sx, sy, sz)
+                }
+                (_, _, _, _, _, _) => {
+                    eprintln!(
+                        "ERROR: Can't get position and size of cuboid {}! Skipping...",
+                        i
+                    );
+                    continue;
+                }
+            };
+            let rx = json::get_f64_or_rand(&values[id][i]["rotation"]["x"]);
+            let ry = json::get_f64_or_rand(&values[id][i]["rotation"]["y"]);
+            let rz = json::get_f64_or_rand(&values[id][i]["rotation"]["z"]);
+            let (rx, ry, rz) = match (rx, ry, rz) {
+                (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
+                (_, _, _) => {
+                    eprintln!(
+                        "ERROR: Can't get rotation of cuboid {}! Defaulting to (0,0,0)...",
+                        i
+                    );
+                    (0.0, 0.0, 0.0)
+                }
+            };
 
-        match density {
-            Some(density) => {
-                list.push(Translate::new(
-                    Rotate::new(
-                        ConstantMedium::new(
-                            density,
-                            Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), Blank::new()),
-                            material,
+            let material: Arc<Material + Sync + Send> = match values[id][i]["material"]["type"]
+                .as_str()
+            {
+                Some("matte/constant") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("matte/checkered") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("matte/image") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Image)
+                }
+                Some("matte/noise") => {
+                    lambertian::load_from_json(&values[id][i], &TextureType::Noise)
+                }
+                Some("metal/constant") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Constant)
+                }
+                Some("metal/checkered") => {
+                    metal::load_from_json(&values[id][i], &TextureType::Checkered)
+                }
+                Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
+                Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
+                Some("dielectric") => dielectric::load_from_json(&values[id][i]),
+                Some("light") => diffuse_light::load_from_json(&values[id][i]),
+                _ => {
+                    eprintln!("ERROR: Can't get material of cuboid {}! Skipping...", i);
+                    continue;
+                }
+            };
+
+            match density {
+                Some(density) => {
+                    list.push(Translate::new(
+                        Rotate::new(
+                            ConstantMedium::new(
+                                density,
+                                Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), Blank::new()),
+                                material,
+                            ),
+                            Vec3::new(rx, ry, rz),
                         ),
-                        Vec3::new(rx, ry, rz),
-                    ),
-                    Vec3::new(px, py, pz),
-                ));
-            }
-            None => {
-                list.push(Translate::new(
-                    Rotate::new(
-                        Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
-                        Vec3::new(rx, ry, rz),
-                    ),
-                    Vec3::new(px, py, pz),
-                ));
+                        Vec3::new(px, py, pz),
+                    ));
+                }
+                None => {
+                    list.push(Translate::new(
+                        Rotate::new(
+                            Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
+                            Vec3::new(rx, ry, rz),
+                        ),
+                        Vec3::new(px, py, pz),
+                    ));
+                }
             }
         }
     }
