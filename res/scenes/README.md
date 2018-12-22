@@ -11,9 +11,9 @@ Creates a lit skybox around the entire scene
 
 ```
 skybox: {
-	"r": "&lt;number&gt;",
-	"g": "&lt;number&gt;",
-	"b": "&lt;number&gt;"
+	"r": "<number>",
+	"g": "<number>",
+	"b": "<number>"
 }
 ```
 
@@ -29,11 +29,11 @@ Use `"matte/<type>"` for a matte diffuse material and `"metal/<type>"` for a glo
 
 ```
 	"material": {
-		"type": "&lt;matte or metal&gt;/constant",
+		"type": "<matte or metal>/constant",
 		"color": {
-			"r": "&lt;number&gt;",
-			"g": "&lt;number&gt;",
-			"b": "&lt;number&gt;"
+			"r": "<number>",
+			"g": "<number>",
+			"b": "<number>"
 		}
 	}
 ```
@@ -44,20 +44,20 @@ Use `"matte/<type>"` for a matte diffuse material and `"metal/<type>"` for a glo
 
 ```
 	"material": {
-		"type": "&lt;matte or metal&gt;/checkered",
+		"type": "<matte or metal>/checkered",
 		"colors": [
 			{
-				"r": "&lt;number&gt;",
-				"g": "&lt;number&gt;",
-				"b": "&lt;number&gt;"
+				"r": "<number>",
+				"g": "<number>",
+				"b": "<number>"
 			},
 			{
-				"r": "&lt;number&gt;",
-				"g": "&lt;number&gt;",
-				"b": "&lt;number&gt;"
+				"r": "<number>",
+				"g": "<number>",
+				"b": "<number>"
 			}
 		],
-		"scale": "&lt;number&gt;" (OPTIONAL)
+		"scale": "<number>" (OPTIONAL)
 	}
 ```
 
@@ -67,9 +67,9 @@ Use `"matte/<type>"` for a matte diffuse material and `"metal/<type>"` for a glo
 
 ```
 	"material": {
-		"type": "&lt;matte or metal&gt;/image",
-		"filename": "&lt;path/to/image&gt;"
-		"scale": "&lt;number&gt;" (OPTIONAL)
+		"type": "<matte or metal>/image",
+		"filename": "<path/to/image>"
+		"scale": "<number>" (OPTIONAL)
 	}
 ```
 
@@ -79,8 +79,8 @@ Uses Perlin noise.
 
 ```
 	"material": {
-		"type": "&lt;matte or metal&gt;/noise",
-		"scale": "&lt;number&gt;" "&lt;number&gt;" (OPTIONAL)
+		"type": "<matte or metal>/noise",
+		"scale": "<number>" "<number>" (OPTIONAL)
 	}
 ```
 
@@ -92,9 +92,9 @@ For some reason, values above 1 give an ugly result. I suggest adjusting the siz
 	"material": {
 		"type": "light",
 		"color": {
-			"r": "&lt;number&gt;",
-			"g": "&lt;number&gt;",
-			"b": "&lt;number&gt;"
+			"r": "<number>",
+			"g": "<number>",
+			"b": "<number>"
 		}
 	}
 ```
@@ -106,7 +106,7 @@ See [https://en.wikipedia.org/wiki/List\_of\_refractive_indices](https://en.wiki
 ```
 	"material": {
 		"type": "dielectric",
-		"refractive_index": "&lt;number&gt;"
+		"refractive_index": "<number>"
 	}
 ```
 
@@ -120,13 +120,13 @@ All objects also support a `copies` key which is useful for example generating a
 Rotation is available for some objects. Completely optional.
 
 ```
-"&lt;object&gt;": [
+"<object>": [
 	{
 		...
 		"rotation:" {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		}
 	}
 ]
@@ -137,14 +137,14 @@ Rotation is available for some objects. Completely optional.
 "spheres": [
 	{
 		"position": {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		},
-		"radius": "&lt;number&gt;"
+		"radius": "<number>"
 		"material": { ... },
-		"density": "&lt;number&gt;", (OPTIONAL)
-		"copies": "&lt;number&gt;" (OPTIONAL)
+		"density": "<number>", (OPTIONAL)
+		"copies": "<number>" (OPTIONAL)
 	},
 
 	...
@@ -164,22 +164,22 @@ Creates a moving sphere that moves from (x0, y0, z0) at t0 to (x1, y1, z1) at t1
 	{
 		"positions": [
 			{
-				"x": "&lt;number&gt;",
-				"y": "&lt;number&gt;",
-				"z": "&lt;number&gt;",
-				"t": "&lt;number&gt;"
+				"x": "<number>",
+				"y": "<number>",
+				"z": "<number>",
+				"t": "<number>"
 			},
 			{
-				"x": "&lt;number&gt;",
-				"y": "&lt;number&gt;",
-				"z": "&lt;number&gt;",
-				"t": "&lt;number&gt;"
+				"x": "<number>",
+				"y": "<number>",
+				"z": "<number>",
+				"t": "<number>"
 			}
 		]
-		"radius": "&lt;number&gt;"
+		"radius": "<number>"
 		"material": { ... },
-		"density": "&lt;number&gt;", (OPTIONAL)
-		"copies": "&lt;number&gt;" (OPTIONAL)
+		"density": "<number>", (OPTIONAL)
+		"copies": "<number>" (OPTIONAL)
 	},
 
 	...
@@ -196,19 +196,19 @@ Creates a moving sphere that moves from (x0, y0, z0) at t0 to (x1, y1, z1) at t1
 "planes": [
 	{
 		"position": {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		},
 		"normal": {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		},
 		"material" { ... },
 		"rotation:" { ... } (OPTIONAL)
-		"density": "&lt;number&gt;", (OPTIONAL)
-		"copies": "&lt;number&gt;" (OPTIONAL)
+		"density": "<number>", (OPTIONAL)
+		"copies": "<number>" (OPTIONAL)
 	},
 
 	...
@@ -227,19 +227,19 @@ The `position` will be the center of the cuboid.
 "cuboids": [
 	{
 		"position": {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		},
 		"size": {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		},
 		"material": { ... },
 		"rotation:" { ... } (OPTIONAL)
-		"density": "&lt;number&gt;", (OPTIONAL)
-		"copies": "&lt;number&gt;" (OPTIONAL)
+		"density": "<number>", (OPTIONAL)
+		"copies": "<number>" (OPTIONAL)
 	},
 
 	...
@@ -257,16 +257,16 @@ Currently, the program supports loading meshes via STL files, and crashes when a
 ```
 "meshes": [
 	{
-		"filename": "&lt;path/to/stl&gt;",
+		"filename": "<path/to/stl>",
 		"position": {
-			"x": "&lt;number&gt;",
-			"y": "&lt;number&gt;",
-			"z": "&lt;number&gt;"
+			"x": "<number>",
+			"y": "<number>",
+			"z": "<number>"
 		},
 		"material": { ... },
 		"rotation:" { ... } (OPTIONAL)
-		"density": "&lt;number&gt;", (OPTIONAL)
-		"copies": "&lt;number&gt;" (OPTIONAL)
+		"density": "<number>", (OPTIONAL)
+		"copies": "<number>" (OPTIONAL)
 	},
 
 	...

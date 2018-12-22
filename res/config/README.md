@@ -8,10 +8,10 @@ The `output` key specifies the name of the output file you want to render. From 
 
 ```
 "config": {
-	"width:" &lt;number&gt;,
-	"height:" &lt;number&gt;,
-	"samples:" &lt;number&gt;,
-	"output": &lt;output/file/name&gt;
+	"width:" <number>,
+	"height:" <number>,
+	"samples:" <number>,
+	"output": <output/file/name>
 }
 ```
 
@@ -23,25 +23,25 @@ All keys are optional. A default will be set if no value for the key is found. V
 ```
 "camera:" {
 	"from:" {
-		"x:" &lt;number&gt;,
-		"y:" &lt;number&gt;,
-		"z:" &lt;number&gt;
+		"x:" <number>,
+		"y:" <number>,
+		"z:" <number>
 	},
 	"to:" {
-		"x:" &lt;number&gt;,
-		"y:" &lt;number&gt;,
-		"z:" &lt;number&gt;
+		"x:" <number>,
+		"y:" <number>,
+		"z:" <number>
 	},
 	"vertical:" {
-		"x:" &lt;number&gt;,
-		"y:" &lt;number&gt;,
-		"z:" &lt;number&gt;
+		"x:" <number>,
+		"y:" <number>,
+		"z:" <number>
 	},
-	"fov": &lt;number&gt;,
-	"aspect_ratio": &lt;number&gt;,
-	"aperture": &lt;number&gt;,
-	"focus_distance": &lt;number&gt;,
-	"t0:" &lt;number&gt;,
-	"t1": &lt;number&gt;
+	"fov": <number>,
+	"aspect_ratio": <number>,
+	"aperture": <number>,
+	"focus_distance": <number>,
+	"t0:" <number>,
+	"t1": <number>
 }
 ```
