@@ -4,16 +4,20 @@ A Rust implementation of the book [*Ray Tracing in One Weekend* by Peter Shirley
 
 Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 
-<p align="center">
-	<img src="output.png" alt="">	
-</p>
+
+# Samples
+
+![](output/cornell.png)
+![](output/texture-test-metals.png)
+![](output/random-scene.png)
+![](output/panda-night.png)
 
 # Usage
 
 Run the program with `cargo run --release`. You can also give it a JSON configuration file as an argument to change the render settings without having to recompile the program using `--config [config.json]`. Scene loading is also now supported using `--scene [scene.json]`. You can also run the program in single-threaded mode by passing `--single-threaded` for whatever reason. ¯\\\_(ツ)\_/¯
 
 Example:  
-`$ rt1w --scene res/scenes/texture-test.json --config res/config/front-good.json`
+`$ rt1w --scene res/scenes/cornell.json --config res/config/cornell.json --verbose`
 
 # Performance
 
