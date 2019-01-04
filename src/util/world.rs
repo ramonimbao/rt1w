@@ -193,7 +193,11 @@ pub fn random_scene() -> HitableList {
                     ));
                 } else {
                     // Glass
-                    list.push(Sphere::create(center, 0.2, Dielectric::create(1.5)));
+                    list.push(Sphere::create(
+                        center,
+                        0.2,
+                        Dielectric::create(1.5, Vec3::unit()),
+                    ));
                 }
             }
         }
@@ -202,7 +206,7 @@ pub fn random_scene() -> HitableList {
     list.push(Sphere::create(
         Vec3::new(-4.0, 1.0, 0.0),
         1.0,
-        Dielectric::create(1.5),
+        Dielectric::create(1.5, Vec3::unit()),
     ));
     list.push(Sphere::create(
         Vec3::new(0.0, 1.0, 0.0),

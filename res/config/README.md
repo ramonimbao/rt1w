@@ -1,6 +1,6 @@
 # Configuring a Render
 
-The following is a list of possible key-value pairs you can enter to configure the camera and the output render. 
+The following is a list of possible key-value pairs you can enter to configure the camera and the output render.
 
 ## Config
 
@@ -8,10 +8,10 @@ The `output` key specifies the name of the output file you want to render. From 
 
 ```
 "config": {
-	"width:" <number>,
-	"height:" <number>,
-	"samples:" <number>,
-	"output": <output/file/name>
+    "width:" <number>,
+    "height:" <number>,
+    "samples:" <number>,
+    "output": <output/file/name>
 }
 ```
 
@@ -22,26 +22,26 @@ All keys are optional. A default will be set if no value for the key is found. V
 
 ```
 "camera:" {
-	"from:" {
-		"x:" <number>,
-		"y:" <number>,
-		"z:" <number>
-	},
-	"to:" {
-		"x:" <number>,
-		"y:" <number>,
-		"z:" <number>
-	},
-	"vertical:" {
-		"x:" <number>,
-		"y:" <number>,
-		"z:" <number>
-	},
-	"fov": <number>,
-	"aspect_ratio": <number>,
-	"aperture": <number>,
-	"focus_distance": <number>,
-	"t0:" <number>,
-	"t1": <number>
+    "from:" {
+        "x:" <number>,
+        "y:" <number>,
+        "z:" <number>
+    },
+    "to:" {
+        "x:" <number>,
+        "y:" <number>,
+        "z:" <number>
+    },
+    "vertical:" {
+        "x:" <number>,
+        "y:" <number>,
+        "z:" <number>
+    },
+    "fov": <number>,
+    "aspect_ratio": <number>,
+    "aperture": <number>,
+    "focus_distance": <number>,
+    "t0:" <number>,
+    "t1": <number>
 }
 ```

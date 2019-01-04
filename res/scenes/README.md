@@ -5,15 +5,15 @@ Any time there is a `<number>`, you can input a number of a string formatted as 
 
 Make sure not to have any trailing commas after the last values.
 
-## Skybox 
+## Skybox
 
 Creates a lit skybox around the entire scene
 
 ```
 skybox: {
-	"r": "<number>",
-	"g": "<number>",
-	"b": "<number>"
+    "r": "<number>",
+    "g": "<number>",
+    "b": "<number>"
 }
 ```
 
@@ -28,14 +28,14 @@ Use `"matte/<type>"` for a matte diffuse material, `"isotropic/<type>"` for an i
 #### Constant Texture
 
 ```
-	"material": {
-		"type": "<matte or metal or isotropic>/constant",
-		"color": {
-			"r": "<number>",
-			"g": "<number>",
-			"b": "<number>"
-		}
-	}
+    "material": {
+        "type": "<matte or metal or isotropic>/constant",
+        "color": {
+            "r": "<number>",
+            "g": "<number>",
+            "b": "<number>"
+        }
+    }
 ```
 
 #### Checkered Texture
@@ -43,22 +43,22 @@ Use `"matte/<type>"` for a matte diffuse material, `"isotropic/<type>"` for an i
 `scale` defaults to 1 if no value is set.
 
 ```
-	"material": {
-		"type": "<matte or metal or isotropic>/checkered",
-		"colors": [
-			{
-				"r": "<number>",
-				"g": "<number>",
-				"b": "<number>"
-			},
-			{
-				"r": "<number>",
-				"g": "<number>",
-				"b": "<number>"
-			}
-		],
-		"scale": "<number>" (OPTIONAL)
-	}
+    "material": {
+        "type": "<matte or metal or isotropic>/checkered",
+        "colors": [
+            {
+                "r": "<number>",
+                "g": "<number>",
+                "b": "<number>"
+            },
+            {
+                "r": "<number>",
+                "g": "<number>",
+                "b": "<number>"
+            }
+        ],
+        "scale": "<number>" (OPTIONAL)
+    }
 ```
 
 #### Image Texture
@@ -66,11 +66,11 @@ Use `"matte/<type>"` for a matte diffuse material, `"isotropic/<type>"` for an i
 (From the `image` crate) supported image formats are: PNG, JPEG, GIF, BMP, ICO, TIFF, Webp, and PNM. Alpha channels are not supported; they'll appear black! A wrong path to an image will give you a black and magenta texture and warn you instead of crashing the program.
 
 ```
-	"material": {
-		"type": "<matte or metal or isotropic>/image",
-		"filename": "<path/to/image>"
-		"scale": "<number>" (OPTIONAL)
-	}
+    "material": {
+        "type": "<matte or metal or isotropic>/image",
+        "filename": "<path/to/image>"
+        "scale": "<number>" (OPTIONAL)
+    }
 ```
 
 #### Noise Texture
@@ -78,10 +78,10 @@ Use `"matte/<type>"` for a matte diffuse material, `"isotropic/<type>"` for an i
 Uses Perlin noise.
 
 ```
-	"material": {
-		"type": "<matte or metal or isotropic>/noise",
-		"scale": "<number>" "<number>" (OPTIONAL)
-	}
+    "material": {
+        "type": "<matte or metal or isotropic>/noise",
+        "scale": "<number>" "<number>" (OPTIONAL)
+    }
 ```
 
 ### Light
@@ -89,25 +89,32 @@ Uses Perlin noise.
 For some reason, values above 1 give an ugly result. I suggest adjusting the size of the object rather than the intensity of the light if you want it brighter.
 
 ```
-	"material": {
-		"type": "light",
-		"color": {
-			"r": "<number>",
-			"g": "<number>",
-			"b": "<number>"
-		}
-	}
+    "material": {
+        "type": "light",
+        "color": {
+            "r": "<number>",
+            "g": "<number>",
+            "b": "<number>"
+        }
+    }
 ```
 
 ### Dielectric (Glass)
 
-See [https://en.wikipedia.org/wiki/List\_of\_refractive_indices](https://en.wikipedia.org/wiki/List_of_refractive_indices)
+You can specify a tint for the class using the `color` key. A tint of `(1.0, 1.0, 1.0)` gives clear rather than white.
+
+For a list of refractive indices, see: [https://en.wikipedia.org/wiki/List\_of\_refractive_indices](https://en.wikipedia.org/wiki/List_of_refractive_indices)
 
 ```
-	"material": {
-		"type": "dielectric",
-		"refractive_index": "<number>"
-	}
+    "material": {
+        "type": "dielectric",
+        "refractive_index": "<number>",
+        "color": {
+            "r": "<number>",
+            "g": "<number>",
+            "b": "<number>"
+        }
+    }
 ```
 
 ## Objects
@@ -121,37 +128,38 @@ Rotation is available for some objects. Completely optional.
 
 ```
 "<object>": [
-	{
-		...
-		"rotation:" {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		}
-	}
+    {
+        ...
+        "rotation:" {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        }
+    }
 ]
 ```
 
 ### Spheres
+
 ```
 "spheres": [
-	{
-		"position": {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		},
-		"radius": "<number>"
-		"material": { ... },
-		"density": "<number>", (OPTIONAL)
-		"copies": "<number>" (OPTIONAL)
-	},
+    {
+        "position": {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        },
+        "radius": "<number>"
+        "material": { ... },
+        "density": "<number>", (OPTIONAL)
+        "copies": "<number>" (OPTIONAL)
+    },
 
-	...
+    ...
 
-	{
-		...
-	}
+    {
+        ...
+    }
 ]
 ```
 
@@ -161,32 +169,32 @@ Creates a moving sphere that moves from (x0, y0, z0) at t0 to (x1, y1, z1) at t1
 
 ```
 "moving_spheres": [
-	{
-		"positions": [
-			{
-				"x": "<number>",
-				"y": "<number>",
-				"z": "<number>",
-				"t": "<number>"
-			},
-			{
-				"x": "<number>",
-				"y": "<number>",
-				"z": "<number>",
-				"t": "<number>"
-			}
-		]
-		"radius": "<number>"
-		"material": { ... },
-		"density": "<number>", (OPTIONAL)
-		"copies": "<number>" (OPTIONAL)
-	},
+    {
+        "positions": [
+            {
+                "x": "<number>",
+                "y": "<number>",
+                "z": "<number>",
+                "t": "<number>"
+            },
+            {
+                "x": "<number>",
+                "y": "<number>",
+                "z": "<number>",
+                "t": "<number>"
+            }
+        ]
+        "radius": "<number>"
+        "material": { ... },
+        "density": "<number>", (OPTIONAL)
+        "copies": "<number>" (OPTIONAL)
+    },
 
-	...
+    ...
 
-	{
-		...
-	}
+    {
+        ...
+    }
 ]
 ```
 
@@ -194,28 +202,28 @@ Creates a moving sphere that moves from (x0, y0, z0) at t0 to (x1, y1, z1) at t1
 
 ```
 "planes": [
-	{
-		"position": {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		},
-		"normal": {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		},
-		"material" { ... },
-		"rotation:" { ... } (OPTIONAL)
-		"density": "<number>", (OPTIONAL)
-		"copies": "<number>" (OPTIONAL)
-	},
+    {
+        "position": {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        },
+        "normal": {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        },
+        "material" { ... },
+        "rotation:" { ... } (OPTIONAL)
+        "density": "<number>", (OPTIONAL)
+        "copies": "<number>" (OPTIONAL)
+    },
 
-	...
+    ...
 
-	{
-		...
-	}
+    {
+        ...
+    }
 ]
 ```
 
@@ -225,28 +233,28 @@ The `position` will be the center of the cuboid.
 
 ```
 "cuboids": [
-	{
-		"position": {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		},
-		"size": {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		},
-		"material": { ... },
-		"rotation:" { ... } (OPTIONAL)
-		"density": "<number>", (OPTIONAL)
-		"copies": "<number>" (OPTIONAL)
-	},
+    {
+        "position": {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        },
+        "size": {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        },
+        "material": { ... },
+        "rotation:" { ... } (OPTIONAL)
+        "density": "<number>", (OPTIONAL)
+        "copies": "<number>" (OPTIONAL)
+    },
 
-	...
+    ...
 
-	{
-		...
-	}
+    {
+        ...
+    }
 ]
 ```
 
@@ -256,23 +264,23 @@ Currently, the program supports loading meshes via STL files, and crashes when a
 
 ```
 "meshes": [
-	{
-		"filename": "<path/to/stl>",
-		"position": {
-			"x": "<number>",
-			"y": "<number>",
-			"z": "<number>"
-		},
-		"material": { ... },
-		"rotation:" { ... } (OPTIONAL)
-		"density": "<number>", (OPTIONAL)
-		"copies": "<number>" (OPTIONAL)
-	},
+    {
+        "filename": "<path/to/stl>",
+        "position": {
+            "x": "<number>",
+            "y": "<number>",
+            "z": "<number>"
+        },
+        "material": { ... },
+        "rotation:" { ... } (OPTIONAL)
+        "density": "<number>", (OPTIONAL)
+        "copies": "<number>" (OPTIONAL)
+    },
 
-	...
+    ...
 
-	{
-		
-	}
+    {
+
+    }
 ]
 ```
