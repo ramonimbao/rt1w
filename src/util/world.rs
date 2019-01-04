@@ -6,14 +6,11 @@ use rand::Rng;
 use serde_json::Value;
 
 use crate::materials::{
-    blank::Blank, dielectric::Dielectric, diffuse_light::DiffuseLight, isotropic::Isotropic,
-    lambertian::Lambertian, metal::Metal, Material,
+    dielectric::Dielectric, diffuse_light::DiffuseLight, lambertian::Lambertian, metal::Metal,
+    Material,
 };
 use crate::shapes::{
-    constant_medium::{self, ConstantMedium},
-    cuboid::{self, Cuboid},
-    mesh::{self, Mesh},
-    moving_sphere::{self, MovingSphere},
+    cuboid, mesh, moving_sphere,
     plane::{self, Plane},
     sphere::{self, Sphere},
 };
@@ -21,7 +18,6 @@ use crate::textures::{
     checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
     image_texture::ImageTexture, noise_texture::NoiseTexture,
 };
-use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
@@ -75,37 +71,37 @@ fn load_skybox_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 fn skybox(color: Vec3) -> Vec<Box<Hitable + Sync>> {
     let min = std::f64::MIN / 2.0;
     let max = std::f64::MAX / 2.0;
-    let mat = DiffuseLight::new(ConstantTexture::new(color));
+    let mat = DiffuseLight::create(ConstantTexture::create(color));
     let list: Vec<Box<Hitable + Sync>> = vec![
         // Y planes
-        Plane::new(
+        Plane::create(
             Vec3::new(0.0, min, 0.0),
             Vec3::new(0.0, 1.0, 0.0),
             mat.clone(),
         ),
-        Plane::new(
+        Plane::create(
             Vec3::new(0.0, max, 0.0),
             Vec3::new(0.0, -1.0, 0.0),
             mat.clone(),
         ),
         // Z planes
-        Plane::new(
+        Plane::create(
             Vec3::new(0.0, 0.0, max),
             Vec3::new(0.0, 0.0, -1.0),
             mat.clone(),
         ),
-        Plane::new(
+        Plane::create(
             Vec3::new(0.0, 0.0, min),
             Vec3::new(0.0, 0.0, 1.0),
             mat.clone(),
         ),
         // X planes
-        Plane::new(
+        Plane::create(
             Vec3::new(max, 0.0, 0.0),
             Vec3::new(-1.0, 0.0, 0.0),
             mat.clone(),
         ),
-        Plane::new(
+        Plane::create(
             Vec3::new(min, 0.0, 0.0),
             Vec3::new(1.0, 0.0, 0.0),
             mat.clone(),
@@ -115,20 +111,21 @@ fn skybox(color: Vec3) -> Vec<Box<Hitable + Sync>> {
     list
 }
 
+#[allow(dead_code)]
 fn choose_random_texture() -> Arc<Material + Sync + Send> {
     let mut rng = rand::thread_rng();
     let choose_texture: f64 = rng.gen();
     if choose_texture < 0.25 {
-        Lambertian::new(ConstantTexture::new(Vec3::new(
+        Lambertian::create(ConstantTexture::create(Vec3::new(
             rng.gen::<f64>() * rng.gen::<f64>(),
             rng.gen::<f64>() * rng.gen::<f64>(),
             rng.gen::<f64>() * rng.gen::<f64>(),
         )))
     } else if choose_texture < 0.5 {
-        Lambertian::new(NoiseTexture::new(10.0 + 10.0 * rng.gen::<f64>()))
+        Lambertian::create(NoiseTexture::create(10.0 + 10.0 * rng.gen::<f64>()))
     } else if choose_texture < 0.75 {
         let choose_image = rng.gen_range(0, 6);
-        Lambertian::new(ImageTexture::new(
+        Lambertian::create(ImageTexture::create(
             &image::open(match choose_image {
                 0 => "res/images/Blood Stone CH16.png",
                 1 => "res/images/Lava Planet CH16.png",
@@ -141,13 +138,13 @@ fn choose_random_texture() -> Arc<Material + Sync + Send> {
             1.0,
         ))
     } else {
-        Lambertian::new(CheckeredTexture::new(
-            ConstantTexture::new(Vec3::new(
+        Lambertian::create(CheckeredTexture::create(
+            ConstantTexture::create(Vec3::new(
                 rng.gen::<f64>() * rng.gen::<f64>(),
                 rng.gen::<f64>() * rng.gen::<f64>(),
                 rng.gen::<f64>() * rng.gen::<f64>(),
             )),
-            ConstantTexture::new(Vec3::new(
+            ConstantTexture::create(Vec3::new(
                 rng.gen::<f64>() * rng.gen::<f64>(),
                 rng.gen::<f64>() * rng.gen::<f64>(),
                 rng.gen::<f64>() * rng.gen::<f64>(),
@@ -161,23 +158,20 @@ pub fn random_scene() -> HitableList {
     let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
     let mut rng = rand::thread_rng();
 
-    //list.append(&mut skybox(Vec3::new(0.0625, 0.0625, 0.0625)));
-    //list.append(&mut skybox(Vec3::new(1.0, 1.0, 1.0)));
-
     for a in -11..11 {
         for b in -11..11 {
             let choose_mat = rng.gen::<f64>();
             let center = Vec3::new(
-                a as f64 + 0.9 * rng.gen::<f64>(),
+                f64::from(a) + 0.9 * rng.gen::<f64>(),
                 0.2,
-                b as f64 + 0.9 * rng.gen::<f64>(),
+                f64::from(b) + 0.9 * rng.gen::<f64>(),
             );
             if (center - Vec3::new(4.0, 2.0, 0.0)).length() > 0.9 {
                 if choose_mat < 0.8 {
-                    list.push(Sphere::new(
+                    list.push(Sphere::create(
                         center,
                         0.2,
-                        Lambertian::new(ConstantTexture::new(Vec3::new(
+                        Lambertian::create(ConstantTexture::create(Vec3::new(
                             rng.gen::<f64>() * rng.gen::<f64>(),
                             rng.gen::<f64>() * rng.gen::<f64>(),
                             rng.gen::<f64>() * rng.gen::<f64>(),
@@ -185,11 +179,11 @@ pub fn random_scene() -> HitableList {
                     ));
                 } else if choose_mat < 0.95 {
                     // Metal
-                    list.push(Sphere::new(
+                    list.push(Sphere::create(
                         center,
                         0.2,
-                        Metal::new(
-                            ConstantTexture::new(Vec3::new(
+                        Metal::create(
+                            ConstantTexture::create(Vec3::new(
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                                 (1.0 + rng.gen::<f64>()) * 0.5,
                                 (1.0 + rng.gen::<f64>()) * 0.5,
@@ -199,26 +193,26 @@ pub fn random_scene() -> HitableList {
                     ));
                 } else {
                     // Glass
-                    list.push(Sphere::new(center, 0.2, Dielectric::new(1.5)));
+                    list.push(Sphere::create(center, 0.2, Dielectric::create(1.5)));
                 }
             }
         }
     }
 
-    list.push(Sphere::new(
+    list.push(Sphere::create(
         Vec3::new(-4.0, 1.0, 0.0),
         1.0,
-        Dielectric::new(1.5),
+        Dielectric::create(1.5),
     ));
-    list.push(Sphere::new(
+    list.push(Sphere::create(
         Vec3::new(0.0, 1.0, 0.0),
         1.0,
-        DiffuseLight::new(ConstantTexture::new(Vec3::new(4.0, 4.0, 4.0))),
+        DiffuseLight::create(ConstantTexture::create(Vec3::new(4.0, 4.0, 4.0))),
     ));
-    list.push(Sphere::new(
+    list.push(Sphere::create(
         Vec3::new(4.0, 1.0, 0.0),
         1.0,
-        Metal::new(ConstantTexture::new(Vec3::new(0.7, 0.6, 0.5)), 0.0),
+        Metal::create(ConstantTexture::create(Vec3::new(0.7, 0.6, 0.5)), 0.0),
     ));
 
     HitableList::new(list)

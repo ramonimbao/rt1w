@@ -8,7 +8,7 @@ pub struct ConstantTexture {
 }
 
 impl ConstantTexture {
-    pub fn new(color: Vec3) -> Arc<ConstantTexture> {
+    pub fn create(color: Vec3) -> Arc<ConstantTexture> {
         Arc::new(ConstantTexture { color })
     }
 }

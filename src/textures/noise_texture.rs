@@ -9,7 +9,7 @@ pub struct NoiseTexture {
 }
 
 impl NoiseTexture {
-    pub fn new(scale: f64) -> Arc<NoiseTexture> {
+    pub fn create(scale: f64) -> Arc<NoiseTexture> {
         Arc::new(NoiseTexture {
             noise: Perlin::new(),
             scale,

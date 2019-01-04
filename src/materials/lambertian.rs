@@ -12,7 +12,7 @@ pub struct Lambertian {
 }
 
 impl Lambertian {
-    pub fn new(albedo: Arc<Texture + Sync + Send>) -> Arc<Lambertian> {
+    pub fn create(albedo: Arc<Texture + Sync + Send>) -> Arc<Lambertian> {
         Arc::new(Lambertian { albedo })
     }
 }
@@ -33,5 +33,5 @@ impl Material for Lambertian {
 }
 
 pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Material + Sync + Send> {
-    create_material(values, texture_type, MaterialType::Lambertian)
+    create_material(values, texture_type, &MaterialType::Lambertian)
 }

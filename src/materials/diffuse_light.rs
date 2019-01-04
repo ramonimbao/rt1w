@@ -12,7 +12,7 @@ pub struct DiffuseLight {
 }
 
 impl DiffuseLight {
-    pub fn new(emitter: Arc<Texture + Sync + Send>) -> Arc<DiffuseLight> {
+    pub fn create(emitter: Arc<Texture + Sync + Send>) -> Arc<DiffuseLight> {
         Arc::new(DiffuseLight { emitter })
     }
 }
@@ -42,5 +42,5 @@ pub fn load_from_json(values: &Value) -> Arc<Material + Sync + Send> {
         (_, _, _) => (1.0, 1.0, 1.0),
     };
 
-    DiffuseLight::new(ConstantTexture::new(Vec3::new(r, g, b)))
+    DiffuseLight::create(ConstantTexture::create(Vec3::new(r, g, b)))
 }

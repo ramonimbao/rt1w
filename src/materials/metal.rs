@@ -12,7 +12,7 @@ pub struct Metal {
 }
 
 impl Metal {
-    pub fn new(albedo: Arc<Texture + Sync + Send>, fuzz: f64) -> Arc<Metal> {
+    pub fn create(albedo: Arc<Texture + Sync + Send>, fuzz: f64) -> Arc<Metal> {
         Arc::new(Metal {
             albedo,
             fuzz: if fuzz < 1.0 { fuzz } else { 1.0 },
@@ -50,5 +50,5 @@ pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Materia
         _ => 0.0,
     };
 
-    create_material(values, texture_type, MaterialType::Metal(fuzz))
+    create_material(values, texture_type, &MaterialType::Metal(fuzz))
 }

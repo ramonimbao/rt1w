@@ -9,10 +9,10 @@ pub struct Rotate {
 }
 
 impl Rotate {
-    pub fn new(object: Box<Hitable + Sync>, angles: Vec3) -> Box<Hitable + Sync> {
+    pub fn rotate(object: Box<Hitable + Sync>, angles: Vec3) -> Box<Hitable + Sync> {
         Box::new(Rotate {
-            object: RotateZ::new(
-                RotateY::new(RotateX::new(object, angles.x), angles.y),
+            object: RotateZ::rotate(
+                RotateY::rotate(RotateX::rotate(object, angles.x), angles.y),
                 angles.z,
             ),
         })
@@ -32,7 +32,7 @@ struct RotateY {
 }
 
 impl RotateY {
-    pub fn new(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
+    pub fn rotate(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateY {
             object,
@@ -82,7 +82,7 @@ struct RotateX {
 }
 
 impl RotateX {
-    pub fn new(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
+    pub fn rotate(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateX {
             object,
@@ -131,7 +131,7 @@ struct RotateZ {
 }
 
 impl RotateZ {
-    pub fn new(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
+    pub fn rotate(object: Box<Hitable + Sync>, angle: f64) -> Box<Hitable + Sync> {
         let radians = std::f64::consts::PI / 180.0 * angle;
         Box::new(RotateZ {
             object,

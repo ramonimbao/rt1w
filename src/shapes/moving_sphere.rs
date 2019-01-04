@@ -23,7 +23,7 @@ pub struct MovingSphere {
 }
 
 impl MovingSphere {
-    pub fn new(
+    pub fn create(
         center0: Vec3,
         center1: Vec3,
         t0: f64,
@@ -176,16 +176,16 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
             match density {
                 Some(density) => {
-                    list.push(Translate::new(
-                        ConstantMedium::new(
+                    list.push(Translate::translate(
+                        ConstantMedium::create(
                             density,
-                            MovingSphere::new(
+                            MovingSphere::create(
                                 Vec3::zero(),
                                 position_difference,
                                 t0,
                                 t1,
                                 radius,
-                                Blank::new(),
+                                Blank::create(),
                             ),
                             material,
                         ),
@@ -193,8 +193,8 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                     ));
                 }
                 _ => {
-                    list.push(Translate::new(
-                        MovingSphere::new(
+                    list.push(Translate::translate(
+                        MovingSphere::create(
                             Vec3::zero(),
                             position_difference,
                             t0,

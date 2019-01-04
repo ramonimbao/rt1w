@@ -20,7 +20,7 @@ pub struct Cuboid {
 
 // Derp. I forgot there's a `hitable_list` which implements exactly what I wanted already.
 impl Cuboid {
-    pub fn new(
+    pub fn create(
         origin: Vec3,
         size: Vec3,
         material: Arc<Material + Sync + Send>,
@@ -30,7 +30,7 @@ impl Cuboid {
         let min = origin - (size / 2.0);
         let max = origin + (size / 2.0);
 
-        components.push(Rect::new(
+        components.push(Rect::create(
             RectType::RectXY,
             Vec3::new(min.x, min.y, 0.0),
             Vec3::new(max.x, max.y, 0.0),
@@ -38,7 +38,7 @@ impl Cuboid {
             NormalType::Flipped,
             material.clone(),
         ));
-        components.push(Rect::new(
+        components.push(Rect::create(
             RectType::RectXY,
             Vec3::new(min.x, min.y, 0.0),
             Vec3::new(max.x, max.y, 0.0),
@@ -46,7 +46,7 @@ impl Cuboid {
             NormalType::NotFlipped,
             material.clone(),
         ));
-        components.push(Rect::new(
+        components.push(Rect::create(
             RectType::RectXZ,
             Vec3::new(min.x, 0.0, min.z),
             Vec3::new(max.x, 0.0, max.z),
@@ -54,7 +54,7 @@ impl Cuboid {
             NormalType::Flipped,
             material.clone(),
         ));
-        components.push(Rect::new(
+        components.push(Rect::create(
             RectType::RectXZ,
             Vec3::new(min.x, 0.0, min.z),
             Vec3::new(max.x, 0.0, max.z),
@@ -62,7 +62,7 @@ impl Cuboid {
             NormalType::NotFlipped,
             material.clone(),
         ));
-        components.push(Rect::new(
+        components.push(Rect::create(
             RectType::RectYZ,
             Vec3::new(0.0, min.y, min.z),
             Vec3::new(0.0, max.y, max.z),
@@ -70,7 +70,7 @@ impl Cuboid {
             NormalType::Flipped,
             material.clone(),
         ));
-        components.push(Rect::new(
+        components.push(Rect::create(
             RectType::RectYZ,
             Vec3::new(0.0, min.y, min.z),
             Vec3::new(0.0, max.y, max.z),
@@ -175,11 +175,15 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
             match density {
                 Some(density) => {
-                    list.push(Translate::new(
-                        Rotate::new(
-                            ConstantMedium::new(
+                    list.push(Translate::translate(
+                        Rotate::rotate(
+                            ConstantMedium::create(
                                 density,
-                                Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), Blank::new()),
+                                Cuboid::create(
+                                    Vec3::zero(),
+                                    Vec3::new(sx, sy, sz),
+                                    Blank::create(),
+                                ),
                                 material,
                             ),
                             Vec3::new(rx, ry, rz),
@@ -188,9 +192,9 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                     ));
                 }
                 None => {
-                    list.push(Translate::new(
-                        Rotate::new(
-                            Cuboid::new(Vec3::zero(), Vec3::new(sx, sy, sz), material),
+                    list.push(Translate::translate(
+                        Rotate::rotate(
+                            Cuboid::create(Vec3::zero(), Vec3::new(sx, sy, sz), material),
                             Vec3::new(rx, ry, rz),
                         ),
                         Vec3::new(px, py, pz),
@@ -227,7 +231,7 @@ pub struct Rect {
 }
 
 impl Rect {
-    pub fn new(
+    pub fn create(
         rect_type: RectType,
         min: Vec3,
         max: Vec3,

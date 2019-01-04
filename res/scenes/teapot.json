@@ -1,0 +1,86 @@
+{
+    "skybox": {
+        "r": 0.25,
+        "g": 0.25,
+        "b": 0.25
+    },
+    "meshes": [
+        {
+            "filename": "res/models/teapot.stl",
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "rotation": {
+                "x": 90,
+                "y": 0.01,
+                "z": 0
+            },
+            "material": {
+                "type": "metal/constant",
+                "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                }
+            },
+            "scale": 2
+        }
+    ],
+    "planes": [
+        {
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "normal": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "metal/image",
+                "filename": "res/images/Red rubble ch16.png",
+                "fuzz": 0.1,
+                "scale": 10000
+            }
+        }
+    ],
+    "spheres": [
+        {
+            "position": {
+                "x": 0,
+                "y": 1000,
+                "z": 1000
+            },
+            "radius": 500,
+            "material": {
+                "type": "light",
+                "color": {
+                    "r": 1,
+                    "g": 1,
+                    "b": 1
+                }
+            }
+        },
+        {
+            "position": {
+                "x": "-100,100",
+                "y": 5,
+                "z": "0,100"
+            },
+            "radius": 5,
+            "material": {
+                "type": "metal/constant",
+                "color": {
+                    "r": "1",
+                    "g": "1",
+                    "b": "1"
+                }
+            },
+            "copies": 20
+        }
+    ]
+}

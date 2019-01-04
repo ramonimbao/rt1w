@@ -34,7 +34,7 @@ pub enum MaterialType {
 pub fn create_material(
     values: &Value,
     texture_type: &TextureType,
-    material_type: MaterialType,
+    material_type: &MaterialType,
 ) -> Arc<Material + Sync + Send> {
     match *texture_type {
         TextureType::Checkered => {
@@ -58,18 +58,18 @@ pub fn create_material(
             };
 
             match material_type {
-                MaterialType::Lambertian => Lambertian::new(CheckeredTexture::new(
-                    ConstantTexture::new(Vec3::new(or, og, ob)),
-                    ConstantTexture::new(Vec3::new(er, eg, eb)),
+                MaterialType::Lambertian => Lambertian::create(CheckeredTexture::create(
+                    ConstantTexture::create(Vec3::new(or, og, ob)),
+                    ConstantTexture::create(Vec3::new(er, eg, eb)),
                     scale,
                 )),
-                MaterialType::Metal(fuzz) => Metal::new(
-                    CheckeredTexture::new(
-                        ConstantTexture::new(Vec3::new(or, og, ob)),
-                        ConstantTexture::new(Vec3::new(er, eg, eb)),
+                MaterialType::Metal(fuzz) => Metal::create(
+                    CheckeredTexture::create(
+                        ConstantTexture::create(Vec3::new(or, og, ob)),
+                        ConstantTexture::create(Vec3::new(er, eg, eb)),
                         scale,
                     ),
-                    fuzz,
+                    *fuzz,
                 ),
             }
         }
@@ -85,10 +85,10 @@ pub fn create_material(
 
             match material_type {
                 MaterialType::Lambertian => {
-                    Lambertian::new(ConstantTexture::new(Vec3::new(r, g, b)))
+                    Lambertian::create(ConstantTexture::create(Vec3::new(r, g, b)))
                 }
                 MaterialType::Metal(fuzz) => {
-                    Metal::new(ConstantTexture::new(Vec3::new(r, g, b)), fuzz)
+                    Metal::create(ConstantTexture::create(Vec3::new(r, g, b)), *fuzz)
                 }
             }
         }
@@ -98,9 +98,9 @@ pub fn create_material(
             let filename = match filename {
                 Some(filename) => filename,
                 _ => {
-                    return Lambertian::new(CheckeredTexture::new(
-                        ConstantTexture::new(Vec3::new(0.0, 0.0, 0.0)),
-                        ConstantTexture::new(Vec3::new(1.0, 0.0, 1.0)),
+                    return Lambertian::create(CheckeredTexture::create(
+                        ConstantTexture::create(Vec3::new(0.0, 0.0, 0.0)),
+                        ConstantTexture::create(Vec3::new(1.0, 0.0, 1.0)),
                         10.0,
                     ));
                 }
@@ -117,18 +117,20 @@ pub fn create_material(
                 Ok(image_file) => image_file,
                 Err(e) => {
                     eprintln!("ERROR [{}]: {}", filename, e);
-                    return Lambertian::new(CheckeredTexture::new(
-                        ConstantTexture::new(Vec3::new(0.0, 0.0, 0.0)),
-                        ConstantTexture::new(Vec3::new(1.0, 0.0, 1.0)),
+                    return Lambertian::create(CheckeredTexture::create(
+                        ConstantTexture::create(Vec3::new(0.0, 0.0, 0.0)),
+                        ConstantTexture::create(Vec3::new(1.0, 0.0, 1.0)),
                         10.0,
                     ));
                 }
             };
 
             match material_type {
-                MaterialType::Lambertian => Lambertian::new(ImageTexture::new(&image_file, scale)),
+                MaterialType::Lambertian => {
+                    Lambertian::create(ImageTexture::create(&image_file, scale))
+                }
                 MaterialType::Metal(fuzz) => {
-                    Metal::new(ImageTexture::new(&image_file, scale), fuzz)
+                    Metal::create(ImageTexture::create(&image_file, scale), *fuzz)
                 }
             }
         }
@@ -141,8 +143,8 @@ pub fn create_material(
             };
 
             match material_type {
-                MaterialType::Lambertian => Lambertian::new(NoiseTexture::new(scale)),
-                MaterialType::Metal(fuzz) => Metal::new(NoiseTexture::new(scale), fuzz),
+                MaterialType::Lambertian => Lambertian::create(NoiseTexture::create(scale)),
+                MaterialType::Metal(fuzz) => Metal::create(NoiseTexture::create(scale), *fuzz),
             }
         }
     }

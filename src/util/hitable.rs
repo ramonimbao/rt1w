@@ -21,7 +21,7 @@ impl HitRecord {
             v: 0.0,
             p: Vec3::zero(),
             normal: Vec3::zero(),
-            material: Blank::new(),
+            material: Blank::create(),
         }
     }
 }

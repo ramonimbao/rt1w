@@ -33,7 +33,7 @@ impl Config {
 }
 
 pub fn load_from_json(filename: String) -> (Config, Camera) {
-    if filename == "".to_string() {
+    if filename == "" {
         println!("Defaulting to config defaults...");
         return (Config::default(), Camera::default());
     }
@@ -123,7 +123,7 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
     let aspect = values["camera"]["aspect_ratio"].as_f64();
     let aspect = match aspect {
         Some(aspect) => aspect,
-        _ => width as f64 / height as f64,
+        _ => f64::from(width) / f64::from(height),
     };
 
     let aperture = values["camera"]["aperture"].as_f64();

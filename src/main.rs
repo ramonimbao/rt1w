@@ -41,7 +41,7 @@ fn main() -> std::io::Result<()> {
     let (config, cam) = config::load_from_json(opt.config_file.to_str().unwrap().to_string());
     let world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string());
 
-    let total_progress = (config.width * config.height) as f64;
+    let total_progress = f64::from(config.width * config.height);
 
     let mut img = ImageBuffer::new(config.width, config.height);
 
@@ -85,7 +85,7 @@ fn main() -> std::io::Result<()> {
                         let mut previous_progress = previous_progress.lock().unwrap();
 
                         if (current_time - *previous_time) >= time::Duration::milliseconds(1000) {
-                            let progress = previous_time.tm_nsec as f64
+                            let progress = f64::from(previous_time.tm_nsec)
                                 + (total_progress - *previous_progress)
                                     * (current_time - *previous_time).num_nanoseconds().unwrap()
                                         as f64
@@ -158,7 +158,7 @@ fn main() -> std::io::Result<()> {
                 let current_time = time::now();
 
                 if (current_time - previous_time) >= time::Duration::milliseconds(1000) {
-                    let progress = previous_time.tm_nsec as f64
+                    let progress = f64::from(previous_time.tm_nsec)
                         + (total_progress - previous_progress)
                             * (current_time - previous_time).num_nanoseconds().unwrap() as f64
                             / (current_progress - previous_progress);

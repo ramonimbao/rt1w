@@ -8,6 +8,7 @@ Some parts of the next book *Ray Tracing: The Next Week* also implemented.
 # Samples
 
 ![](output/cornell.png)
+![](output/teapot_normal_interp.png)
 ![](output/texture-test-metals.png)
 ![](output/random-scene.png)
 ![](output/panda-night.png)

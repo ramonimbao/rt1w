@@ -20,7 +20,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64, material: Arc<Material + Sync + Send>) -> Box<Sphere> {
+    pub fn create(center: Vec3, radius: f64, material: Arc<Material + Sync + Send>) -> Box<Sphere> {
         Box::new(Sphere {
             center,
             radius,
@@ -132,18 +132,18 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
             match density {
                 Some(density) => {
-                    list.push(Translate::new(
-                        ConstantMedium::new(
+                    list.push(Translate::translate(
+                        ConstantMedium::create(
                             density,
-                            Sphere::new(Vec3::zero(), radius, Blank::new()),
+                            Sphere::create(Vec3::zero(), radius, Blank::create()),
                             material,
                         ),
                         Vec3::new(px, py, pz),
                     ));
                 }
                 None => {
-                    list.push(Translate::new(
-                        Sphere::new(Vec3::zero(), radius, material),
+                    list.push(Translate::translate(
+                        Sphere::create(Vec3::zero(), radius, material),
                         Vec3::new(px, py, pz),
                     ));
                 }

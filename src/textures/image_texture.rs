@@ -13,7 +13,7 @@ pub struct ImageTexture {
 }
 
 impl ImageTexture {
-    pub fn new(image: &DynamicImage, scale: f64) -> Arc<ImageTexture> {
+    pub fn create(image: &DynamicImage, scale: f64) -> Arc<ImageTexture> {
         let image = image.to_rgb();
         let (width, height) = image.dimensions();
         let pixels: Vec<Vec3> = image

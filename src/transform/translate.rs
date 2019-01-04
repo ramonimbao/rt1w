@@ -10,7 +10,7 @@ pub struct Translate {
 }
 
 impl Translate {
-    pub fn new(object: Box<Hitable + Sync>, offset: Vec3) -> Box<Hitable + Sync> {
+    pub fn translate(object: Box<Hitable + Sync>, offset: Vec3) -> Box<Hitable + Sync> {
         Box::new(Translate { object, offset })
     }
 }

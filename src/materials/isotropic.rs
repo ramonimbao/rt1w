@@ -9,7 +9,7 @@ pub struct Isotropic {
 }
 
 impl Isotropic {
-    pub fn new(texture: Arc<Texture + Sync + Send>) -> Arc<Isotropic> {
+    pub fn create(texture: Arc<Texture + Sync + Send>) -> Arc<Isotropic> {
         Arc::new(Isotropic { texture })
     }
 }

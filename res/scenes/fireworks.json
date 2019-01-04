@@ -1,0 +1,108 @@
+{
+    "skybox": {
+        "r": 0.01,
+        "g": 0.01,
+        "b": 0.01
+    },
+    "planes": [
+        {
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "normal": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+            },
+            "material": {
+                "type": "metal/constant",
+                "color": {
+                    "r": 0.4,
+                    "g": 0.4,
+                    "b": 0.4
+                },
+                "fuzz": 0.05
+            }
+        }
+    ],
+    "spheres": [
+        {
+            "position": {
+                "x": "-10,10",
+                "y": 0.5,
+                "z": "-10,10"
+            },
+            "radius": 0.5,
+            "material": {
+                "type": "dielectric",
+                "refractive_index": 1.8
+            },
+            "copies": 20
+        },
+        {
+            "position": {
+                "x": "-10,10",
+                "y": 0.5,
+                "z": "-10,10"
+            },
+            "radius": 0.5,
+            "material": {
+                "type": "metal/constant",
+                "color": {
+                    "r": "0.9",
+                    "g": "0.9",
+                    "b": "0.9"
+                },
+                "fuzz": "0.05,0.1"
+            },
+            "copies": 20
+        },
+        {
+            "position": {
+                "x": "-10,10",
+                "y": 0.5,
+                "z": "-10,10"
+            },
+            "radius": 0.5,
+            "material": {
+                "type": "light",
+                "color": {
+                    "r": "1",
+                    "g": "1",
+                    "b": "1"
+                }
+            },
+            "copies": 20
+        }
+    ],
+    "moving_spheres": [
+        {
+            "copies": 250,
+            "positions": [
+                {
+                    "x": 0,
+                    "y": 5,
+                    "z": 0,
+                    "t": 0.0
+                },
+                {
+                    "x": "-5,5",
+                    "y": "1,10",
+                    "z": "-5,5",
+                    "t": 1.0
+                }
+            ],
+            "radius": 0.05,
+            "material": {
+                "type": "light",
+                "color": {
+                    "r": "0.5,1",
+                    "g": "0.5,1",
+                    "b": "0.5,1"
+                }
+            }
+        }
+    ]
+}

@@ -4,13 +4,16 @@ use std::sync::Arc;
 use serde_json::Value;
 
 use crate::materials::{blank::Blank, dielectric, diffuse_light, lambertian, metal, Material};
-use crate::shapes::{constant_medium::ConstantMedium, triangle::Triangle};
+use crate::shapes::{
+    constant_medium::ConstantMedium,
+    triangle::{Triangle, Vertex},
+};
 use crate::textures::TextureType;
 use crate::transform::{rotate::Rotate, translate::Translate};
 use crate::util::{
     hitable::{HitRecord, Hitable},
     hitable_list::HitableList,
-    json,
+    json, math,
     ray::Ray,
     vector3::Vec3,
 };
@@ -20,7 +23,7 @@ pub struct Mesh {
 }
 
 impl Mesh {
-    pub fn new(
+    pub fn create(
         filename: &str,
         material: Arc<Material + Sync + Send>,
         scale: f64,
@@ -31,19 +34,38 @@ impl Mesh {
         let mut file = OpenOptions::new().read(true).open(filename).unwrap();
         let stl = stl_io::read_stl(&mut file).unwrap();
 
-        let mut vertices: Vec<Vec3> = Vec::new();
+        let mut vertices: Vec<Vertex> = Vec::new();
 
         for v in &stl.vertices {
-            vertices.push(Vec3::new(
-                f64::from(v[0]) * scale,
-                f64::from(v[1]) * scale,
-                f64::from(v[2]) * scale,
+            vertices.push(Vertex::new(
+                Vec3::new(
+                    f64::from(v[0]) * scale,
+                    f64::from(v[1]) * scale,
+                    f64::from(v[2]) * scale,
+                ),
+                Vec3::zero(),
             ));
         }
 
         for indices in &stl.faces {
-            triangles.push(Triangle::new(
-                vec![
+            let (v0, v1, v2) = (
+                vertices[indices.vertices[0] as usize].position,
+                vertices[indices.vertices[1] as usize].position,
+                vertices[indices.vertices[2] as usize].position,
+            );
+
+            vertices[indices.vertices[0] as usize].normal += math::cross(&(v1 - v0), &(v2 - v0));
+            vertices[indices.vertices[1] as usize].normal += math::cross(&(v1 - v0), &(v2 - v0));
+            vertices[indices.vertices[2] as usize].normal += math::cross(&(v1 - v0), &(v2 - v0));
+        }
+
+        for v in vertices.iter_mut() {
+            v.normal = math::unit_vector(&v.normal);
+        }
+
+        for indices in &stl.faces {
+            triangles.push(Triangle::create(
+                [
                     vertices[indices.vertices[0] as usize],
                     vertices[indices.vertices[1] as usize],
                     vertices[indices.vertices[2] as usize],
@@ -152,11 +174,11 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
             match density {
                 Some(density) => {
-                    list.push(Translate::new(
-                        Rotate::new(
-                            ConstantMedium::new(
+                    list.push(Translate::translate(
+                        Rotate::rotate(
+                            ConstantMedium::create(
                                 density,
-                                Mesh::new(filename, Blank::new(), scale),
+                                Mesh::create(filename, Blank::create(), scale),
                                 material,
                             ),
                             Vec3::new(rx, ry, rz),
@@ -165,8 +187,11 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                     ));
                 }
                 None => {
-                    list.push(Translate::new(
-                        Rotate::new(Mesh::new(filename, material, scale), Vec3::new(rx, ry, rz)),
+                    list.push(Translate::translate(
+                        Rotate::rotate(
+                            Mesh::create(filename, material, scale),
+                            Vec3::new(rx, ry, rz),
+                        ),
                         Vec3::new(px, py, pz),
                     ));
                 }

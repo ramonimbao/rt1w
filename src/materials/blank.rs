@@ -6,7 +6,7 @@ use crate::util::{hitable::HitRecord, ray::Ray, vector3::Vec3};
 pub struct Blank {}
 
 impl Blank {
-    pub fn new() -> Arc<Blank> {
+    pub fn create() -> Arc<Blank> {
         Arc::new(Blank {})
     }
 }

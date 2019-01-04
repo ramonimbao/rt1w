@@ -57,7 +57,6 @@ impl Perlin {
 fn perlin_generate() -> Vec<Vec3> {
     let mut rng = rand::thread_rng();
     (0..256)
-        .into_iter()
         .map(|_| {
             math::unit_vector(&Vec3::new(
                 -1.0 + 2.0 * rng.gen::<f64>(),
@@ -69,7 +68,7 @@ fn perlin_generate() -> Vec<Vec3> {
 }
 
 fn perlin_generate_perm() -> Vec<i64> {
-    let mut p: Vec<i64> = (0..256).into_iter().collect();
+    let mut p: Vec<i64> = (0..256).collect();
     permute(&mut p);
     p
 }
@@ -79,13 +78,11 @@ fn permute(p: &mut Vec<i64>) {
     let n = p.len();
     for i in (0..n).rev() {
         let target = (rng.gen::<f64>() * (i + 1) as f64) as usize;
-        let temp = p[i as usize];
-        p[i as usize] = p[target];
-        p[target] = temp;
+        p.swap(i as usize, target);
     }
 }
 
-fn trilinear_interp(c: &Vec<Vec<Vec<Vec3>>>, u: f64, v: f64, w: f64) -> f64 {
+fn trilinear_interp(c: &[Vec<Vec<Vec3>>], u: f64, v: f64, w: f64) -> f64 {
     let mut accum = 0.0;
     let uu = u * u * (3.0 - 2.0 * u);
     let vv = v * v * (3.0 - 2.0 * v);

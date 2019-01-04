@@ -2,7 +2,7 @@
 	"config": {
 		"width": 800,
 		"height": 600,
-		"samples": 100
+		"samples": 250
 	},
 	"camera": {
 		"from":	{

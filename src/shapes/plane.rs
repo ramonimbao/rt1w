@@ -20,7 +20,11 @@ pub struct Plane {
 }
 
 impl Plane {
-    pub fn new(position: Vec3, normal: Vec3, material: Arc<Material + Sync + Send>) -> Box<Plane> {
+    pub fn create(
+        position: Vec3,
+        normal: Vec3,
+        material: Arc<Material + Sync + Send>,
+    ) -> Box<Plane> {
         Box::new(Plane {
             position,
             normal,
@@ -141,11 +145,11 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
 
             match density {
                 Some(density) => {
-                    list.push(Translate::new(
-                        Rotate::new(
-                            ConstantMedium::new(
+                    list.push(Translate::translate(
+                        Rotate::rotate(
+                            ConstantMedium::create(
                                 density,
-                                Plane::new(Vec3::zero(), Vec3::new(nx, ny, nz), Blank::new()),
+                                Plane::create(Vec3::zero(), Vec3::new(nx, ny, nz), Blank::create()),
                                 material,
                             ),
                             Vec3::new(rx, ry, rz),
@@ -154,9 +158,9 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                     ));
                 }
                 _ => {
-                    list.push(Translate::new(
-                        Rotate::new(
-                            Plane::new(Vec3::zero(), Vec3::new(nx, ny, nz), material),
+                    list.push(Translate::translate(
+                        Rotate::rotate(
+                            Plane::create(Vec3::zero(), Vec3::new(nx, ny, nz), material),
                             Vec3::new(rx, ry, rz),
                         ),
                         Vec3::new(px, py, pz),

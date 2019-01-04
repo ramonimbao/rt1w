@@ -10,7 +10,7 @@ pub struct CheckeredTexture {
 }
 
 impl CheckeredTexture {
-    pub fn new(
+    pub fn create(
         odd: Arc<Texture + Sync + Send>,
         even: Arc<Texture + Sync + Send>,
         scale: f64,
