@@ -23,13 +23,13 @@ This is the possible key-value pairs you can input that's common to all objects 
 
 ### Lambertian and Metal
 
-Use `"matte/<type>"` for a matte diffuse material and `"metal/<type>"` for a glossy material. For metals, a `fuzz` key that takes a number can be added inside `material` to adjust how shiny the metal is.
+Use `"matte/<type>"` for a matte diffuse material, `"isotropic/<type>"` for an isotropic (uniform) material, and `"metal/<type>"` for a glossy material. For metals, a `fuzz` key that takes a number can be added inside `material` to adjust how shiny the metal is.
 
 #### Constant Texture
 
 ```
 	"material": {
-		"type": "<matte or metal>/constant",
+		"type": "<matte or metal or isotropic>/constant",
 		"color": {
 			"r": "<number>",
 			"g": "<number>",
@@ -44,7 +44,7 @@ Use `"matte/<type>"` for a matte diffuse material and `"metal/<type>"` for a glo
 
 ```
 	"material": {
-		"type": "<matte or metal>/checkered",
+		"type": "<matte or metal or isotropic>/checkered",
 		"colors": [
 			{
 				"r": "<number>",
@@ -67,7 +67,7 @@ Use `"matte/<type>"` for a matte diffuse material and `"metal/<type>"` for a glo
 
 ```
 	"material": {
-		"type": "<matte or metal>/image",
+		"type": "<matte or metal or isotropic>/image",
 		"filename": "<path/to/image>"
 		"scale": "<number>" (OPTIONAL)
 	}
@@ -79,7 +79,7 @@ Uses Perlin noise.
 
 ```
 	"material": {
-		"type": "<matte or metal>/noise",
+		"type": "<matte or metal or isotropic>/noise",
 		"scale": "<number>" "<number>" (OPTIONAL)
 	}
 ```
