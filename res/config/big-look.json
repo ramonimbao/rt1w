@@ -2,12 +2,12 @@
 	"config": {
 		"width": 800,
 		"height": 600,
-		"samples": 100
+		"samples": 10
 	},
 	"camera": {
 		"from": {
 			"x": 0,
-			"y": 30,
+			"y": 300,
 			"z": 300
 		},
 		"to": {

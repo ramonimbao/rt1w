@@ -27,10 +27,10 @@ impl Perlin {
         let j = p.y.floor() as usize;
         let k = p.z.floor() as usize;
         let mut c = vec![vec![vec![Vec3::zero(); 2]; 2]; 2];
-        for di in 0..2 {
-            for dj in 0..2 {
-                for dk in 0..2 {
-                    c[di][dj][dk] = self.random_vectors[(self.perm_x[(i + di) & 255]
+        for (di, c) in c.iter_mut().enumerate() {
+            for (dj, c) in c.iter_mut().enumerate() {
+                for (dk, c) in c.iter_mut().enumerate() {
+                    *c = self.random_vectors[(self.perm_x[(i + di) & 255]
                         ^ self.perm_y[(j + dj) & 255]
                         ^ self.perm_z[(k + dk) & 255])
                         as usize];
@@ -88,14 +88,14 @@ fn trilinear_interp(c: &[Vec<Vec<Vec3>>], u: f64, v: f64, w: f64) -> f64 {
     let vv = v * v * (3.0 - 2.0 * v);
     let ww = w * w * (3.0 - 2.0 * w);
     // There's probably an idiomatic way to do this with iterators, sum(), zip(), etc.
-    for i in 0..2 {
-        for j in 0..2 {
-            for k in 0..2 {
+    for (i, c) in c.iter().enumerate() {
+        for (j, c) in c.iter().enumerate() {
+            for (k, c) in c.iter().enumerate() {
                 let weight_v = Vec3::new(u - i as f64, v - j as f64, w - k as f64);
                 accum += (i as f64 * uu + (1.0 - i as f64) * (1.0 - uu))
                     * (j as f64 * vv + (1.0 - j as f64) * (1.0 - vv))
                     * (k as f64 * ww + (1.0 - k as f64) * (1.0 - ww))
-                    * math::dot(&c[i][j][k], &weight_v);
+                    * math::dot(&c, &weight_v);
             }
         }
     }

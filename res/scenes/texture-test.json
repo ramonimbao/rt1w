@@ -4,7 +4,7 @@
         "g": 0.25,
         "b": 0.25
     },
-	"planes": [
+    "planes": [
         {
             "position": {
                 "x": 0,
@@ -17,7 +17,7 @@
                 "z": 0
             },
             "material": {
-                "type": "image",
+                "type": "matte/image",
                 "filename": "res/images/floor.png",
                 "scale": 10
             },
@@ -37,8 +37,8 @@
                 "z": 0
             },
             "material": {
-                "type": "metal",
-                "albedo": {
+                "type": "metal/constant",
+                "color": {
                     "r": 0.2,
                     "g": 1.0,
                     "b": 0.2
@@ -54,7 +54,7 @@
                 "z": 0
             },
             "material": {
-                "type": "checkered",
+                "type": "matte/checkered",
                 "colors": [
                     {
                         "r": 0.2,
@@ -78,7 +78,7 @@
                 "z": 0
             },
             "material": {
-                "type": "image",
+                "type": "matte/image",
                 "filename": "res/images/cute-face.png",
                 "scale": 1.0
             }
@@ -91,7 +91,7 @@
                 "z": 0
             },
             "material": {
-                "type": "noise",
+                "type": "matte/noise",
                 "scale": 10.0
             }
         },
@@ -130,7 +130,7 @@
                 "z": "-45,45"
             },
             "material": {
-                "type": "image",
+                "type": "matte/image",
                 "filename": "res/images/crate0_diffuse.png",
                 "scale": 1.0
             }

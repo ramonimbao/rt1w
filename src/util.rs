@@ -8,3 +8,5 @@ pub mod perlin;
 pub mod ray;
 pub mod vector3;
 pub mod world;
+
+pub use crate::util::camera::Camera;

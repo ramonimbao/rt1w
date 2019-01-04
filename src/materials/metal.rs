@@ -43,12 +43,12 @@ impl Material for Metal {
 }
 
 // The code here and in the lambert repeat. Maybe there's a way to generalize it?
-pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Material + Sync + Send> {
+pub fn load_from_json(values: &Value, texture_type: TextureType) -> Arc<Material + Sync + Send> {
     let fuzz = json::get_f64_or_rand(&values["material"]["fuzz"]);
     let fuzz = match fuzz {
         Some(f) => f,
         _ => 0.0,
     };
 
-    create_material(values, texture_type, &MaterialType::Metal(fuzz))
+    create_material(values, texture_type, MaterialType::Metal(fuzz))
 }

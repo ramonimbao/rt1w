@@ -2,11 +2,21 @@ use std::sync::Arc;
 
 use serde_json::Value;
 
-use crate::materials::{lambertian::Lambertian, metal::Metal};
-use crate::textures::{
-    checkered_texture::CheckeredTexture, constant_texture::ConstantTexture,
-    image_texture::ImageTexture, noise_texture::NoiseTexture, TextureType,
-};
+pub mod blank;
+pub mod dielectric;
+pub mod diffuse_light;
+pub mod isotropic;
+pub mod lambertian;
+pub mod metal;
+
+pub use crate::materials::blank::Blank;
+pub use crate::materials::dielectric::Dielectric;
+pub use crate::materials::diffuse_light::DiffuseLight;
+pub use crate::materials::isotropic::Isotropic;
+pub use crate::materials::lambertian::Lambertian;
+pub use crate::materials::metal::Metal;
+
+use crate::textures::{CheckeredTexture, ConstantTexture, ImageTexture, NoiseTexture, TextureType};
 use crate::util::{hitable::HitRecord, json, ray::Ray, vector3::Vec3};
 
 pub trait Material {
@@ -25,6 +35,7 @@ pub trait Material {
 
 pub enum MaterialType {
     Lambertian,
+    Isotropic,
     Metal(f64),
 }
 
@@ -33,10 +44,10 @@ pub enum MaterialType {
 // if I can use it anywhere else.
 pub fn create_material(
     values: &Value,
-    texture_type: &TextureType,
-    material_type: &MaterialType,
+    texture_type: TextureType,
+    material_type: MaterialType,
 ) -> Arc<Material + Sync + Send> {
-    match *texture_type {
+    match texture_type {
         TextureType::Checkered => {
             let or = json::get_f64_or_rand(&values["material"]["colors"][0]["r"]);
             let og = json::get_f64_or_rand(&values["material"]["colors"][0]["g"]);
@@ -57,20 +68,15 @@ pub fn create_material(
                 _ => 1.0,
             };
 
+            let texture = CheckeredTexture::create(
+                ConstantTexture::create(Vec3::new(or, og, ob)),
+                ConstantTexture::create(Vec3::new(er, eg, eb)),
+                scale,
+            );
             match material_type {
-                MaterialType::Lambertian => Lambertian::create(CheckeredTexture::create(
-                    ConstantTexture::create(Vec3::new(or, og, ob)),
-                    ConstantTexture::create(Vec3::new(er, eg, eb)),
-                    scale,
-                )),
-                MaterialType::Metal(fuzz) => Metal::create(
-                    CheckeredTexture::create(
-                        ConstantTexture::create(Vec3::new(or, og, ob)),
-                        ConstantTexture::create(Vec3::new(er, eg, eb)),
-                        scale,
-                    ),
-                    *fuzz,
-                ),
+                MaterialType::Lambertian => Lambertian::create(texture),
+                MaterialType::Metal(fuzz) => Metal::create(texture, fuzz),
+                MaterialType::Isotropic => Isotropic::create(texture),
             }
         }
 
@@ -83,13 +89,11 @@ pub fn create_material(
                 (_, _, _) => (0.0, 0.0, 0.0),
             };
 
+            let texture = ConstantTexture::create(Vec3::new(r, g, b));
             match material_type {
-                MaterialType::Lambertian => {
-                    Lambertian::create(ConstantTexture::create(Vec3::new(r, g, b)))
-                }
-                MaterialType::Metal(fuzz) => {
-                    Metal::create(ConstantTexture::create(Vec3::new(r, g, b)), *fuzz)
-                }
+                MaterialType::Lambertian => Lambertian::create(texture),
+                MaterialType::Metal(fuzz) => Metal::create(texture, fuzz),
+                MaterialType::Isotropic => Isotropic::create(texture),
             }
         }
 
@@ -125,13 +129,11 @@ pub fn create_material(
                 }
             };
 
+            let texture = ImageTexture::create(&image_file, scale);
             match material_type {
-                MaterialType::Lambertian => {
-                    Lambertian::create(ImageTexture::create(&image_file, scale))
-                }
-                MaterialType::Metal(fuzz) => {
-                    Metal::create(ImageTexture::create(&image_file, scale), *fuzz)
-                }
+                MaterialType::Lambertian => Lambertian::create(texture),
+                MaterialType::Metal(fuzz) => Metal::create(texture, fuzz),
+                MaterialType::Isotropic => Isotropic::create(texture),
             }
         }
 
@@ -142,17 +144,12 @@ pub fn create_material(
                 _ => 1.0,
             };
 
+            let texture = NoiseTexture::create(scale);
             match material_type {
-                MaterialType::Lambertian => Lambertian::create(NoiseTexture::create(scale)),
-                MaterialType::Metal(fuzz) => Metal::create(NoiseTexture::create(scale), *fuzz),
+                MaterialType::Lambertian => Lambertian::create(texture),
+                MaterialType::Metal(fuzz) => Metal::create(texture, fuzz),
+                MaterialType::Isotropic => Isotropic::create(texture),
             }
         }
     }
 }
-
-pub mod blank;
-pub mod dielectric;
-pub mod diffuse_light;
-pub mod isotropic;
-pub mod lambertian;
-pub mod metal;

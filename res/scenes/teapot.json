@@ -18,12 +18,13 @@
                 "z": 0
             },
             "material": {
-                "type": "metal/constant",
+                "type": "dielectric",
                 "color": {
                     "r": 1,
                     "g": 1,
                     "b": 1
-                }
+                },
+                "refractive_index": 1.8
             },
             "scale": 2
         }
@@ -69,7 +70,7 @@
             "position": {
                 "x": "-100,100",
                 "y": 5,
-                "z": "0,100"
+                "z": "-100,100"
             },
             "radius": 5,
             "material": {
@@ -80,7 +81,7 @@
                     "b": "1"
                 }
             },
-            "copies": 20
+            "copies": 50
         }
     ]
 }

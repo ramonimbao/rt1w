@@ -3,7 +3,10 @@ use std::fs;
 use serde_json::Value;
 
 use crate::defaults;
-use crate::util::{camera::Camera, vector3::Vec3};
+use crate::util::{
+    camera::{Camera, Look},
+    vector3::Vec3,
+};
 
 pub struct Config {
     pub width: u32,
@@ -32,18 +35,24 @@ impl Config {
     }
 }
 
-pub fn load_from_json(filename: String) -> (Config, Camera) {
+pub fn load_from_json(filename: String, verbose: bool) -> (Config, Camera) {
     if filename == "" {
-        println!("Defaulting to config defaults...");
+        if verbose {
+            println!("Defaulting to config defaults...");
+        }
         return (Config::default(), Camera::default());
     }
 
-    println!("Loading config JSON file from {}...", filename);
+    if verbose {
+        println!("Loading config JSON file from {}...", filename);
+    }
     let data = match fs::read_to_string(filename) {
         Ok(d) => d,
         Err(e) => {
-            eprintln!("ERROR: {}", e);
-            println!("Defaulting to config defaults...");
+            if verbose {
+                eprintln!("ERROR: {}", e);
+                println!("Defaulting to config defaults...");
+            }
             return (Config::default(), Camera::default());
         }
     };
@@ -51,8 +60,10 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
     let values: Value = match serde_json::from_str(&data) {
         Ok(v) => v,
         Err(e) => {
-            eprintln!("ERROR: {}", e);
-            println!("Defaulting to config defaults...");
+            if verbose {
+                eprintln!("ERROR: {}", e);
+                println!("Defaulting to config defaults...");
+            }
             return (Config::default(), Camera::default());
         }
     };
@@ -84,8 +95,10 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
     let (fx, fy, fz, tx, ty, tz) = match (from[0], from[1], from[2], to[0], to[1], to[2]) {
         (Some(fx), Some(fy), Some(fz), Some(tx), Some(ty), Some(tz)) => (fx, fy, fz, tx, ty, tz),
         (_, _, _, _, _, _) => {
-            println!("Can't read camera look from/to values...");
-            println!("Defaulting to camera defaults");
+            if verbose {
+                println!("Can't read camera look from/to values...");
+                println!("Defaulting to camera defaults");
+            }
             (
                 defaults::LOOK_FROM.0,
                 defaults::LOOK_FROM.1,
@@ -147,27 +160,38 @@ pub fn load_from_json(filename: String) -> (Config, Camera) {
         (_, _) => (defaults::T0, defaults::T1),
     };
 
-    println!("Loaded config JSON file.");
-    println!(
-        "Rendering a {}x{} image at {} samples/pixel...",
-        width, height, samples
-    );
-    println!("Output filename: {}", output_filename);
-    println!(
-        "Camera positioned at ({},{},{}) looking at ({},{},{})",
-        look_from.x, look_from.y, look_from.z, look_to.x, look_to.y, look_to.z
-    );
-    println!("Camera settings:");
-    println!("   FOV: {}", vfov);
-    println!("   Aspect ratio: {}", aspect);
-    println!("   Aperture: {}", aperture);
-    println!("   Focus distance: {}", focus_dist);
-    println!("   Shutter open from t={} to {}", t0, t1);
+    if verbose {
+        println!("Loaded config JSON file.");
+        println!(
+            "Rendering a {}x{} image at {} samples/pixel...",
+            width, height, samples
+        );
+        println!("Output filename: {}", output_filename);
+        println!(
+            "Camera positioned at ({},{},{}) looking at ({},{},{})",
+            look_from.x, look_from.y, look_from.z, look_to.x, look_to.y, look_to.z
+        );
+        println!("Camera settings:");
+        println!("   FOV: {}", vfov);
+        println!("   Aspect ratio: {}", aspect);
+        println!("   Aperture: {}", aperture);
+        println!("   Focus distance: {}", focus_dist);
+        println!("   Shutter open from t={} to {}", t0, t1);
+    }
 
     (
         Config::new(width, height, samples, output_filename.to_string()),
         Camera::new(
-            look_from, look_to, vup, vfov, aspect, aperture, focus_dist, t0, t1,
+            &Look {
+                from: look_from,
+                to: look_to,
+            },
+            vup,
+            vfov,
+            aspect,
+            aperture,
+            focus_dist,
+            (t0, t1),
         ),
     )
 }

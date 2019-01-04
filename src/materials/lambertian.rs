@@ -32,6 +32,6 @@ impl Material for Lambertian {
     }
 }
 
-pub fn load_from_json(values: &Value, texture_type: &TextureType) -> Arc<Material + Sync + Send> {
-    create_material(values, texture_type, &MaterialType::Lambertian)
+pub fn load_from_json(values: &Value, texture_type: TextureType) -> Arc<Material + Sync + Send> {
+    create_material(values, texture_type, MaterialType::Lambertian)
 }

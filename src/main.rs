@@ -38,8 +38,9 @@ struct Opt {
 
 fn main() -> std::io::Result<()> {
     let opt = Opt::from_args();
-    let (config, cam) = config::load_from_json(opt.config_file.to_str().unwrap().to_string());
-    let world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string());
+    let (config, cam) =
+        config::load_from_json(opt.config_file.to_str().unwrap().to_string(), opt.verbose);
+    let world = world::load_from_json(opt.scene_file.to_str().unwrap().to_string(), opt.verbose);
 
     let total_progress = f64::from(config.width * config.height);
 
@@ -99,15 +100,13 @@ fn main() -> std::io::Result<()> {
                             *previous_progress = *current_progress;
                             *previous_time = current_time;
 
-                            if opt.verbose {
-                                println!(
-                                    "ETA: {:02}:{:02}:{:02} | Render progress: {:3.2} / 100.00%\r",
-                                    hours,
-                                    mins,
-                                    secs,
-                                    *current_progress / total_progress * 100.0
-                                );
-                            }
+                            println!(
+                                "ETA: {:02}:{:02}:{:02} | Render progress: {:3.2} / 100.00%",
+                                hours,
+                                mins,
+                                secs,
+                                *current_progress / total_progress * 100.0
+                            );
                         }
 
                         col /= f64::from(config.samples);
@@ -171,15 +170,13 @@ fn main() -> std::io::Result<()> {
                     previous_progress = current_progress;
                     previous_time = current_time;
 
-                    if opt.verbose {
-                        println!(
-                            "ETA: {:02}:{:02}:{:02} | Render progress: {:3.2} / 100.00%\r",
-                            hours,
-                            mins,
-                            secs,
-                            current_progress / total_progress * 100.0
-                        );
-                    }
+                    println!(
+                        "ETA: {:02}:{:02}:{:02} | Render progress: {:3.2} / 100.00%",
+                        hours,
+                        mins,
+                        secs,
+                        current_progress / total_progress * 100.0
+                    );
                 }
             }
         }

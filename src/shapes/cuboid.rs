@@ -90,7 +90,7 @@ impl Hitable for Cuboid {
     }
 }
 
-pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
+pub fn load_from_json(values: &Value, verbose: bool) -> Vec<Box<Hitable + Sync>> {
     let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
 
     let id = "cuboids";
@@ -134,10 +134,12 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
             let (rx, ry, rz) = match (rx, ry, rz) {
                 (Some(rx), Some(ry), Some(rz)) => (rx, ry, rz),
                 (_, _, _) => {
-                    eprintln!(
-                        "ERROR: Can't get rotation of cuboid {}! Defaulting to (0,0,0)...",
-                        i
-                    );
+                    if verbose {
+                        eprintln!(
+                            "ERROR: Can't get rotation of cuboid {}! Defaulting to (0,0,0)...",
+                            i
+                        );
+                    }
                     (0.0, 0.0, 0.0)
                 }
             };
@@ -146,25 +148,25 @@ pub fn load_from_json(values: &Value) -> Vec<Box<Hitable + Sync>> {
                 .as_str()
             {
                 Some("matte/constant") => {
-                    lambertian::load_from_json(&values[id][i], &TextureType::Constant)
+                    lambertian::load_from_json(&values[id][i], TextureType::Constant)
                 }
                 Some("matte/checkered") => {
-                    lambertian::load_from_json(&values[id][i], &TextureType::Checkered)
+                    lambertian::load_from_json(&values[id][i], TextureType::Checkered)
                 }
                 Some("matte/image") => {
-                    lambertian::load_from_json(&values[id][i], &TextureType::Image)
+                    lambertian::load_from_json(&values[id][i], TextureType::Image)
                 }
                 Some("matte/noise") => {
-                    lambertian::load_from_json(&values[id][i], &TextureType::Noise)
+                    lambertian::load_from_json(&values[id][i], TextureType::Noise)
                 }
                 Some("metal/constant") => {
-                    metal::load_from_json(&values[id][i], &TextureType::Constant)
+                    metal::load_from_json(&values[id][i], TextureType::Constant)
                 }
                 Some("metal/checkered") => {
-                    metal::load_from_json(&values[id][i], &TextureType::Checkered)
+                    metal::load_from_json(&values[id][i], TextureType::Checkered)
                 }
-                Some("metal/image") => metal::load_from_json(&values[id][i], &TextureType::Image),
-                Some("metal/noise") => metal::load_from_json(&values[id][i], &TextureType::Noise),
+                Some("metal/image") => metal::load_from_json(&values[id][i], TextureType::Image),
+                Some("metal/noise") => metal::load_from_json(&values[id][i], TextureType::Noise),
                 Some("dielectric") => dielectric::load_from_json(&values[id][i]),
                 Some("light") => diffuse_light::load_from_json(&values[id][i]),
                 _ => {

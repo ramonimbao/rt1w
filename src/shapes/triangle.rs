@@ -27,18 +27,6 @@ pub struct Triangle {
 
 impl Triangle {
     pub fn create(vertices: [Vertex; 3], material: Arc<Material + Sync + Send>) -> Box<Triangle> {
-        /*
-        let (v0, v1, v2) = (
-            vertices[0].position,
-            vertices[1].position,
-            vertices[2].position,
-        );
-
-        for v in vertices.iter_mut() {
-            v.normal += math::cross(&(v1 - v0), &(v2 - v0));
-        }
-        */
-
         Box::new(Triangle { vertices, material })
     }
 }

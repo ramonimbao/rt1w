@@ -218,13 +218,15 @@ pub fn random_scene() -> HitableList {
     HitableList::new(list)
 }
 
-pub fn load_from_json(filename: String) -> HitableList {
+pub fn load_from_json(filename: String, verbose: bool) -> HitableList {
     if filename == "" {
         println!("Generating random scene...");
         return random_scene();
     }
 
-    println!("Loading scene data from {}", filename);
+    if verbose {
+        println!("Loading scene data from {}", filename);
+    }
     let data = match fs::read_to_string(filename) {
         Ok(d) => d,
         Err(e) => {
@@ -243,17 +245,21 @@ pub fn load_from_json(filename: String) -> HitableList {
         }
     };
 
-    println!("Loaded scene data.");
+    if verbose {
+        println!("Loaded scene data.");
 
-    println!("Loading all objects to scene...");
+        println!("Loading all objects to scene...");
+    }
     let mut list: Vec<Box<Hitable + Sync>> = Vec::new();
-    list.append(&mut sphere::load_from_json(&values));
-    list.append(&mut moving_sphere::load_from_json(&values));
-    list.append(&mut plane::load_from_json(&values));
-    list.append(&mut cuboid::load_from_json(&values));
-    list.append(&mut mesh::load_from_json(&values));
+    list.append(&mut sphere::load_from_json(&values, verbose));
+    list.append(&mut moving_sphere::load_from_json(&values, verbose));
+    list.append(&mut plane::load_from_json(&values, verbose));
+    list.append(&mut cuboid::load_from_json(&values, verbose));
+    list.append(&mut mesh::load_from_json(&values, verbose));
     list.append(&mut load_skybox_from_json(&values));
-    println!("Done loading.");
+    if verbose {
+        println!("Done loading.");
+    }
 
     HitableList::new(list)
 }
